@@ -54,7 +54,7 @@ const ProfileSideBar = () => {
     },
     {
       title: 'Log Out',
-      link: '/log-out',
+      link: '/',
       button: true,
     },
   ]
