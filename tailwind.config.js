@@ -17,7 +17,12 @@ export default {
         LightBlack: '#565656',
         LightText: '#5E5E5E',
         ThemeYellow: '#F8D654',
-        GrayText: '#474747'
+        GrayText: '#474747',
+        LoginFormBorder: '#CBD3DF',
+        ProfileScreensBg: '#F6F6F6',
+        ThemeGreen: '#2C9B00',
+        ProfileCardBorder: '#E0E0E0',
+        AddressCard: '#F3F3F3',
       },
       fontSize: {
         10: '10px',

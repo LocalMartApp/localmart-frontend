@@ -1,0 +1,12 @@
+.UserNumberLogin {
+    .form-inputsec {
+        .email-input-icon {
+            transform: translate(-0% , -50%) !important;
+        }
+        .password-login-icon {
+            &:active {
+                transform: translate(-0% , -50%) scale(1) !important;
+            }
+        }
+    }
+}

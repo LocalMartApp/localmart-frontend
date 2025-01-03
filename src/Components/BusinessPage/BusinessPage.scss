@@ -1,0 +1,70 @@
+.BusinessPage {
+    .inner-business-page-section-1 {
+        .business-section-1-grid {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            padding: 10px;
+        }
+        .business-grid-items {
+            transition: flex 0.6s ease-in-out;
+            padding: 30px;
+            flex: 3;
+            .business-sec-1-cards-top-heading {
+                h2 {
+                    font-size: 20px;
+                    transition:  0.6s;
+                    text-align: center;
+                }
+            }
+            .bottom-business-card-button {
+                width: fit-content;
+                margin: 0px auto;
+                transition: margin 0.6s ease-in-out;
+                
+                button {
+                    padding: 6px 18px;
+                    font-size: 14px;
+                    transition: 0.6s;
+                }
+            }
+            .business-sec-1-center-image {
+                img {
+                    height: 100%;
+                    max-height: 180px;
+                    transition-duration: 0.6s;
+                }
+            }
+        }
+        .business-grid-items:hover {
+            flex: 8;
+            .business-sec-1-cards-top-heading {
+                h2 {
+                    font-size: 30px;
+                    text-align: left;
+                }
+            }
+            .bottom-business-card-button {
+                margin: 0px 0px;
+                button {
+                    padding: 8px 36px;
+                    font-size: 16px;
+                }
+            }
+            .business-sec-1-center-image {
+                img {
+                    height: 100%;
+                    max-height: 240px;
+                }
+            }
+        }
+    }
+    .inner-business-section-2 {
+        background-image:url('../../assets/images/categories-blk-background.jpg');
+        background-attachment: fixed;
+        padding: 80px 0px;
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+}

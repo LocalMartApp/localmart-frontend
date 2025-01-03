@@ -1,0 +1,134 @@
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import './Header.scss';
+import Logo from '../../assets/images/logo-svg.svg';
+import LanSvg from '../../assets/images/language-svg.svg'
+import MarqueeSlider from './MarqueeSlider';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+const Header = () => {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+
+  console.log(location)
+
+  const [language , setLanguage] = useState(false);
+  const [languageSelector , setLanguageSelector] = useState('EN')
+
+  const handleLanguageSelect = () => {
+    setLanguage(!language)
+  }
+
+  return (
+    <div className="Header">
+      <div className="main-header-section">
+        <header>
+          <div className="inner-header-section bg-white py-5">
+            <div className="container">
+              <div className="grid grid-cols-12 items-center">
+                <div className="header-left-logo-section col-span-2 text-left">
+                    <button className="logo-inner-section scale-100" onClick={() => navigate('/')}>
+                      <img src={Logo} className='max-h-[50px] w-auto' alt="" />
+                    </button>
+                </div>
+                <div className="header-search-section col-span-5">
+                {location.pathname !== "/" && (
+                  <div className="inner-seacrh-section grid grid-cols-12 items-center bg-white border-BorderColor border  rounded-full py-1 pr-1 pl-4 justify-between">
+                      <div className="col-span-5">
+                          <div className="category-section flex items-center gap-4">
+                            <div className="left-category-logo-search">
+                              <i className="ri-file-list-3-line text-Primary text-xl"></i>
+                            </div>
+                            <div className="right-category-dropdown-section">
+                                <button type='button'>
+                                    <div className="top-section-category-select flex items-center gap-3">
+                                      <p className='text-LightBlack text-sm'>Category</p>
+                                      <i className="ri-arrow-down-s-line text-LightBlack"></i>
+                                    </div>
+                                </button>
+                            </div>
+                          </div>
+                      </div>
+                      <div className="col-span-5">
+                        <div className="location-section flex items-center gap-4">
+                            <div className="left-location-logo-search">
+                              <i className="ri-map-pin-line text-Primary text-xl"></i>
+                            </div>
+                            <div className="right-location-dropdown-section">
+                                <button type='button'>
+                                    <div className="top-section-location-select flex items-center gap-3">
+                                      <p className='text-LightBlack text-sm'>Location</p>
+                                      <i className="ri-arrow-down-s-line text-LightBlack"></i>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                      </div>
+                      <div className="col-span-2">
+                          <div className="cate-loc-search-btn h-full w-full">
+                            <button type="button" className='bg-Primary duration-300 hover:scale-95 rounded-full py-1 flex items-center w-full justify-center shadow-customized'>
+                              <i className="text-white text-lg ri-search-line"></i>
+                            </button>
+                          </div>
+                      </div>
+                  </div>
+                )}
+                </div>
+                <div className="header-buttons-sections col-span-5">
+                  <div className="flex items-center gap-8 justify-end">
+                    <div className="notification-header-button rounded-full">
+                      <button type='button' className=' bg-none w-10 h-10 flex items-center justify-center'>
+                        <i className="bi bi-bell text-xl text-Primary"></i>
+                      </button>
+                    </div>
+                    <div className={`language-selection-header relative duration-300 ${language ? 'rounded-xl rounded-b-none ' : 'rounded-[20px]'}`}>
+                      <button type="button" className='flex items-center gap-1 h-10 px-3 ' onClick={handleLanguageSelect}>
+                        <img src={LanSvg} className='max-w-[18px] min-w-[18px]' alt="" />
+                        <p className='text-Black'>{languageSelector}</p>
+                        <i className={`bi bi-chevron-down duration-300 ${language ? 'rotate-180' : 'rotate-0'}`}></i>
+                      </button>
+                      <div className={`bottom-languages-button z-10 flex-col py-2 flex gap-2 absolute bg-white outline outline-BorderColor outline-1 w-full rounded-b-xl duration-500 ${language ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+                        <button type="button" className='py-1 text-center ' onClick={() => {setLanguageSelector('EN') , handleLanguageSelect()}}>
+                          <p className='text-Black text-center'>EN</p>
+                        </button>
+                        <button type="button" className='py-1 text-center ' onClick={() => {setLanguageSelector('TE') , handleLanguageSelect()}}>
+                          <p className='text-Black text-center'>TE</p>
+                        </button>
+                        <button type="button" className='py-1 text-center ' onClick={() => {setLanguageSelector('HI') , handleLanguageSelect()}}>
+                          <p className='text-Black text-center'>HI</p>
+                        </button>
+                      </div>
+                    </div>
+                    <div className="advertise-button-header">
+                      <button type="button" className='flex items-center gap-3'>
+                      <i className="ri-megaphone-line text-Black"></i>
+                        <p className='text-Black text-lg font-medium'>Advertise</p>
+                      </button>
+                    </div>
+                    <div className="login-button-header">
+                      <button type="button" onClick={() => navigate('/login')} className='bg-Primary h-10 border-Primary border-2 px-3 overflow-hidden rounded-full flex items-center gap-2 min-w-[190px] justify-center duration-300 group hover:bg-transparent  '>
+                        <i className="ri-login-circle-fill text-white text-lg duration-300 group-hover:text-Primary"></i>
+                        <p className='text-white font-medium text-lg duration-300 group-hover:text-Primary'>Login | Signup</p>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="header-scrolling-marquee-ad">
+            <MarqueeSlider/>
+          </div>
+        </header>
+      </div>
+    </div>
+  );
+}
+
+Header.propTypes = {};
+
+Header.defaultProps = {};
+
+export default Header;

@@ -1,0 +1,17 @@
+.ProfileSideBar {
+    .sidebar-navigation-part {
+        ul {
+            a {
+                transition-duration: 0.5s;
+                background: #fff;
+                border-radius: 80px;
+            }
+            a.active {
+                color: #FF7B00;
+                background: #FFEAE3;
+                
+            }
+        }
+    }
+}
+

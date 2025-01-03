@@ -37,9 +37,47 @@
 }
 
 
-body button {
+button {
     transition-duration: 0.3s;
     &:active {
         transform: scale(0.8) !important;
     }
 }
+
+.main-login-modal-section {
+    background: rgba(0, 0, 0, 0.519);
+    backdrop-filter: blur(12px);
+    .inner-modal-relative-section {
+        max-width: 560px;
+        transform: translate(-50%, -50%),
+    }
+    .email-input-icon {
+        transform: translate(0%, -50%),
+    }
+    .border-or-section {
+        .or-middle-mover {
+            transform: translate(-50%, 0%),
+        }
+    }
+}
+
+.otpinputs-outer {
+    justify-content: space-between !important;
+    margin-bottom: 20px !important;
+    gap: 0px 20px;
+    input {
+        border: 1px solid #B3B3B3;
+        width: 25% !important;
+        height: 60px !important;
+        border-radius: 10px;
+        font-size: 20px;
+        font-weight: 500;
+        margin: 0px !important;
+        outline: none !important;
+        transition-duration: 0.5s;
+        &:focus {
+            outline: 1px solid #1F90FF !important;
+        }
+    }
+}
+

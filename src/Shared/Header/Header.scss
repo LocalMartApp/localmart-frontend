@@ -1,0 +1,28 @@
+.Header {}
+
+.notification-header-button , .language-selection-header {
+
+        border: 1px solid #B3B3B3 !important;
+    
+}
+
+.login-button-header {
+    button {
+        box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.language-selection-header {
+    button {
+        &:active {
+            transform: scale(1) !important;
+        }
+    }
+}
+
+.logo-inner-section {
+    transform: scale(1) !important;
+    &:active {
+        transform: scale(1) !important;
+    }
+}
