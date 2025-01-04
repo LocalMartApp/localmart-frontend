@@ -10,6 +10,7 @@ import Notifications from './Components/ProfileScreens/Notifications/Notificatio
 import MyFavourites from './Components/ProfileScreens/MyFavourites/MyFavourites'
 import UserLogin from './Components/Auth/UserLogin/UserLogin'
 import BusinessPage from './Components/BusinessPage/BusinessPage'
+import UserRegister from './Components/Auth/UserRegister/UserRegister'
 
 
 
@@ -31,6 +32,7 @@ function App() {
         <Route exact={true} Component={Notifications} path='/profile/notifications' />
         <Route exact={true} Component={BusinessPage} path='/businesses'/>
         <Route exact={true} Component={UserLogin} path='/login' />
+        <Route exact={true} Component={UserRegister} path='/register' />
       </Routes>
       <Footer/>
      </Router>

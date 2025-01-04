@@ -4,9 +4,12 @@ import './UserLogin.scss';
 import UserEmailLogin from '../UserEmailLogin/UserEmailLogin';
 import UserNumberLogin from '../UserNumberLogin/UserNumberLogin';
 import LeftLoginImage from '../../../assets/images/user-login-left.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const UserLogin = () => {
   
+  const navigate = useNavigate()
+
   const [emailLogin , setEmailLogin] = useState(false);
 
 
@@ -48,7 +51,7 @@ const UserLogin = () => {
                           </button> }
                       </div>
                       <div className="bottom-dont-havean-account mt-6">
-                        <button type="button" className='text-Black'>
+                        <button type="button" className='text-Black' onClick={() => navigate('/register')}>
                           <p>Don’t Have an Account , Click here to <span className='text-Secondary font-medium'>Register</span></p>
                         </button>
                       </div>

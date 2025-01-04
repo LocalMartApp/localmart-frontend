@@ -9,7 +9,7 @@ import ServicesImage2 from '../../assets/images/popular-services-image-2.jpg';
 import ServicesImage3 from '../../assets/images/popular-services-image-3.jpg';
 import ServicesImage4 from '../../assets/images/popular-serviices-image-4.jpg';
 
-const BusinessPopServSlider = () => {
+const BusinessPopServSlider = ({ title }) => {
     
 
         const popularServices = [
@@ -61,7 +61,7 @@ const BusinessPopServSlider = () => {
             <div className="container">
                 <div className="pop-slide-heading-section flex justify-between gap-10 items-center mb-10">
                     <div className="left-pop-serv-heading">
-                        <h2 className='text-30 text-Black font-medium'>Popular Services</h2>
+                        <h2 className='text-30 text-Black font-medium'>{title}</h2>
                     </div>
                     <div className="pop-serv-right-sliding-buttons flex items-center gap-7">
                         <button type="button" className='popular-services-button-prev w-10 h-10 rounded-lg border-LightBlack border'><i className="ri-arrow-left-s-line text-Black text-2xl"></i></button>

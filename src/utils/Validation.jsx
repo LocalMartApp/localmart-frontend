@@ -22,6 +22,14 @@ export const userLoginEmailValidation = yup.object().shape({
     password: yup.string().required('Please Enter Password'),
 })
 
+export const userRegEmailValidation = yup.object().shape({
+    email: yup.string().email('Please Enter Valid Email').required('Email Address Required'),
+})
+
+export const userRegNumberValidation = yup.object().shape({
+    mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
+})
+
 // export const signupschema = yup.object().shape({
 //   email: yup
 //     .string()

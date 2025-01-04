@@ -9,6 +9,7 @@ export default {
       colors: {
         Primary: '#FF7B00',
         Secondary: '#1F90FF',
+        Green: '#42C90D',
         LightBlue: '#EBF5FF',
         LightOrange: '#FFF2ED',
         BorderColor: '#B3B3B3',
@@ -23,6 +24,8 @@ export default {
         ThemeGreen: '#2C9B00',
         ProfileCardBorder: '#E0E0E0',
         AddressCard: '#F3F3F3',
+        LightGrayBg: '#F4F4F4',
+        StarGold: '#FFB730'
       },
       fontSize: {
         10: '10px',
