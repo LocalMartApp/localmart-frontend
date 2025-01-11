@@ -1,0 +1,9 @@
+.SearchPage {
+    .single-searched-cards {
+        button {
+            &:active {
+                transform: scale(0.95) !important;
+            }
+        }
+    }
+}

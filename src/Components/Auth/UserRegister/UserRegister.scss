@@ -1,4 +1,12 @@
 .UserRegister {
+    .complete-det-registerform-section {
+        .form-inputsec {
+            .email-input-icon {
+                transform: translate(0% , -50%) !important;
+                text-align: center;
+            }
+        }
+    }
     .form-inputsec {
         .email-input-icon {
             transform: translate(-0% , -50%) !important;

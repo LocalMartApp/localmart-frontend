@@ -69,7 +69,6 @@ const MyProfile = () => {
           
       >
         <button type="button" className='text-Black font-medium text-lg' onClick={closeModal}>Close MODAL</button>
-
       </Modal>
       <div className="my-profile-inner-section bg-ProfileScreensBg">
         <div className="top-similar-header-section-profile-screens mb-30p">

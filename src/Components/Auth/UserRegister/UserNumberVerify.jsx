@@ -48,7 +48,7 @@ const UserNumberVerify = () => {
                         <ResendOTP onResendClick={() => console.log("Resend clicked")} renderButton={renderButton} />
                     </div>
                     <div className="tp-submission-button">
-                        <button type="button" onClick={() => navigate('/profile/my-profile')} className='mt-5  overflow-hidden relative group bg-Primary rounded-xl w-full py-3 px-4 text-white font-semibold text-lg'>Verify OTP</button>
+                        <button type="button" onClick={() => navigate('/register-details')} className='mt-5  overflow-hidden relative group bg-Primary rounded-xl w-full py-3 px-4 text-white font-semibold text-lg'>Verify OTP</button>
                     </div>
                 </div>   
             </div> : 

@@ -25,7 +25,8 @@ export default {
         ProfileCardBorder: '#E0E0E0',
         AddressCard: '#F3F3F3',
         LightGrayBg: '#F4F4F4',
-        StarGold: '#FFB730'
+        StarGold: '#FFB730',
+        AmenitiesLightGray: '#EDEDED'
       },
       fontSize: {
         10: '10px',

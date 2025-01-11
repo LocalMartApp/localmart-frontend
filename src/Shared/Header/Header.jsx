@@ -5,6 +5,8 @@ import Logo from '../../assets/images/logo-svg.svg';
 import LanSvg from '../../assets/images/language-svg.svg'
 import MarqueeSlider from './MarqueeSlider';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Select from 'react-select';
+
 
 const Header = () => {
 
@@ -15,11 +17,22 @@ const Header = () => {
   console.log(location)
 
   const [language , setLanguage] = useState(false);
-  const [languageSelector , setLanguageSelector] = useState('EN')
+  const [languageSelector , setLanguageSelector] = useState('EN');
+  const [categorySelect , setCategorySelect] = useState();
+  const [citySelect ,  setCitySelect] = useState()
 
   const handleLanguageSelect = () => {
     setLanguage(!language)
   }
+
+
+
+  const options = [
+    { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+  ]
+  
 
   return (
     <div className="Header">
@@ -27,62 +40,139 @@ const Header = () => {
         <header>
           <div className="inner-header-section bg-white py-5">
             <div className="container">
-              <div className="grid grid-cols-12 items-center">
-                <div className="header-left-logo-section col-span-2 text-left">
+              <div className={`grid grid-cols-7 items-center`}>
+                <div className="header-left-logo-section col-span-1 text-left">
                     <button className="logo-inner-section scale-100" onClick={() => navigate('/')}>
                       <img src={Logo} className='max-h-[50px] w-auto' alt="" />
                     </button>
                 </div>
-                <div className="header-search-section col-span-5">
+                <div className="header-search-section col-span-3">
                 {location.pathname !== "/" && (
-                  <div className="inner-seacrh-section grid grid-cols-12 items-center bg-white border-BorderColor border  rounded-full py-1 pr-1 pl-4 justify-between">
+                    <div className="inner-seacrh-section grid grid-cols-12  bg-white border-BorderColor border  rounded-full py-1 pr-1 pl-4 justify-between">
                       <div className="col-span-5">
-                          <div className="category-section flex items-center gap-4">
-                            <div className="left-category-logo-search">
-                              <i className="ri-file-list-3-line text-Primary text-xl"></i>
+                          <div className="category-section flex items-center gap-2">
+                            <div className="left-category-logo-search w-[10%]">
+                              <i className=" ri-map-pin-line text-Primary text-xl"></i>
                             </div>
-                            <div className="right-category-dropdown-section">
-                                <button type='button'>
+                            <div className="right-category-dropdown-section w-[80%]">
+                                {/* <button type='button'>
                                     <div className="top-section-category-select flex items-center gap-3">
                                       <p className='text-LightBlack text-sm'>Category</p>
                                       <i className="ri-arrow-down-s-line text-LightBlack"></i>
                                     </div>
-                                </button>
+                                </button> */}
+                                <Select options={options} 
+                                    placeholder='City'
+                                    styles={{
+                                        control: (baseStyles, state) => ({
+                                          ...baseStyles,
+                                          borderRadius: 10,
+                                          paddingLeft: 0,
+                                          paddingTop: 4,
+                                          paddingBottom: 4,
+                                          borderWidth: 0,
+                                          outlineWidth: 0,
+                                          boxShadow: state.isFocused ? 'none' : 'none',
+
+                                        }),
+                                      }}
+                                    onChange={(option) => setCitySelect(option)}
+                                />
                             </div>
                           </div>
                       </div>
                       <div className="col-span-5">
-                        <div className="location-section flex items-center gap-4">
-                            <div className="left-location-logo-search">
-                              <i className="ri-map-pin-line text-Primary text-xl"></i>
+                        <div className="location-section flex items-center gap-2">
+                            <div className="left-location-logo-search w-[10%]">
+                              <i className="ri-file-list-3-line text-Primary text-xl"></i>
                             </div>
-                            <div className="right-location-dropdown-section">
-                                <button type='button'>
+                            <div className="right-location-dropdown-section w-[80%]">
+                                {/* <button type='button'>
                                     <div className="top-section-location-select flex items-center gap-3">
                                       <p className='text-LightBlack text-sm'>Location</p>
                                       <i className="ri-arrow-down-s-line text-LightBlack"></i>
                                     </div>
-                                </button>
+                                </button> */}
+                                  <Select options={options} 
+                                    placeholder='Category'
+                                    styles={{
+                                        control: (baseStyles, state) => ({
+                                          ...baseStyles,
+                                          borderRadius: 10,
+                                          paddingLeft: 0,
+                                          paddingTop: 4,
+                                          paddingBottom: 4,
+                                          borderWidth: 0,
+                                          outlineWidth: 0,
+                                          borderColor: '#fff',
+                                          outlineColor: '#fff',
+                                          // borderColor: state.isFocused ? 'grey' : 'red',
+                                          boxShadow: state.isFocused ? 'none' : 'none',
+                                        }),
+                                      }}
+                                    onChange={(option) => setCategorySelect(option)}
+                                />
                             </div>
                         </div>
                       </div>
                       <div className="col-span-2">
                           <div className="cate-loc-search-btn h-full w-full">
-                            <button type="button" className='bg-Primary duration-300 hover:scale-95 rounded-full py-1 flex items-center w-full justify-center shadow-customized'>
+                            <button type="button" className='bg-Primary duration-300 h-full hover:scale-95 rounded-full py-1 flex items-center w-full justify-center shadow-customized'>
                               <i className="text-white text-lg ri-search-line"></i>
                             </button>
                           </div>
                       </div>
                   </div>
+                  // <div className="inner-seacrh-section grid grid-cols-12 items-center bg-white border-BorderColor border  rounded-full py-1 pr-1 pl-4 justify-between">
+                  //     <div className="col-span-5">
+                  //         <div className="category-section flex items-center gap-4">
+                  //           <div className="left-category-logo-search">
+                  //             <i className="ri-file-list-3-line text-Primary text-xl"></i>
+                  //           </div>
+                  //           <div className="right-category-dropdown-section">
+                  //               <button type='button'>
+                  //                   <div className="top-section-category-select flex items-center gap-3">
+                  //                     <p className='text-LightBlack text-sm'>Category</p>
+                  //                     <i className="ri-arrow-down-s-line text-LightBlack"></i>
+                  //                   </div>
+                  //               </button>
+                  //           </div>
+                  //         </div>
+                  //     </div>
+                  //     <div className="col-span-5">
+                  //       <div className="location-section flex items-center gap-4">
+                  //           <div className="left-location-logo-search">
+                  //             <i className="ri-map-pin-line text-Primary text-xl"></i>
+                  //           </div>
+                  //           <div className="right-location-dropdown-section">
+                  //               <button type='button'>
+                  //                   <div className="top-section-location-select flex items-center gap-3">
+                  //                     <p className='text-LightBlack text-sm'>Location</p>
+                  //                     <i className="ri-arrow-down-s-line text-LightBlack"></i>
+                  //                   </div>
+                  //               </button>
+                  //           </div>
+                  //       </div>
+                  //     </div>
+                  //     <div className="col-span-2">
+                  //         <div className="cate-loc-search-btn h-full w-full">
+                  //           <button type="button" className='bg-Primary duration-300 hover:scale-95 rounded-full py-1 flex items-center w-full justify-center shadow-customized'>
+                  //             <i className="text-white text-lg ri-search-line"></i>
+                  //           </button>
+                  //         </div>
+                  //     </div>
+                  // </div>
                 )}
                 </div>
-                <div className="header-buttons-sections col-span-5">
+                <div className={`header-buttons-sections col-span-3`}>
                   <div className="flex items-center gap-8 justify-end">
+                    {location.pathname == "/" && (
                     <div className="notification-header-button rounded-full">
                       <button type='button' className=' bg-none w-10 h-10 flex items-center justify-center'>
                         <i className="bi bi-bell text-xl text-Primary"></i>
                       </button>
                     </div>
+                    )}
                     <div className={`language-selection-header relative duration-300 ${language ? 'rounded-xl rounded-b-none ' : 'rounded-[20px]'}`}>
                       <button type="button" className='flex items-center gap-1 h-10 px-3 ' onClick={handleLanguageSelect}>
                         <img src={LanSvg} className='max-w-[18px] min-w-[18px]' alt="" />

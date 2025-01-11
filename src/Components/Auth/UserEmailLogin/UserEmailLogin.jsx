@@ -6,14 +6,28 @@ import { userLoginEmailValidation } from '../../../utils/Validation';
 
 import EmailLogo from '../../../assets/images/email-icon.svg';
 import { useNavigate } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 
 const UserEmailLogin = () => {
 
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+
+    const [captchaVerified, setCaptchaVerified] = useState(false);
 
     const [passwordHandle , setPasswordHandle] = useState(false)
+
+
+    const handleCaptchaChange = (value) => {
+      if (value) {
+          setCaptchaVerified(true); // Enable the button if CAPTCHA is verified
+      } else {
+          setCaptchaVerified(false); // Disable the button if CAPTCHA is not verified
+      }
+  };
+
   
     const userLoginEmailValues = {
       email: '',
@@ -59,8 +73,16 @@ const UserEmailLogin = () => {
                             <button type="button" className='text-sm text-Secondary text-medium'>Forgot Passowrd ?</button>
                           </div>
                         </div>
-                        <div className="bottom-form-submitter mt-5  overflow-hidden relative group bg-Primary rounded-xl">
-                            <button type='button' onClick={handleSubmit} className='w-full py-3 px-4 text-white font-semibold text-lg '>Login</button>
+                        <div className="grid grid-cols-12 mt-5 gap-x-5">
+                          <div className="recaptcha-section col-span-7">
+                            <ReCAPTCHA
+                                sitekey="6LcKYLQqAAAAAH2215tISyvVMd7htpEaaKnXwVBZ"
+                                onChange={handleCaptchaChange}
+                            />
+                          </div>
+                          <div className="bottom-form-submitter col-span-5  overflow-hidden relative group bg-Primary rounded-xl">
+                            <button type='button' disabled={!captchaVerified} onClick={handleSubmit} className='w-full py-3 px-4 text-white font-semibold text-lg h-full '>Login</button>
+                          </div>
                         </div>
                     </Form>
                     )}
