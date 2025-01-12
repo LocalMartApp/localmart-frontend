@@ -49,6 +49,18 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allCategoryOpen , setAllCategoryOpen] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [searchSuggest , setSearchSuggest] = useState(false);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  
+
+  const placeholders = [
+    'Search for anything?',
+    'Search for restaurants',
+    'Search for people',
+    'Search for products'
+  ];
 
 
 
@@ -57,7 +69,7 @@ const Home = () => {
   useEffect(() => {
 
     setTimeout(() => {
-      openModal()
+      // openModal()
     }, 2000)
 
     const getUserLocation = async () => {
@@ -82,8 +94,13 @@ const Home = () => {
       }
     };
 
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % placeholders.length);
+    }, 2000);
+
     getUserLocation();
-    // openLoaderModal()
+
+    return () => clearInterval(interval);
 
   }, []);
 
@@ -260,6 +277,8 @@ const Home = () => {
     { value: 'Home Decors', label: 'Home Decors' },
   ]
 
+  
+
 
   
   const customStyles = {
@@ -429,14 +448,76 @@ const Home = () => {
           <section className="home-section-1">
             <div className="inner-home-section-1 bg-BlockBlack">
               <div className="container">
+                <div className="top-main-search-section-home sticky top-10 z-[9999]">
+                    <div className="search-grid-section-home-main">
+                      <div className="search-grid-container-main">
+                        <div className="grid grid-cols-10 justify-center gap-x-6">
+                          <div className="col-span-3">
+                            <div className="location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ">
+                              <div className="icon-section">
+                                <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
+                              </div>
+                              <div className="country-selection col-span-5">
+                                <Select options={cityOptions} 
+                                  placeholder='Choose Location'
+                                  styles={{
+                                      control: (baseStyles, state) => ({
+                                        ...baseStyles,
+                                        borderRadius: 10,
+                                        paddingLeft: 0,
+                                        paddingTop: 4,
+                                        paddingBottom: 4,
+                                        borderWidth: 0,
+                                        outlineWidth: 0,
+                                        borderColor: '#fff',
+                                        outlineColor: '#fff',
+                                        fontSize: 18,
+                                        minWidth: '100%',
+                                        // borderColor: state.isFocused ? 'grey' : 'red',
+                                        boxShadow: state.isFocused ? 'none' : 'none',
+                                        
+                                      }),
+                                    }}
+                                  value={citySelect}
+                                  onChange={(option) => setCitySelect(option)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-span-7">
+                            <div className={`big-search-section duration-500 bg-white p-[6px] h-70p relative ${searchSuggest ? 'rounded-t-30p rounded-b-0' : 'rounded-40p'}`}>
+                                <div className="grid grid-cols-10 h-full">
+                                  <div className="col-span-8">
+                                    <div className="main-search-input-section h-full relative">
+                                      <input type="text" onFocus={() => setSearchSuggest(true)} placeholder={placeholders[currentIndex]} name="" id=""  className='text-xl text-Black h-full max-h-[58px] font-medium pl-9 pr-5 w-full bg-transparent focus:outline-none focus:border-none outline-none border-none'/>\
+                                      {searchSuggest ? <button type="button" onClick={() => setSearchSuggest(false)} className='absolute top-1/2 right-10 text-xl search-clear-icon'><i className="ri-close-large-fill text-red-400"></i></button> : null}
+                                    </div>
+                                  </div>
+                                  <div className="col-span-2">
+                                    <div className="cate-loc-search-btn h-full w-full">
+                                      <button type="button"  onClick={handleSearchNav} className='bg-Primary duration-300 hover:scale-95 rounded-full h-full max-h-[58px] flex items-center w-full justify-center shadow-customized'>
+                                        <p className='text-white  font-medium'>Search</p>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] border-t border-BorderColor left-0 z-[9999999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'}`}>
+
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
                 <div className="top-slider-search-section">
-                  <div className="grid grid-cols-2 gap-16">
+                  <div className="grid grid-cols-2 gap-x-16 items-center">
                     <div className="left-home-section-1">
                       <div className="heading-section-1 flex flex-col gap-5">
                         <h1 className='text-white font-semibold text-50'>Find Everything <br /> You Need, Every Day!</h1>
                         <p className='text-white text-xl'>Looking for deals, services, or a place to <br /> buy and sell? We’ve got you covered.</p>
                       </div>
-                      <div className={`home-search-section-1 mt-14 `}>
+                      {/* <div className={`home-search-section-1 mt-14 `}>
                         <div className="inner-seacrh-section grid grid-cols-12 bg-white rounded-full p-3 pl-5 justify-between">
                             <div className="col-span-5">
                                 <div className="category-section flex items-center gap-2">
@@ -466,13 +547,6 @@ const Home = () => {
                                               value={citySelect}
                                               onChange={(option) => setCitySelect(option)}
                                           />
-                                          {/* <div className="top-section-category-select flex items-center gap-5">
-                                            <p className='text-LightBlack text-sm'>Category</p>
-                                            <i className="ri-arrow-down-s-line text-LightBlack"></i>
-                                          </div> */}
-                                          {/* <div className="bottom-section-category-select">
-                                            <p className='text-LightBlack text-lg'>Choose Category</p>
-                                          </div> */}
                                       </div>
                                   </div>
                                 </div>
@@ -499,41 +573,16 @@ const Home = () => {
                                                     outlineColor: '#fff',
                                                      fontSize: 14,
                                                     boxShadow: state.isFocused ? 'none' : 'none',
-                                                    // borderColor: state.isFocused ? 'grey' : 'red',
+
                                                   }),
                                                 }}
                                               value={categorySelect}
                                               onChange={(option) => setCategorySelect(option)}
                                           />
-                                          {/* <div className="top-section-category-select flex items-center gap-5">
-                                            <p className='text-LightBlack text-sm'>Category</p>
-                                            <i className="ri-arrow-down-s-line text-LightBlack"></i>
-                                          </div> */}
-                                          {/* <div className="bottom-section-category-select">
-                                            <p className='text-LightBlack text-lg'>Choose Category</p>
-                                          </div> */}
                                       </div>
                                   </div>
                                 </div>
                             </div>
-                            {/* <div className="col-span-4">
-                              <div className="location-section flex items-center gap-4">
-                                  <div className="left-location-logo-search">
-                                    <i className="ri-map-pin-line text-Primary text-2xl"></i>
-                                  </div>
-                                  <div className="right-location-dropdown-section">
-                                      <button type='button'>
-                                          <div className="top-section-location-select flex items-center gap-5">
-                                            <p className='text-LightBlack text-sm'>Location</p>
-                                            <i className="ri-arrow-down-s-line text-LightBlack"></i>
-                                          </div>
-                                          <div className="bottom-section-location-select">
-                                            <p className='text-LightBlack text-lg'>Select Location</p>
-                                          </div>
-                                      </button>
-                                  </div>
-                              </div>
-                            </div> */}
                             <div className="col-span-2">
                                 <div className="cate-loc-search-btn h-full w-full">
                                   <button type="button"  onClick={handleSearchNav} className='bg-Primary duration-300 hover:scale-95 rounded-full h-full flex items-center w-full justify-center shadow-customized'>
@@ -542,7 +591,7 @@ const Home = () => {
                                 </div>
                             </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     <div className="right-home-section-1">
                       <BannerSlider/>
