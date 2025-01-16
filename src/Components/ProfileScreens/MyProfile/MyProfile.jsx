@@ -4,8 +4,12 @@ import './MyProfile.scss';
 import ProfileSideBar from '../../../Shared/ProfileSideBar/ProfileSideBar';
 import ProfileImage from '../../../assets/images/profile-image.svg';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 
 const MyProfile = () => {
+
+  const navigate = useNavigate()
+
 
   const [modalIsOpen, setIsOpen] = useState(false);
 
@@ -78,7 +82,7 @@ const MyProfile = () => {
                 <h4 className='text-xl text-Black font-medium'>My Account</h4>
               </div>
               <div className="right-add-business-button">
-                <button type="button">
+                <button type="button" onClick={() => navigate('/business/add-business')}>
                   <div className="list-business-btn-inner flex items-center gap-3">
                     <div className="left-icon-list-business">
                       <i className="ri-shake-hands-line text-Secondary text-2xl"></i>

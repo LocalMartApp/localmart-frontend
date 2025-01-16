@@ -250,18 +250,18 @@ const Home = () => {
   ]
 
   const cityOptions = [
-    { value: 'Rajahmundry', label: 'Rajahmundry' },
-    { value: 'Kakinada', label: 'Kakinada' },
-    { value: 'Bheemavaram', label: 'Bheemavaram' },
-    { value: 'Banglore', label: 'Banglore' },
-    { value: 'Palakollu', label: 'Palakollu' },
-    { value: 'Amalapuram', label: 'Amalapuram' },
-    { value: 'Samalkot', label: 'Samalkot' },
-    { value: 'Peddapuram', label: 'Peddapuram' },
-    { value: 'Pithapuram', label: 'Pithapuram' },
-    { value: 'Vizag', label: 'Vizag' },
-    { value: 'Vizayawada', label: 'Vizayawada' },
-    { value: 'Tuni', label: 'Tuni' },
+      { value: 'Rajahmundry', label: 'Rajahmundry' },
+      { value: 'Kakinada', label: 'Kakinada' },
+      { value: 'Bheemavaram', label: 'Bheemavaram' },
+      { value: 'Banglore', label: 'Banglore' },
+      { value: 'Palakollu', label: 'Palakollu' },
+      { value: 'Amalapuram', label: 'Amalapuram' },
+      { value: 'Samalkot', label: 'Samalkot' },
+      { value: 'Peddapuram', label: 'Peddapuram' },
+      { value: 'Pithapuram', label: 'Pithapuram' },
+      { value: 'Vizag', label: 'Vizag' },
+      { value: 'Vizayawada', label: 'Vizayawada' },
+      { value: 'Tuni', label: 'Tuni' },
   ]
 
   const categoryOptions = [
@@ -313,7 +313,7 @@ const Home = () => {
         <div className="home-login-main-top-modal-section">
           <LoginModal isOpen={isModalOpen} closeModal={closeModal} />
         </div>
-        <div className={`top-fixed-header-section fixed left-0 w-full z-[99] shadow-customized duration-500 ${headerBar ? '-top-0 opacity-100' : '-top-full opacity-0'}`}>
+        <div className={`top-fixed-header-section fixed left-0 w-full z-[99] shadow-customized duration-500 ${headerBar ? '-top-0 opacity-100 hidden' : '-top-full opacity-0'}`}>
           <div className="inner-header-section bg-white py-5">
             <div className="container">
               <div className="grid grid-cols-12 items-center">
@@ -445,15 +445,16 @@ const Home = () => {
           </div>
         </div>
         <div className="inner-home-section">
-          <section className="home-section-1">
+          <section className="home-section-1 relative">
             <div className="inner-home-section-1 bg-BlockBlack">
               <div className="container">
-                <div className="top-main-search-section-home sticky top-10 z-[9999]">
+                <div className={`top-main-search-section-home duration-500 z-[9999] ${headerBar ? 'fixed top-0 w-full bg-BlockBlack left-0 py-6' : 'sticky pb-20'}`}>
+                <div className="inner-search-relative-section-home relative">
                     <div className="search-grid-section-home-main">
                       <div className="search-grid-container-main">
                         <div className="grid grid-cols-10 justify-center gap-x-6">
                           <div className="col-span-3">
-                            <div className="location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ">
+                            <div className={`location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
                               <div className="icon-section">
                                 <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
                               </div>
@@ -484,12 +485,12 @@ const Home = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="col-span-7">
+                          <div className={`col-span-7 ${headerBar ? 'shadow-xl' : ''}`}>
                             <div className={`big-search-section duration-500 bg-white p-[6px] h-70p relative ${searchSuggest ? 'rounded-t-30p rounded-b-0' : 'rounded-40p'}`}>
                                 <div className="grid grid-cols-10 h-full">
                                   <div className="col-span-8">
                                     <div className="main-search-input-section h-full relative">
-                                      <input type="text" onFocus={() => setSearchSuggest(true)} placeholder={placeholders[currentIndex]} name="" id=""  className='text-xl text-Black h-full max-h-[58px] font-medium pl-9 pr-5 w-full bg-transparent focus:outline-none focus:border-none outline-none border-none'/>\
+                                      <input type="text" onFocus={() => setSearchSuggest(true)} placeholder={placeholders[currentIndex]} name="" id=""  className='text-xl text-Black h-full max-h-[58px] font-medium pl-9 pr-5 w-full bg-transparent focus:outline-none focus:border-none outline-none border-none'/>
                                       {searchSuggest ? <button type="button" onClick={() => setSearchSuggest(false)} className='absolute top-1/2 right-10 text-xl search-clear-icon'><i className="ri-close-large-fill text-red-400"></i></button> : null}
                                     </div>
                                   </div>
@@ -501,12 +502,18 @@ const Home = () => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] border-t border-BorderColor left-0 z-[9999999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'}`}>
+                                <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] border-t border-BorderColor left-0 z-[9999999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'} ${headerBar ? 'border-[2px] border-t-[1px] border-BorderColor' : ''}`}>
 
                                 </div>
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                      <div className={`go-to-top-button-section absolute top-1/2 right-10 w-10 h-10 ${headerBar ? '' : 'hidden'}`} onClick={scrollToTop}>
+                          <button type="button" className='w-full bg-Secondary h-full rounded-full flex items-center justify-center'>
+                            <i className="ri-arrow-up-line text-lg text-white"></i>
+                          </button>
                       </div>
                     </div>
                 </div>
@@ -616,6 +623,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
+
             </div>
             <div className="inner-home-section-2">
               <div className="container">

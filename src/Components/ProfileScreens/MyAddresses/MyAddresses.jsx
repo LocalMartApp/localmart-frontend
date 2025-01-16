@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './MyAddresses.scss';
 import ProfileSideBar from '../../../Shared/ProfileSideBar/ProfileSideBar';
+import { useNavigate } from 'react-router-dom';
 
 const MyAddresses = () => {
+
+  const navigate = useNavigate()
 
   const addresses = [
     {
@@ -42,7 +45,7 @@ const MyAddresses = () => {
                 <h4 className='text-xl text-Black font-medium'>My Account</h4>
               </div>
               <div className="right-add-business-button">
-                <button type="button">
+                <button type="button" onClick={() => navigate('/business/add-business')}>
                   <div className="list-business-btn-inner flex items-center gap-3">
                     <div className="left-icon-list-business">
                       <i className="ri-shake-hands-line text-Secondary text-2xl"></i>

@@ -26,7 +26,8 @@ export default {
         AddressCard: '#F3F3F3',
         LightGrayBg: '#F4F4F4',
         StarGold: '#FFB730',
-        AmenitiesLightGray: '#EDEDED'
+        AmenitiesLightGray: '#EDEDED',
+        BusinessFormLabel: '#959595'
       },
       fontSize: {
         10: '10px',

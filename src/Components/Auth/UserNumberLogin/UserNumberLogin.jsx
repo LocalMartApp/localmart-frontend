@@ -5,6 +5,7 @@ import { Formik , Form , Field } from 'formik';
 import LeftLoginImage from '../../../assets/images/user-login-left.jpg';
 import { userLoginNumberValidation } from '../../../utils/Validation';
 import { useNavigate } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 
 
@@ -12,7 +13,18 @@ const UserNumberLogin = () => {
 
   const navigate = useNavigate()
 
-  const [passwordHandle , setPasswordHandle] = useState(false)
+  const [passwordHandle , setPasswordHandle] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  
+
+  const handleCaptchaChange = (value) => {
+    if (value) {
+      console.log(value)
+        setCaptchaVerified(true);
+    } else {
+        setCaptchaVerified(false);
+    }
+  };
 
   const userLoginNumberValues = {
     number: '',
@@ -58,8 +70,16 @@ const UserNumberLogin = () => {
                           <button type="button" className='text-sm text-Secondary text-medium'>Forgot Passowrd ?</button>
                         </div>
                       </div>
-                      <div className="bottom-form-submitter mt-5  overflow-hidden relative group bg-Primary rounded-xl">
-                          <button type='button' onClick={handleSubmit} className='w-full py-3 px-4 text-white font-semibold text-lg '>Login</button>
+                      <div className="grid grid-cols-12 mt-5 gap-x-5">
+                        <div className="recaptcha-section col-span-7">
+                          <ReCAPTCHA
+                              sitekey="6LeQ-7cqAAAAANpdsCQ1MFxudbS4-gS7sBVw8vIT"
+                              onChange={handleCaptchaChange}
+                          />
+                        </div>
+                        <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
+                          <button type='button' disabled={!captchaVerified} onClick={handleSubmit} className='w-full py-3 px-4 rounded-xl text-white font-semibold text-lg h-full bg-Primary disabled:bg-opacity-35 '>Login</button>
+                        </div>
                       </div>
                   </Form>
                   )}

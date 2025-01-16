@@ -30,6 +30,28 @@ export const userRegNumberValidation = yup.object().shape({
     mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
 })
 
+
+export const businessFormAddValidation = yup.object().shape({
+    userName: yup.string().required('Please Enter User Name'),
+    businessName: yup.string().required('Please Enter Business Name'),
+    businessTitle: yup.string().notRequired(),
+    mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
+    email: yup.string().email('Please Enter Valid Email').required('Email Address Required'),
+    socialMedia: yup.string().notRequired(),
+    completeAddress: yup.string().required('Please Enter Complete Address'),
+    landmark: yup.string().notRequired(),    
+    pincode: yup.string().required('Please Enter Pincode'),
+    yearlyTurnOver: yup.string().required('Please Enter  yearly turn over'),
+    noOfEmployees: yup.number().required('Please Enter Number of Employees').min(1 , "Minimum 1 Digit"),
+    yearOfEstablishment: yup.number().required('Please Enter Year of Establishment').min(1 , "Minimum 1 Digit"),
+    websiteAddress: yup.string().notRequired(), 
+    GSTNumber: yup.string().notRequired(),
+    itemName:  yup.string().notRequired(),
+    itemType:  yup.string().notRequired(),
+    itemPrice: yup.string().notRequired(),
+    
+})
+
 // export const signupschema = yup.object().shape({
 //   email: yup
 //     .string()

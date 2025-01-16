@@ -4,9 +4,12 @@ import './MyBusiness.scss';
 import ProfileSideBar from '../../../Shared/ProfileSideBar/ProfileSideBar';
 import BusinessImage from '../../../assets/images/business-card-image-1.jpg';
 import BusinessAddIcon from '../../../assets/images/business-add-icon.svg';
-
+import { useNavigate } from 'react-router-dom';
 
 const MyBusiness = () => {
+
+  const navigate = useNavigate()
+
   return (
     <div className="MyBusiness">
       <div className="my-profile-inner-section bg-ProfileScreensBg">
@@ -17,7 +20,7 @@ const MyBusiness = () => {
                   <h4 className='text-xl text-Black font-medium'>My Account</h4>
                 </div>
                 <div className="right-add-business-button">
-                  <button type="button">
+                  <button type="button" onClick={() => navigate('/business/add-business')}>
                     <div className="list-business-btn-inner flex items-center gap-3">
                       <div className="left-icon-list-business">
                         <i className="ri-shake-hands-line text-Secondary text-2xl"></i>

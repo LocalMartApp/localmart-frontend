@@ -4,8 +4,12 @@ import './Notifications.scss';
 import ProfileSideBar from '../../../Shared/ProfileSideBar/ProfileSideBar';
 import ProfileImage from '../../../assets/images/profile-image.svg';
 import BusinessImage from '../../../assets/images/business-publish-image.svg';
+import { useNavigate } from 'react-router-dom';
 
 const Notifications = () => {
+
+  const navigate = useNavigate()
+
   return (
     <div className="Notifications">
       <div className="my-profile-inner-section bg-ProfileScreensBg">
@@ -16,7 +20,7 @@ const Notifications = () => {
                 <h4 className='text-xl text-Black font-medium'>My Account</h4>
               </div>
               <div className="right-add-business-button">
-                <button type="button">
+                <button type="button" onClick={() => navigate('/business/add-business')}>
                   <div className="list-business-btn-inner flex items-center gap-3">
                     <div className="left-icon-list-business">
                       <i className="ri-shake-hands-line text-Secondary text-2xl"></i>

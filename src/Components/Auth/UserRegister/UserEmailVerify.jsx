@@ -5,13 +5,26 @@ import { Formik , Form , Field } from 'formik';
 import OTPInput from 'otp-input-react';
 import { ResendOTP } from "otp-input-react";
 import { useNavigate } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const UserEmailVerify = () => {
 
     const navigate = useNavigate()
 
     const [otpValue , setOtpValue] = useState('');
-    const [otpVisible , setOtpVisible] = useState(false)
+    const [otpVisible , setOtpVisible] = useState(false);
+    const [captchaVerified, setCaptchaVerified] = useState(false);
+    
+
+    const handleCaptchaChange = (value) => {
+    if (value) {
+        console.log(value)
+        setCaptchaVerified(true);
+    } else {
+        setCaptchaVerified(false);
+    }
+    };
+    
 
     const userEmailRegVlues = {
         email: '',
@@ -66,8 +79,16 @@ const UserEmailVerify = () => {
                                 <img src={EmailLogo} className='max-w-[22px]' alt="" />
                             </div>
                         </div>
-                        <div className="bottom-form-submitter mt-5  overflow-hidden relative group bg-Primary rounded-xl">
-                            <button type='button' onClick={handleSubmit} className='w-full py-3 px-4 text-white font-semibold text-lg '>Send OTP</button>
+                        <div className="grid grid-cols-12 mt-5 gap-x-5">
+                            <div className="recaptcha-section col-span-7">
+                                <ReCAPTCHA
+                                    sitekey="6LeQ-7cqAAAAANpdsCQ1MFxudbS4-gS7sBVw8vIT"
+                                    onChange={handleCaptchaChange}
+                                />
+                            </div>
+                            <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
+                                <button type='button' disabled={!captchaVerified} onClick={handleSubmit} className='w-full py-3 px-4 rounded-xl text-white font-semibold text-lg h-full bg-Primary disabled:bg-opacity-35 '>Login</button>
+                            </div>
                         </div>
                     </Form>
                     )}

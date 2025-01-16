@@ -47,11 +47,11 @@ const ProfileSideBar = () => {
       link: '/feedback',
       button: false,
     },
-    {
-      title: 'Help',
-      link: '/help',
-      button: false,
-    },
+    // {
+    //   title: 'Help',
+    //   link: '/help',
+    //   button: false,
+    // },
     {
       title: 'Log Out',
       link: '/',

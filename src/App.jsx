@@ -14,6 +14,7 @@ import UserRegister from './Components/Auth/UserRegister/UserRegister'
 import CompleteRegistration from './Components/Auth/UserRegister/CompleteRegistration'
 import SearchPage from './Components/SearchPage/SearchPage'
 import SearchDetails from './Components/SearchPage/SearchDetails'
+import BusinessFormAdding from './Components/BusinessFormAdding/BusinessFormAdding'
 
 
 
@@ -39,6 +40,7 @@ function App() {
         <Route exact={true} Component={CompleteRegistration} path='/register-details' />
         <Route exact={true} Component={SearchPage} path='/search' />
         <Route exact={true} Component={SearchDetails} path='/search/complete-details/:id'/>
+        <Route exact={true} Component={BusinessFormAdding} path='/business/add-business' />
       </Routes>
       <Footer/>
      </Router>
