@@ -49,6 +49,11 @@ export const businessFormAddValidation = yup.object().shape({
     itemName:  yup.string().notRequired(),
     itemType:  yup.string().notRequired(),
     itemPrice: yup.string().notRequired(),
+    workingHours:   yup.string().required('Please select this field'),    
+    servicesOffer:  yup.string().required('Please select this field'),
+    businessCategory: yup.string().required('Please select this field'),
+    businessState: yup.string().required('Please select this field'),
+    businessCity: yup.string().required('Please select this field'),
     
 })
 

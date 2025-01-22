@@ -503,7 +503,9 @@ const Home = () => {
                                   </div>
                                 </div>
                                 <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] border-t border-BorderColor left-0 z-[9999999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'} ${headerBar ? 'border-[2px] border-t-[1px] border-BorderColor' : ''}`}>
-
+                                    <div className="inner-searched-results-section">
+                                      
+                                    </div>
                                 </div>
                             </div>
                           </div>

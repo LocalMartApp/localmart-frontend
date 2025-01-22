@@ -19,7 +19,8 @@ const Header = () => {
   const [language , setLanguage] = useState(false);
   const [languageSelector , setLanguageSelector] = useState('EN');
   const [categorySelect , setCategorySelect] = useState();
-  const [citySelect ,  setCitySelect] = useState()
+  const [citySelect ,  setCitySelect] = useState();
+  const [notificationToggle , setNotificationToggle] = useState(false)
 
   const handleLanguageSelect = () => {
     setLanguage(!language)
@@ -46,21 +47,15 @@ const Header = () => {
                       <img src={Logo} className='max-h-[50px] w-auto' alt="" />
                     </button>
                 </div>
-                <div className="header-search-section col-span-3">
+                <div className="header-search-section col-span-3 ">
                 {location.pathname !== "/" && (
-                    <div className="inner-seacrh-section grid grid-cols-12  bg-white border-BorderColor border  rounded-full py-1 pr-1 pl-4 justify-between">
+                  <div className="inner-seacrh-section hidden grid-cols-12  bg-white border-BorderColor border  rounded-full py-1 pr-1 pl-4 justify-between">
                       <div className="col-span-5">
                           <div className="category-section flex items-center gap-2">
                             <div className="left-category-logo-search w-[10%]">
                               <i className=" ri-map-pin-line text-Primary text-xl"></i>
                             </div>
                             <div className="right-category-dropdown-section w-[80%]">
-                                {/* <button type='button'>
-                                    <div className="top-section-category-select flex items-center gap-3">
-                                      <p className='text-LightBlack text-sm'>Category</p>
-                                      <i className="ri-arrow-down-s-line text-LightBlack"></i>
-                                    </div>
-                                </button> */}
                                 <Select options={options} 
                                     placeholder='City'
                                     styles={{
@@ -87,12 +82,6 @@ const Header = () => {
                               <i className="ri-file-list-3-line text-Primary text-xl"></i>
                             </div>
                             <div className="right-location-dropdown-section w-[80%]">
-                                {/* <button type='button'>
-                                    <div className="top-section-location-select flex items-center gap-3">
-                                      <p className='text-LightBlack text-sm'>Location</p>
-                                      <i className="ri-arrow-down-s-line text-LightBlack"></i>
-                                    </div>
-                                </button> */}
                                   <Select options={options} 
                                     placeholder='Category'
                                     styles={{
@@ -106,7 +95,6 @@ const Header = () => {
                                           outlineWidth: 0,
                                           borderColor: '#fff',
                                           outlineColor: '#fff',
-                                          // borderColor: state.isFocused ? 'grey' : 'red',
                                           boxShadow: state.isFocused ? 'none' : 'none',
                                         }),
                                       }}
@@ -123,54 +111,28 @@ const Header = () => {
                           </div>
                       </div>
                   </div>
-                  // <div className="inner-seacrh-section grid grid-cols-12 items-center bg-white border-BorderColor border  rounded-full py-1 pr-1 pl-4 justify-between">
-                  //     <div className="col-span-5">
-                  //         <div className="category-section flex items-center gap-4">
-                  //           <div className="left-category-logo-search">
-                  //             <i className="ri-file-list-3-line text-Primary text-xl"></i>
-                  //           </div>
-                  //           <div className="right-category-dropdown-section">
-                  //               <button type='button'>
-                  //                   <div className="top-section-category-select flex items-center gap-3">
-                  //                     <p className='text-LightBlack text-sm'>Category</p>
-                  //                     <i className="ri-arrow-down-s-line text-LightBlack"></i>
-                  //                   </div>
-                  //               </button>
-                  //           </div>
-                  //         </div>
-                  //     </div>
-                  //     <div className="col-span-5">
-                  //       <div className="location-section flex items-center gap-4">
-                  //           <div className="left-location-logo-search">
-                  //             <i className="ri-map-pin-line text-Primary text-xl"></i>
-                  //           </div>
-                  //           <div className="right-location-dropdown-section">
-                  //               <button type='button'>
-                  //                   <div className="top-section-location-select flex items-center gap-3">
-                  //                     <p className='text-LightBlack text-sm'>Location</p>
-                  //                     <i className="ri-arrow-down-s-line text-LightBlack"></i>
-                  //                   </div>
-                  //               </button>
-                  //           </div>
-                  //       </div>
-                  //     </div>
-                  //     <div className="col-span-2">
-                  //         <div className="cate-loc-search-btn h-full w-full">
-                  //           <button type="button" className='bg-Primary duration-300 hover:scale-95 rounded-full py-1 flex items-center w-full justify-center shadow-customized'>
-                  //             <i className="text-white text-lg ri-search-line"></i>
-                  //           </button>
-                  //         </div>
-                  //     </div>
-                  // </div>
                 )}
                 </div>
                 <div className={`header-buttons-sections col-span-3`}>
                   <div className="flex items-center gap-8 justify-end">
                     {location.pathname == "/" && (
-                    <div className="notification-header-button rounded-full">
-                      <button type='button' className=' bg-none w-10 h-10 flex items-center justify-center'>
+                    <div className="notification-header-button rounded-full relative">
+                      <button type='button' className=' bg-none w-10 h-10 flex items-center justify-center' onClick={() => setNotificationToggle(!notificationToggle)}>
                         <i className="bi bi-bell text-xl text-Primary"></i>
                       </button>
+                      <div className={`notifications-main-absolute-section shadow-xl z-10 rounded-xl border border-BorderColor absolute p-5 bg-white top-[50px] right-0 w-[380px] duration-300 ${notificationToggle ? 'visible translate-y-0 opacity-100' : 'invisible translate-y-6 opacity-0'}`}>
+                        <div className="inner-notifications-section-flexer flex items-center flex-col gap-y-4">
+                          <div className="inner-notifications-single flex gap-x-5">
+                            <div className="left-notifi-title-head">
+                              <h4 className='text-Black font-medium text-lg'>Profile Created</h4>
+                              <p className='text-sm'>Your profile has been cretaed successfully</p>
+                            </div>
+                            <div className="right-notifi-time-stamp-sec">
+                              <p className='text-xs text-Black opacity-50 italic'>30/01/2025</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     )}
                     <div className={`language-selection-header relative duration-300 ${language ? 'rounded-xl rounded-b-none ' : 'rounded-[20px]'}`}>

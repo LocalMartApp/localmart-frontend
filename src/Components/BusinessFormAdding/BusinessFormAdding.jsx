@@ -24,13 +24,17 @@ const BusinessFormAdding = () => {
   const [businessPhotos , setBusinessPhotos] = useState([]);
   const [foodItemsArray , setFoodItemsArray] = useState([])
 
-  console.log('file' , busCateSelect)
 
   const businessAddValues = {
       userName: '',
       businessName: '',
+      businessState: '',
+      businessCity: '',
       businessTitle: '',
+      businessCategory: '',
       mobileNumber: '',
+      workingHours: '',
+      servicesOffer: '',
       email: '',
       socialMedia: '',
       completeAddress: '',
@@ -74,6 +78,20 @@ const BusinessFormAdding = () => {
     { value: 'Music', label: 'Music' },
     { value: 'Air Condition', label: 'Air Condition' },
     { value: 'Entertainement', label: 'Entertainement' },
+  ]
+
+
+  const workingHours = [
+    { value: '10:00 AM - 6:00 PM 8Hrs', label: '10:00 AM - 6:00 PM 8Hrs' },
+    { value: '09:00 AM - 6:00 PM 9Hrs', label: '09:00 AM - 6:00 PM 9Hrs' },
+    { value: '10:00 AM - 10:00 PM 12Hrs', label: '10:00 AM - 10:00 PM 12Hrs' },
+  ]
+
+
+  const servicesOffered = [
+    { value: 'B2B (Business-to-Business)', label: 'B2B (Business-to-Business)' },
+    { value: 'B2C (Business-to-Consumer)', label: 'B2C (Business-to-Consumer)' },
+    { value: 'Both', label: 'Both' },
   ]
 
   const busCateOptions = [
@@ -217,9 +235,9 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Social Media Links(optional)</p>
                                 </div>
-                                <Field type="text" name="socialMedia" placeholder='Enter Business Name*'
+                                <Field type="text" name="socialMedia" placeholder='Enter Social Media Link'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
-                                />                                
+                                />
                               </div>
                             </div>
                           </div>
@@ -234,6 +252,7 @@ const BusinessFormAdding = () => {
                                 </div>
                                 <Select options={stateOptions} 
                                   placeholder='Choose State'
+                                  name='businessState'
                                   styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -243,7 +262,7 @@ const BusinessFormAdding = () => {
                                         paddingBottom: 4,
                                         borderWidth: 1,
                                         outlineWidth: 0,
-                                        borderColor: '#B3B3B3',
+                                        borderColor: errors.businessState ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
                                         minWidth: '100%',
                                         height: 50,
@@ -252,8 +271,9 @@ const BusinessFormAdding = () => {
                                         
                                       }),
                                     }}
-                                  value={stateSelect}
-                                  onChange={(option) => setStateSelect(option)}
+                                  value={stateOptions.find(option => option.value === values.businessState)} 
+                                  onChange={(option) => setFieldValue('businessState', option ? option.value : '')}
+                                  
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-6">
@@ -262,6 +282,7 @@ const BusinessFormAdding = () => {
                                 </div>
                                 <Select options={cityOptions} 
                                   placeholder='Choose City'
+                                  name='businessCity'
                                   styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -271,7 +292,7 @@ const BusinessFormAdding = () => {
                                         paddingBottom: 4,
                                         borderWidth: 1,
                                         outlineWidth: 0,
-                                        borderColor: '#B3B3B3',
+                                        borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
                                         minWidth: '100%',
                                         height: 50,
@@ -280,8 +301,8 @@ const BusinessFormAdding = () => {
                                         
                                       }),
                                     }}
-                                  value={citySelect}
-                                  onChange={(option) => setCitySelect(option)}
+                                  value={cityOptions.find(option => option.value === values.businessCity)} 
+                                  onChange={(option) => setFieldValue('businessCity', option ? option.value : '')}
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-12">
@@ -321,6 +342,7 @@ const BusinessFormAdding = () => {
                                 </div>
                                 <Select options={busCateOptions} 
                                   placeholder='Select Business Category'
+                                  name='businessCategory'
                                   styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -330,7 +352,7 @@ const BusinessFormAdding = () => {
                                         paddingBottom: 4,
                                         borderWidth: 1,
                                         outlineWidth: 0,
-                                        borderColor: '#B3B3B3',
+                                        borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
                                         minWidth: '100%',
                                         height: 50,
@@ -339,8 +361,8 @@ const BusinessFormAdding = () => {
                                         
                                       }),
                                     }}
-                                  value={busCateSelect}
-                                  onChange={(option) => setBusCateSelect(option)}
+                                  value={busCateOptions.find(option => option.value === values.businessCategory)} 
+                                  onChange={(option) => setFieldValue('businessCategory', option ? option.value : '')}
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-6">
@@ -431,6 +453,61 @@ const BusinessFormAdding = () => {
                                   onChange={(option) => setMultiAmenities(option)}
                                 />                               
                               </div>
+                              <div className="form-inputsec relative col-span-6">
+                                <div className="label-section mb-1">
+                                  <p className='text-BusinessFormLabel'>Working Hours*</p>
+                                </div>
+                                <Select options={workingHours} 
+                                  placeholder='Select Working Hours'
+                                  name='workingHours'
+                                  styles={{
+                                      control: (baseStyles, state) => ({
+                                        ...baseStyles,
+                                        borderRadius: 10,
+                                        paddingLeft: 8,
+                                        paddingTop: 4,
+                                        paddingBottom: 4,
+                                        borderWidth: 1,
+                                        outlineWidth: 0,
+                                        borderColor: errors.workingHours ? '#FF4E4E' : '#B3B3B3',
+                                        fontSize: 16,
+                                        minWidth: '100%',
+                                        minHeight: 50,
+                                        // borderColor: state.isFocused ? 'grey' : 'red',
+                                        boxShadow: state.isFocused ? 'none' : 'none',
+                                      }),
+                                    }}
+                                  value={workingHours.find(option => option.value === values.workingHours)} 
+                                  onChange={(option) => setFieldValue('workingHours', option ? option.value : '')}
+                                />                               
+                              </div>
+                              <div className="form-inputsec relative col-span-6">
+                                <div className="label-section mb-1">
+                                  <p className='text-BusinessFormLabel'>Services Offered*</p>
+                                </div>
+                                <Select options={servicesOffered} 
+                                  placeholder='Select Services Offered'
+                                  styles={{
+                                      control: (baseStyles, state) => ({
+                                        ...baseStyles,
+                                        borderRadius: 10,
+                                        paddingLeft: 8,
+                                        paddingTop: 4,
+                                        paddingBottom: 4,
+                                        borderWidth: 1,
+                                        outlineWidth: 0,
+                                        borderColor: errors.servicesOffer ? '#FF4E4E' : '#B3B3B3',
+                                        fontSize: 16,
+                                        minWidth: '100%',
+                                        minHeight: 50,
+                                        // borderColor: state.isFocused ? 'grey' : 'red',
+                                        boxShadow: state.isFocused ? 'none' : 'none',
+                                      }),
+                                    }}
+                                  value={servicesOffered.find(option => option.value === values.servicesOffer)} 
+                                  onChange={(option) => setFieldValue('servicesOffer', option ? option.value : '')}
+                                />                               
+                              </div>
                             </div>
                           </div>
                           <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
@@ -472,7 +549,7 @@ const BusinessFormAdding = () => {
                                     <div className="label-section mb-1">
                                       <p className='text-BusinessFormLabel'>Item Name*</p>
                                     </div>
-                                    <Field type="text" name="itemName" placeholder='Enter Item Name'
+                                    <Field type="text" name="itemName" placeholder='Enter Item Name' onChange={(e) => setFieldValue('itemName' , e.target.value)}
                                         className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.itemName && touched.itemName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                     />                                
                                   </div>
@@ -506,12 +583,12 @@ const BusinessFormAdding = () => {
                                     <div className="label-section mb-1">
                                       <p className='text-BusinessFormLabel'>Item Price*</p>
                                     </div>
-                                    <Field type="number" name="itemPrice" placeholder='Enter Item Price Per Person*'
+                                    <Field type="number" name="itemPrice" placeholder='Enter Item Price Per Person*' onChange={(e) => setFieldValue('itemPrice' , e.target.value)}
                                         className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
                                     />                                
                                   </div>
                                   <div className="items-add-btn-sec col-span-2">
-                                    <button type="button" className='py-3 px-6 rounded-lg bg-Secondary text-white font-semibold w-full' onClick={() => addFoodItem(values)}>Add Item</button>
+                                    <button type="button" disabled={!values.itemName || !values.itemPrice || !values.itemType } className='py-3 px-6 rounded-lg bg-Secondary text-white font-semibold w-full disabled:bg-opacity-40' onClick={() => addFoodItem(values)}>Add Item</button>
                                   </div>
                                 </div>
                                 <div className={`items-cards-looped-sec-business-form grid grid-cols-12 gap-4 ${foodItemsArray.length == 0 ? 'mt-0' : 'mt-5'}`}>
