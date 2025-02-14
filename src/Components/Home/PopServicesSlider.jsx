@@ -86,6 +86,30 @@ const PopServicesSlider = () => {
                         delay: 2500,
                         disableOnInteraction: false
                     }}
+                    breakpoints={{
+                        2000: {
+                            slidesPerView: 4,
+                            
+                        },
+                        1700 : {
+                            slidesPerView: 4
+                        },
+                        1200: {
+                            slidesPerView: 4
+                        },
+                        992: {
+                            slidesPerView: 3
+                        },
+                        674: {
+                            slidesPerView: 2
+                        },
+                        375: {
+                            slidesPerView: 1,
+                        },
+                        75: {
+                            slidesPerView: 1
+                        }
+                    }}
                     modules={[ Autoplay , Navigation]}
                 >
                     {popularServices.map((items , index) => {

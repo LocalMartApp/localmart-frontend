@@ -104,3 +104,82 @@ button {
         transform: scale(1) translate(0% , -50%) !important;
     }
 }
+
+
+.app-select-home-right-sliding-buttons {
+    transform: translate(-0% , -50%);
+}
+
+
+// Responsove Styles
+@media only screen and (max-width: 991.90px) {
+    .home-section-1 {
+        .search-grid-container-main {
+            padding: 0px 30px;
+        }
+        .top-slider-search-section {
+            .top-slider-grid-sec {
+                row-gap: 50px !important;
+            }
+            .left-home-section-1 {
+                grid-column: span 2 / span 2
+            }
+            .right-home-section-1 {
+                grid-column: span 2 / span 2
+            }
+        }
+    }
+
+    .home-section-2 {
+        .single-recharge-component-home-sec-2 {
+            grid-column: span 2 / span 2
+        }
+        .home-sec-2-recharges-sec {
+            .bills-left-heading {
+                flex-direction: column;
+                align-items: baseline;
+            }
+        }
+    }
+    .home-section-5 {
+        .bottom-all-categories-section {
+            .home-categories-grid-section {
+                grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+            }
+        }
+    }
+}
+
+
+
+
+@media only screen and (max-width: 674px) {
+    .home-section-2 {
+        .recharges-grid-section {
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 30px;
+        }
+        .single-recharge-component-home-sec-2 {
+            grid-column: span 4 / span 4
+        }
+    }
+
+}
+
+
+@media only screen and (max-width: 574px) {
+    .home-section-2 {
+        .below-recharges-section-home-2 {
+            padding: 20px !important;
+        }
+        .recharges-grid-section {
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 40px 10px;
+        }
+        .single-recharge-component-home-sec-2 {
+            grid-column: span 6 / span 6 ;
+            justify-content: start !important;
+        }
+    }
+
+}

@@ -1,35 +1,89 @@
-import React , {useState} from 'react'
-import { useNavigate } from 'react-router-dom'
+import React , {useState , useEffect} from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import LeftRegisterImage from '../../../assets/images/register-left-image-big.jpg';
 import { Formik, Form, Field } from 'formik';
 import EmailLogo from '../../../assets/images/email-icon.svg';
-import { userRegEmailValidation } from '../../../utils/Validation';
-import DatePicker from "react-datepicker";
+import DobLogo  from '../../../assets/images/dob-icon.svg'
+import { completeUserRegValidation } from '../../../utils/Validation';
+// import DatePicker from "react-datepicker";
 import Select from 'react-select';
 
 import "react-datepicker/dist/react-datepicker.css";
+import authServices from '../../Services/auth-services.jsx';
+import axios from 'axios';
+import { config } from '../../../env-services';
+import toast from 'react-hot-toast';
+import Modal from 'react-modal';
+import Loader from '../../../utils/Loader/Loader.jsx';
+
+
 
 
 const CompleteRegistration = () => {
 
+    
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [passwordHandle , setPasswordHandle] = useState(false);
     const [date, setDate] = useState(new Date());
     const [addressType , setAddressType] = useState('home');
+    const [otherAddressType , setOtherAddressType] = useState();
     const [selectedValue , setSelectedValue] = useState();
+    const [stateOptions1 , setStateOptions1] = useState([]);
+    const [cityOptions1 , setCityOptions1] = useState([]);
+    const [pincodeOptions1 , setPincodeOptions1] = useState([]);
+    const [modalIsOpen ,  setModalIsOpen] = useState(false)
+
+    const receivedMail = location.state?.readEmail || '';
+    const receivedToken = location.state?.token || '';
+
+
+    console.log(receivedToken , "token")
+
 
     const lowerCaseConverter = (e) => {
         const lowercase = e.target.value.toLowerCase();
-        setAddressType(lowercase)
+        setAddressType(lowercase);
+        setOtherAddressType(e.target.value);
     }
 
 
-    const options = [
-        { value: 'chocolate', label: 'Chocolate' },
-        { value: 'strawberry', label: 'Strawberry' },
-        { value: 'vanilla', label: 'Vanilla' }
-      ]
-      
+    const customStyles = {
+        content: {
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)',
+          width: '600px',
+          borderRadius: 18,
+          paddingLeft: 40
+        },
+    };
+
+
+
+    useEffect(() => {
+        getStates()
+    }, [])
+
+
+    const stateOptions = [
+        { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
+        { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
+        { value: 'Telangana', label: 'Telangana' },
+        { value: 'Amaravathi', label: 'Amaravathi' }
+    ]
+
+    const cityOptions = [
+        { value: 'Kakinada', label: 'Kakinada' },
+        { value: 'Rajahmundry', label: 'Rajahmundry' },
+        { value: 'Vizag', label: 'Vizag' },
+        { value: 'Vijayawada', label: 'Vijayawada' }
+    ]
+         
 
     const handleDateChange = (value) => {
         console.log(value)
@@ -48,10 +102,129 @@ const CompleteRegistration = () => {
     ]
     
 
+    const completeRegValues = {
+        firstName: '',
+        lastName: '',
+        email: receivedMail ? receivedMail : '',
+        mobileNumber: '',
+        password: '',
+        birthDate: '',
+        address: '',
+        state: '',
+        city: '',
+        pincode: '',
+    }
+
+
+
+
+
+
+    const getStates = async() => {
+       await axios.get(config.api + 'locations/countries/678da88c9c4467c6aa4eeb86/states')
+       .then((response) => {
+        if (response?.data?.data) {
+            const formattedStates = response.data.data.map(item => ({
+                value: item._id, 
+                label: item.name ,
+            }));
+            
+            setStateOptions1(formattedStates);
+        }
+       })
+    }
+
+
+    const getCities = async(id) => {
+        console.log(id)
+        await axios.get(config.api + `locations/states/${id}/cities`)
+       .then((response) => {
+        if (response?.data?.data) {
+            const formattedCities = response.data.data.map(item => ({
+                value: item._id, 
+                label: item.name ,
+            }));
+            setCityOptions1(formattedCities);
+        }
+       })
+    }
+
+    const getPincodes = async(id) => {
+        console.log(id)
+        await axios.get(config.api + `locations/cities/${id}/pincodes`)
+       .then((response) => {
+        if (response?.data?.data) {
+            const formattedCities = response.data.data.map(item => ({
+                value: item._id, 
+                label: item.code ,
+            }));
+            setPincodeOptions1(formattedCities);
+        }
+       })
+    }
+
+
+    const handleUserRegistration = async(data) => {
+
+        const obj = {
+            firstName :  data.firstName,
+            lastName :  data.lastName,
+            email :  data.email,
+            mobileNumber :  data.mobileNumber,
+            password :  data.password,
+            dateOfBirth : data.birthDate,
+            countryId :  "678da88c9c4467c6aa4eeb86",
+            stateId :  data.state,
+            cityId :  data.city,
+            pincodeId :  data.pincode,
+            addressType :  addressType == 'home' ? 'Home' : addressType == 'work' ? 'Work' : addressType == 'hostel' ? 'Hostel' : 'Home',
+            customAddressType : otherAddressType,
+            description :  data.address
+        }
+
+        setModalIsOpen(true)
+
+        try {
+            await axios.post(`${config.api}auth/completeUserProfile` , obj , {
+                headers : {
+                    Authorization: `Bearer ${receivedToken}`, 
+                    "Content-Type": "application/json"
+                }
+            })
+            .then((response) => {
+              if(response) {
+                  toast.success('Account Registered Successfully');
+                //   console.log(response , 'userreg-res');
+                  navigate('/login')
+                  setModalIsOpen(false)
+              }
+            })
+            .catch((err) => {
+              setModalIsOpen(false)
+              toast.error(err?.response?.data?.message);
+            //   console.log(err , 'error')
+            });
+          } catch (error) {
+            setModalIsOpen(false)
+            // console.log(error)
+          }
+    }
+
+
+
+    
+
 
 
   return (
     <div className='complete-registration-main-section'>
+        <Modal
+            isOpen={modalIsOpen}
+            style={customStyles}
+            contentLabel="Example Modal"
+        >
+            <Loader/>
+        </Modal>
         <div className="UserRegister">
             <div className="userlogin-main-section bg-ProfileScreensBg py-20">
                 <div className="container">
@@ -71,16 +244,16 @@ const CompleteRegistration = () => {
                                     <div className="complete-det-registerform-section">
                                         <div className="inner-registration-form-grid-outer-section">
                                             <Formik
-                                                validationSchema={userRegEmailValidation}
-                                                initialValues={userRegEmailValidation}
-                                                onSubmit={(values) => handleEmailRegister(values)}
+                                                validationSchema={completeUserRegValidation}
+                                                initialValues={completeRegValues}
+                                                onSubmit={(values) => handleUserRegistration(values)}
                                             >
-                                                {({  errors, touched , handleSubmit}) => (
+                                                {({  errors, touched , handleSubmit , values , setFieldValue}) => (
                                                 <Form>
                                                     <div className="inner-grid-section grid grid-cols-12 gap-[18px]">
                                                         <div className="form-inputsec relative col-span-6">
                                                             <Field type="text" name="firstName" placeholder='Enter First Name*'
-                                                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.firstName && touched.firstName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                                             />                                
                                                             <div className="email-input-icon pr-4 border-r border-r-BorderColor absolute left-4 top-1/2 h-full flex items-center">
                                                                 <i className="ri-user-line text-xl"></i>
@@ -88,14 +261,14 @@ const CompleteRegistration = () => {
                                                         </div>
                                                         <div className="form-inputsec relative col-span-6">
                                                             <Field type="text" name="lastName" placeholder='Enter Last Name*'
-                                                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.lastName && touched.lastName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                                             />                                
                                                             <div className="email-input-icon pr-4 border-r border-r-BorderColor absolute left-4 top-1/2 h-full flex items-center">
                                                                 <i className="ri-user-line text-xl"></i>
                                                             </div>
                                                         </div>
                                                         <div className="form-inputsec relative col-span-6">
-                                                            <Field type="email" name="email" placeholder='Enter Email Address*'
+                                                            <Field type="email" name="email" placeholder='Enter Email Address*' value={receivedMail} disabled={receivedMail ? true : false}
                                                                 className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                                             />                                 
                                                             <div className="email-input-icon pr-4 border-r border-r-BorderColor absolute left-4 top-1/2 h-full flex items-center">
@@ -104,7 +277,7 @@ const CompleteRegistration = () => {
                                                         </div>
                                                         <div className="form-inputsec relative col-span-6">
                                                             <Field type="number" name="mobileNumber" placeholder='Enter Mobiile Number*'
-                                                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.mobileNumber && touched.mobileNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                                             />                                
                                                             <div className="email-input-icon pr-3 border-r border-r-BorderColor absolute left-4 top-1/2 h-full flex items-center">
                                                                 <p className='text-Black font-medium'>+91</p>
@@ -121,6 +294,28 @@ const CompleteRegistration = () => {
                                                                 <i className={`${passwordHandle ? 'ri-eye-off-line' : 'ri-eye-line'} text-xl text-LightText`}></i>
                                                             </button>
                                                         </div>
+                                                        <div className="form-inputsec relative col-span-6">
+                                                            <Field name="birthDate">
+                                                                {({ field, form }) => (
+                                                                    <input
+                                                                        {...field}
+                                                                        type="date"
+                                                                        onFocus={(e) => (e.target.type = "date")}
+                                                                        onBlur={(e) => {
+                                                                            if (!e.target.value) e.target.type = "text";
+                                                                        }}
+                                                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.birthDate && touched.birthDate ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                                                        placeholder="Select Birthdate"
+                                                                    />
+                                                                )}
+                                                            </Field>
+                                                            {/* <Field type="date" name="birthDate" placeholder='Enter BirthDate*'
+                                                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                                            />                                  */}
+                                                            <div className="email-input-icon pr-4 border-r border-r-BorderColor absolute left-4 top-1/2 h-full flex items-center">
+                                                                <img src={DobLogo} className='max-w-[18px]' alt="" />
+                                                            </div>
+                                                        </div>
                                                         {/* <DatePicker
                                                             selected={date}
                                                             onChange={handleDateChange} 
@@ -128,7 +323,7 @@ const CompleteRegistration = () => {
                                                         <div className="text-area-address-section col-span-7">
                                                             <div className="form-inputsec relative h-full">   
                                                                 <Field as="textarea" name="address" placeholder='Enter Complete Address*'
-                                                                    className={`outline-none border h-full resize-none focus:border-Secondary focus:bg-LightBlue duration-300 px-20p py-4 rounded-xl bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                                                    className={`outline-none border h-full resize-none focus:border-Secondary focus:bg-LightBlue duration-300 px-20p py-4 rounded-xl bg-white w-full text-Black  ${errors.address && touched.address ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                                                 />                                                     
                                                             </div>
                                                         </div>
@@ -146,14 +341,14 @@ const CompleteRegistration = () => {
                                                                 </div>
                                                                 <div className="address-type-input-other">
                                                                     <input type="text" placeholder='Others ? Please Enter' 
-                                                                    onKeyUp={(e) => lowerCaseConverter(e)}
+                                                                    onKeyUp={(e) => {lowerCaseConverter(e)}}
                                                                         className={`outline-none border focus:border-Secondary placeholder:text-Black focus:bg-LightBlue duration-300 py-10p px-4 rounded-xl bg-white w-full text-Black lowercase`} 
                                                                     />                                
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div className="form-inputsec relative col-span-4">
-                                                            <Select options={options} 
+                                                            <Select options={stateOptions1} 
                                                                 placeholder='Select State'
                                                                 styles={{
                                                                     control: (baseStyles, state) => ({
@@ -162,14 +357,16 @@ const CompleteRegistration = () => {
                                                                       paddingLeft: 10,
                                                                       paddingTop: 6,
                                                                       paddingBottom: 6,
+                                                                      borderColor: errors.state ? '#FF4E4E' : '#B3B3B3',
                                                                     //   borderColor: state.isFocused ? 'grey' : 'red',
                                                                     }),
                                                                   }}
-                                                                onChange={(option) => setSelectedValue(option)}
+                                                                  value={stateOptions1.find(option => option.value === values.state)} 
+                                                                  onChange={(option) => {setFieldValue('state', option ? option.value : '') , getCities(option.value)}}
                                                             />
                                                         </div>
                                                         <div className="form-inputsec relative col-span-4">
-                                                            <Select options={options} 
+                                                            <Select options={cityOptions1} 
                                                                 placeholder='Select City'
                                                                 styles={{
                                                                     control: (baseStyles, state) => ({
@@ -178,16 +375,34 @@ const CompleteRegistration = () => {
                                                                       paddingLeft: 10,
                                                                       paddingTop: 6,
                                                                       paddingBottom: 6,
+                                                                      borderColor: errors.city ? '#FF4E4E' : '#B3B3B3',
                                                                     //   borderColor: state.isFocused ? 'grey' : 'red',
                                                                     }),
                                                                   }}
-                                                                onChange={(option) => setSelectedValue(option)}
+                                                                  value={cityOptions1.find(option => option.value === values.city)} 
+                                                                  onChange={(option) => {setFieldValue('city', option ? option.value : '') , getPincodes(option.value)}}
                                                             />
                                                         </div>
                                                         <div className="form-inputsec relative col-span-4">
-                                                            <Field type="text" name="lastName" placeholder='Enter Pincode*'
+                                                            <Select options={pincodeOptions1} 
+                                                                placeholder='Select Pincode'
+                                                                styles={{
+                                                                    control: (baseStyles, state) => ({
+                                                                      ...baseStyles,
+                                                                      borderRadius: 10,
+                                                                      paddingLeft: 10,
+                                                                      paddingTop: 6,
+                                                                      paddingBottom: 6,
+                                                                      borderColor: errors.city ? '#FF4E4E' : '#B3B3B3',
+                                                                    //   borderColor: state.isFocused ? 'grey' : 'red',
+                                                                    }),
+                                                                  }}
+                                                                  value={pincodeOptions1.find(option => option.value === values.city)} 
+                                                                  onChange={(option) => setFieldValue('pincode', option ? option.value : '')}
+                                                            />
+                                                            {/* <Field type="text" name="pincode" placeholder='Enter Pincode*'
                                                                 className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 h-full px-20p rounded-xl bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                                            />  
+                                                            />   */}
                                                         </div>
                                                         <div className="bottom-form-submitter mt-5 col-span-12  overflow-hidden relative group bg-Primary rounded-xl">
                                                             <button type='button' onClick={handleSubmit} className='w-full py-3 px-4 text-white font-semibold text-lg '>Submit & Register</button>

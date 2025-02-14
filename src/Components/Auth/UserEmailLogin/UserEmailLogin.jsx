@@ -8,6 +8,13 @@ import EmailLogo from '../../../assets/images/email-icon.svg';
 import { useNavigate } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { config } from '../../../env-services';
+import Modal from 'react-modal';
+import Loader from '../../../utils/Loader/Loader';
+
+
 
 const UserEmailLogin = () => {
 
@@ -16,8 +23,23 @@ const UserEmailLogin = () => {
 
 
     const [captchaVerified, setCaptchaVerified] = useState(false);
-
-    const [passwordHandle , setPasswordHandle] = useState(false)
+    const [passwordHandle , setPasswordHandle] = useState(false);
+    const [modalIsOpen ,  setModalIsOpen] = useState(false);
+    
+    
+    const customStyles = {
+        content: {
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)',
+          width: '600px',
+          borderRadius: 18,
+          paddingLeft: 40
+        },
+    };
 
 
     const handleCaptchaChange = (value) => {
@@ -35,12 +57,43 @@ const UserEmailLogin = () => {
       password: '',
     }
   
-    const handleUserEmailLogin = () => {
-        navigate('/profile/my-profile')
+    const handleUserEmailLogin = async(values) => {
+      const obj = {
+        email: values.email,
+        password: values.password
+      }
+      setModalIsOpen(true)
+      try {
+        await axios.post(`${config.api}auth/authenticate` , obj)
+        .then((response) => {
+          if(response) {
+              setModalIsOpen(false)
+              toast.success('Logged in Successfully');
+              console.log(response , 'userreg-res');
+              navigate('/profile/my-profile')
+          }
+        })
+        .catch((err) => {
+          setModalIsOpen(false)
+          toast.error(err?.message);
+          toast.error(err?.response?.data?.message);
+          console.log(err , 'error')
+        });
+      } catch (error) {
+        setModalIsOpen(false)
+        console.log(error)
+      }
     }
 
   return (
     <div className="UserEmailLogin">
+        <Modal
+            isOpen={modalIsOpen}
+            style={customStyles}
+            contentLabel="Example Modal"
+        >
+            <Loader/>
+        </Modal>
         <div className="right-side-user-login-form-section">
             <div className="user-login-in-form-section">
                 <Formik
@@ -82,7 +135,7 @@ const UserEmailLogin = () => {
                             />
                           </div>
                           <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
-                            <button type='button' disabled={!captchaVerified} onClick={handleSubmit} className='w-full py-3 px-4 rounded-xl text-white font-semibold text-lg h-full bg-Primary disabled:bg-opacity-35 '>Login</button>
+                            <button type='submit' disabled={!captchaVerified} onClick={handleSubmit} className='w-full py-3 px-4 rounded-xl text-white font-semibold text-lg h-full bg-Primary disabled:bg-opacity-35 '>Login</button>
                           </div>
                         </div>
                     </Form>

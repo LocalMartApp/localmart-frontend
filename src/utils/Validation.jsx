@@ -31,6 +31,19 @@ export const userRegNumberValidation = yup.object().shape({
 })
 
 
+export const completeUserRegValidation = yup.object().shape({
+    firstName: yup.string().required('Please Enter First Name'),
+    lastName: yup.string().required('Please Enter Last Name'),
+    email:  yup.string().email('Please Enter Valid Email').required('Email Address Required'),
+    mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
+    password: yup.string().required('Please Enter Password'),
+    birthDate: yup.string().required('Please Enter Birthdate'),
+    address:  yup.string().required('Please Enter Complete Address'),
+    state: yup.string().required('Please Select State'),
+    city: yup.string().required('Please Select City'),
+    pincode: yup.string().required('Please Enter Pincode'),
+})
+
 export const businessFormAddValidation = yup.object().shape({
     userName: yup.string().required('Please Enter User Name'),
     businessName: yup.string().required('Please Enter Business Name'),

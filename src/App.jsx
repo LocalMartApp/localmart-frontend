@@ -15,6 +15,7 @@ import CompleteRegistration from './Components/Auth/UserRegister/CompleteRegistr
 import SearchPage from './Components/SearchPage/SearchPage'
 import SearchDetails from './Components/SearchPage/SearchDetails'
 import BusinessFormAdding from './Components/BusinessFormAdding/BusinessFormAdding'
+import { Toaster } from 'react-hot-toast';
 
 
 
@@ -43,6 +44,32 @@ function App() {
         <Route exact={true} Component={BusinessFormAdding} path='/business/add-business' />
       </Routes>
       <Footer/>
+      <Toaster 
+          position="top-center"
+          reverseOrder={false}
+          gutter={12}
+          containerClassName=""
+          containerStyle={{}}
+          toastOptions={{
+            className: '',
+            duration: 5000,
+            style: {
+              background: '#363636',
+              color: '#fff',
+              fontFamily: 'Poppins',
+              paddingRight: 15,
+              paddingLeft: 15,
+            },
+        
+            success: {
+              duration: 3000,
+              theme: {
+                primary: 'green',
+                secondary: 'black',
+              },
+            },
+          }}
+      />
      </Router>
     </>
   )

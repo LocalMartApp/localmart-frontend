@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect , useRef } from 'react';
 import PropTypes from 'prop-types';
 import './BusinessFormAdding.scss';
 import { Formik , Form , Field } from 'formik';
@@ -8,9 +8,16 @@ import FileUploadIcon from '../../assets/images/file-upload-icon.svg';
 import makeAnimated from 'react-select/animated';
 import VegIcon from '../../assets/images/veg-icon.svg';
 import NonVegIcon from '../../assets/images/non-veg-icon.svg';
+import MapIcon from '../../assets/images/maps-icon-input.svg';
 
 
-const animatedComponents = makeAnimated()
+
+import { GoogleMap , LoadScript , Marker , useJsApiLoader , StandaloneSearchBox } from '@react-google-maps/api';
+
+
+const animatedComponents = makeAnimated();
+
+const GOOGLE_MAPS_API_KEY = "AIzaSyCfHCytpE0Oq4tvXmCWaOl05iyH_OfLGuM";
 
 
 const BusinessFormAdding = () => {
@@ -22,7 +29,36 @@ const BusinessFormAdding = () => {
   const [businessDoc , setBusinessDoc] = useState();
   const [multiAmentites , setMultiAmenities] = useState();
   const [businessPhotos , setBusinessPhotos] = useState([]);
-  const [foodItemsArray , setFoodItemsArray] = useState([])
+  const [foodItemsArray , setFoodItemsArray] = useState([]);
+  const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.8040 }); // Default to Delhi
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const inputRef = useRef(null)
+
+
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+    libraries: ['places']
+  })
+
+
+
+  const handlePlacesChange = () => {
+    const places = inputRef.current.getPlaces();
+    if (places.length > 0) {
+      const location = places[0].geometry.location;
+      const lat = location.lat();
+      const lng = location.lng();
+
+      setMapCenter({ lat, lng });
+      setSelectedLocation({ lat, lng });
+      console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
+    }
+  }
+
+
+
 
 
   const businessAddValues = {
@@ -331,6 +367,37 @@ const BusinessFormAdding = () => {
                               </div>
                             </div>
                           </div>
+                          <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
+                            <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
+                              <h4 className='text-lg font-medium text-Secondary'>Detailed Business Address</h4>
+                            </div>
+                            <div className="inner-fields-grid-outer-main p-6 ">
+                              {isLoaded && 
+                                <>
+                                  <StandaloneSearchBox
+                                    onLoad={(ref) => inputRef.current = ref}
+                                    onPlacesChanged={handlePlacesChange}
+                                  >
+                                    <div className="google-search-map-input-sec relative">
+                                      <div className="left-map-icon absolute left-6 top-1/2">
+                                        <img src={MapIcon} className='w-6 h-6 object-contain' alt="" />
+                                      </div>
+                                      <input type="text" placeholder="Search for a place..." className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 pl-12 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />
+                                    </div>
+                                  </StandaloneSearchBox>
+                                  <div className="google-map-section-business-form rounded-xl overflow-hidden mt-5">
+                                    <GoogleMap
+                                        mapContainerStyle={{ width: '100%', height: '300px' }}
+                                        center={mapCenter}
+                                        zoom={14}
+                                      >
+                                        {selectedLocation && <Marker position={selectedLocation} />}
+                                    </GoogleMap>
+                                  </div>
+                                </>
+                              }
+                            </div>
+                          </div>
                           <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
                               <h4 className='text-lg font-medium text-Secondary'>Business Information</h4>
@@ -510,6 +577,7 @@ const BusinessFormAdding = () => {
                               </div>
                             </div>
                           </div>
+
                           <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
                               <h4 className='text-lg font-medium text-Secondary'>Business Pics and media</h4>
@@ -539,6 +607,9 @@ const BusinessFormAdding = () => {
                               </div>
                             </div>
                           </div>
+
+
+
                           <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
                               <h4 className='text-lg font-medium text-Secondary'>Items and info</h4>

@@ -127,7 +127,7 @@ const RechargesBlocks = () => {
                         </div>
                     </div>
                     <div className="below-recharges-section-home-2 bg-LightBlue p-10 rounded-[18px]">
-                        <div className="grid grid-cols-8 gap-60p">
+                        <div className="grid grid-cols-8 gap-60p recharges-grid-section">
                             {rechargeCards.map((items , index) => {
                                 return (
                                     <button type='button' className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-10p" key={index}>
@@ -162,7 +162,7 @@ const RechargesBlocks = () => {
                         </div>
                     </div>
                     <div className="below-recharges-section-home-2 bg-LightOrange p-10 rounded-[18px]">
-                        <div className="grid grid-cols-8 gap-60p">
+                        <div className="grid grid-cols-8 gap-60p recharges-grid-section">
                             {bookingCards.map((items , index) => {
                                 return (
                                     <button type='button' className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-10p" key={index}>

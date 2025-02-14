@@ -4,10 +4,6 @@ import BannerSlider from './BannerSlider';
 import { useNavigate } from 'react-router-dom';
 
 // images-export
-import BusinessApp from '../../assets/images/business-app.svg';
-import LocalClassifieds from '../../assets/images/local-classifieds-app.svg';
-import ShoppingApp from '../../assets/images/online-shopping-app.svg';
-import FoodDelivery from '../../assets/images/food-delivery-app.svg';
 import PopServicesSlider from './PopServicesSlider';
 import RechargesBlocks from './RechargesBlocks';
 import ExploreCities from './ExploreCities';
@@ -32,7 +28,8 @@ import BrowseAllCategories from './BrowseAllCategories';
 import Select from 'react-select';
 import Modal from 'react-modal';
 import LoadingImage from '../../assets/images/loader-test.gif';
-
+import './Home.scss';
+import AppsSlider from './AppsSlider';
 
 
 
@@ -170,33 +167,6 @@ const Home = () => {
     }
   });
 
-
-  const appCards = [
-    {
-      icon: BusinessApp,
-      heading: 'Local Search',
-      title : 'Local Search',
-      link: '/businesses',
-    },
-    {
-      icon: LocalClassifieds,
-      heading: 'Local Classifieds',
-      title : 'Buy and Sell Products',
-      link: '/',
-    },
-    {
-      icon: ShoppingApp,
-      heading: 'Online Shopping',
-      title : 'Wide Range Shopping',
-      link: '/',
-    },
-    {
-      icon: FoodDelivery,
-      heading: 'Food Delivery',
-      title : 'Food at your Doorstep',
-      link: '/',
-    },
-  ]
 
   const allCategories = [
     {
@@ -520,7 +490,7 @@ const Home = () => {
                     </div>
                 </div>
                 <div className="top-slider-search-section">
-                  <div className="grid grid-cols-2 gap-x-16 items-center">
+                  <div className="grid grid-cols-2 gap-x-16 items-center top-slider-grid-sec">
                     <div className="left-home-section-1">
                       <div className="heading-section-1 flex flex-col gap-5">
                         <h1 className='text-white font-semibold text-50'>Find Everything <br /> You Need, Every Day!</h1>
@@ -607,25 +577,10 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bottom-apps-home-section-1 mt-16">
-                  <div className="grid grid-cols-4 gap-10">
-                    {appCards.map((items , index) => {
-                      return (
-                        <button type='button' onClick={() => navigate(items.link)} className="group text-left single-home-app-cards-sec-1 flex items-center gap-5 bg-white py-5 px-5 rounded-xl" key={index}>
-                          <div className="left-app-logo w-50p h-50p">
-                            <img src={items.icon} className='group-hover:scale-110 duration-300' alt="" />
-                          </div>
-                          <div className="right-app-heading-title-sec">
-                            <h2 className='text-Black text-xl'>{items.heading}</h2>
-                            <p className='text-LightText text-sm'>{items.title}</p>
-                          </div>
-                        </button>
-                        )
-                      })}
-                  </div>
-                </div>
               </div>
-
+              <div className="bottom-apps-home-section-1 mt-16">
+                  <AppsSlider/>
+                </div>
             </div>
             <div className="inner-home-section-2">
               <div className="container">
@@ -666,7 +621,7 @@ const Home = () => {
                           </div>
                       </div>
                       <div className="bottom-all-categories-section">
-                          <div className="grid grid-cols-6 gap-x-90p gap-y-60p">
+                          <div className="grid grid-cols-6 gap-x-90p gap-y-60p home-categories-grid-section">
                             {allCategories.map((items , index) => {
                               return (
                                 <button type='button' key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-3">
