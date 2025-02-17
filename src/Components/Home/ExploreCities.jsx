@@ -78,6 +78,30 @@ const ExploreCities = () => {
                     delay: 2500,
                     disableOnInteraction: false
                 }}
+                breakpoints={{
+                    2000: {
+                        slidesPerView: 3,
+                        
+                    },
+                    1700 : {
+                        slidesPerView: 3
+                    },
+                    1200: {
+                        slidesPerView: 3
+                    },
+                    992: {
+                        slidesPerView: 2
+                    },
+                    674: {
+                        slidesPerView: 2
+                    },
+                    375: {
+                        slidesPerView: 1,
+                    },
+                    75: {
+                        slidesPerView: 1
+                    }
+                }}
                 modules={[ Autoplay , Navigation]}
             >
                 {popularServices.map((items , index) => {

@@ -30,7 +30,7 @@ const BusinessFormAdding = () => {
   const [multiAmentites , setMultiAmenities] = useState();
   const [businessPhotos , setBusinessPhotos] = useState([]);
   const [foodItemsArray , setFoodItemsArray] = useState([]);
-  const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.8040 }); // Default to Delhi
+  const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.8040 });
   const [selectedLocation, setSelectedLocation] = useState(null);
 
   const inputRef = useRef(null)
@@ -53,9 +53,12 @@ const BusinessFormAdding = () => {
 
       setMapCenter({ lat, lng });
       setSelectedLocation({ lat, lng });
-      console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
+      // console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
     }
   }
+
+
+  // console.log(selectedLocation , "selectedLocation")
 
 
 
@@ -147,23 +150,49 @@ const BusinessFormAdding = () => {
 
 
   
+  // const handleFileChange = async (e) => {
+  //   const selectedFiles = Array.from(e.target.files);
+  //   const validFiles = selectedFiles.filter(file =>
+  //     file.type === 'image/jpeg' || file.type === 'image/png'
+  //   );
+
+  //   if (validFiles.length < selectedFiles.length) {
+  //     alert('Only JPEG and PNG files are allowed!');
+  //   }
+
+  // 
+  //   const base64Photos = await Promise.all(
+  //     validFiles.map(file => fileToBase64(file))
+  //   );
+
+  //   setBusinessPhotos((prevPhotos) => [...prevPhotos, ...base64Photos]);
+  // };
+
+
+
+
   const handleFileChange = async (e) => {
     const selectedFiles = Array.from(e.target.files);
-    const validFiles = selectedFiles.filter(file =>
-      file.type === 'image/jpeg' || file.type === 'image/png'
-    );
-
-    if (validFiles.length < selectedFiles.length) {
-      alert('Only JPEG and PNG files are allowed!');
-    }
-
-    // Convert files to base64
+  
+    const validFiles = selectedFiles.filter(file => {
+      if (file.size > 2 * 1024 * 1024) { 
+        alert(`File ${file.name} exceeds 2MB and will not be uploaded.`);
+        return false;
+      }
+      return file.type === 'image/jpeg' || file.type === 'image/png';
+    });
+  
+    // if (validFiles.length < selectedFiles.length) {
+    //   alert('Only JPEG and PNG files under 2MB are allowed!');
+    // }
     const base64Photos = await Promise.all(
       validFiles.map(file => fileToBase64(file))
     );
-
+  
     setBusinessPhotos((prevPhotos) => [...prevPhotos, ...base64Photos]);
   };
+
+
 
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -607,7 +636,6 @@ const BusinessFormAdding = () => {
                               </div>
                             </div>
                           </div>
-
 
 
                           <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">

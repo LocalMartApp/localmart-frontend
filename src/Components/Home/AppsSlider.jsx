@@ -8,11 +8,15 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import {  Pagination , Autoplay , Navigation } from 'swiper/modules';
 
 import "swiper/css";
+import { useNavigate } from 'react-router-dom';
 
 
 
 const AppsSlider = () => {
 
+
+
+    const navigate = useNavigate()
     
       const appCards = [
         {
@@ -120,8 +124,8 @@ const AppsSlider = () => {
             >
                 {appCards.map((items , index) => {
                     return (
-                        <SwiperSlide>
-                            <button type='button' onClick={() => navigate(items.link)} className="group text-left single-home-app-cards-sec-1 flex items-center gap-5 bg-white py-5 px-5 rounded-xl w-full" key={index}>
+                        <SwiperSlide onClick={() => navigate(items.link)}>
+                            <button type='button'  className="group text-left single-home-app-cards-sec-1 flex items-center gap-5 bg-white py-5 px-5 rounded-xl w-full" key={index}>
                                 <div className="left-app-logo w-50p h-50p">
                                     <img src={items.icon} className='group-hover:scale-110 duration-300' alt="" />
                                 </div>

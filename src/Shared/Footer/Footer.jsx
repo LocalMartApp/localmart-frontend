@@ -8,6 +8,7 @@ import Instagram from '../../assets/images/instagram.svg';
 import Facebook from '../../assets/images/faceboook.svg';
 import Twitter from '../../assets/images/twitter.svg';
 import LinkedIn from '../../assets/images/linkedin.svg';
+import { NavLink } from 'react-router-dom';
 
 const Footer = () => {
 
@@ -36,8 +37,8 @@ const Footer = () => {
         <div className="inner-footer-main-section">
           <div className="footer-navigation-part">
             <div className="container">
-              <div className="grid grid-cols-12">
-                <div className="col-span-4">
+              <div className="grid grid-cols-12 footer-menu-main-grid-section">
+                <div className="col-span-4 footer-logo-desc-column">
                   <div className="footer-logo-des-soc-part">
                     <div className="top-footer-logo-sec">
                       <img src={FooterLogo} className='max-w-[250px]' alt="" />
@@ -56,7 +57,7 @@ const Footer = () => {
                     </div>
                   </div>
                 </div>
-                <div className="col-span-2">
+                {/* <div className="col-span-2">
                   <div className="footer-navigations-1 similar-footer-navigators">
                     <nav>
                       <ul className='flex flex-col gap-5'>
@@ -68,8 +69,8 @@ const Footer = () => {
                       </ul>
                     </nav>
                   </div>
-                </div>
-                <div className="col-span-2">
+                </div> */}
+                <div className="col-span-3 similar-footer-menu-columns menu-first-column">
                   <div className="footer-navigations-2 similar-footer-navigators">
                     <nav>
                       <ul className='flex flex-col gap-5'>
@@ -82,7 +83,7 @@ const Footer = () => {
                     </nav>
                   </div>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-2 similar-footer-menu-columns menu-second-column">
                   <div className="footer-navigations-3 similar-footer-navigators">
                     <nav>
                       <ul className='flex flex-col gap-5'>
@@ -95,7 +96,7 @@ const Footer = () => {
                     </nav>
                   </div>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-3 similar-footer-menu-columns menu-third-column">
                   <div className="footer-navigations-4 similar-footer-navigators">
                     <nav>
                       <ul className='flex flex-col gap-5'>
@@ -118,10 +119,10 @@ const Footer = () => {
                     <p className='text-Black'>© Copyrights - Local Mart 2024</p>
                   </div>
                   <div className="right-terms-footer-sec">
-                    <ul className='flex items-center gap-8'>
-                      <li className='text-Black font-medium'>Terms & Conditions</li>
-                      <li className='text-Black font-medium'>Privacy Policy</li>
-                      <li className='text-Black font-medium'>Infringement Policy</li>
+                    <ul className='flex items-center gap-8 terms-copyright-links'>
+                      <li className='text-Black font-medium'><NavLink to={'/terms-conditions'}>Terms & Conditions</NavLink></li>
+                      <li className='text-Black font-medium'><NavLink to={'/privacy-policy'}>Privacy Policy</NavLink></li>
+                      <li className='text-Black font-medium'><NavLink to={'/cancellation-policy'}>Cancellation Policy</NavLink></li>
                     </ul>
                   </div>
                 </div>

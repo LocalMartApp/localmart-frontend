@@ -283,7 +283,7 @@ const Home = () => {
         <div className="home-login-main-top-modal-section">
           <LoginModal isOpen={isModalOpen} closeModal={closeModal} />
         </div>
-        <div className={`top-fixed-header-section fixed left-0 w-full z-[99] shadow-customized duration-500 ${headerBar ? '-top-0 opacity-100 hidden' : '-top-full opacity-0'}`}>
+        <div className={`top-fixed-header-section hidden fixed left-0 w-full z-[99] shadow-customized duration-500 ${headerBar ? '-top-0 opacity-100 hidden' : '-top-full opacity-0'}`}>
           <div className="inner-header-section bg-white py-5">
             <div className="container">
               <div className="grid grid-cols-12 items-center">
@@ -418,11 +418,11 @@ const Home = () => {
           <section className="home-section-1 relative">
             <div className="inner-home-section-1 bg-BlockBlack">
               <div className="container">
-                <div className={`top-main-search-section-home duration-500 z-[9999] ${headerBar ? 'fixed top-0 w-full bg-BlockBlack left-0 py-6' : 'sticky pb-20'}`}>
-                <div className="inner-search-relative-section-home relative">
+                <div className={`top-main-search-section-home duration-500 z-[9999] ${headerBar ? 'fixed top-0 w-full bg-BlockBlack left-0 py-6 px-[15px]' : ' pb-16'}`}>
+                    <div className="inner-search-relative-section-home relative">
                     <div className="search-grid-section-home-main">
                       <div className="search-grid-container-main">
-                        <div className="grid grid-cols-10 justify-center gap-x-6">
+                        <div className="grid grid-cols-10 justify-center gap-x-6 top-search-section-grid-parent">
                           <div className="col-span-3">
                             <div className={`location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
                               <div className="icon-section">
@@ -482,13 +482,42 @@ const Home = () => {
                         </div>
                       </div>
                     </div>
-                      <div className={`go-to-top-button-section absolute top-1/2 right-10 w-10 h-10 ${headerBar ? '' : 'hidden'}`} onClick={scrollToTop}>
-                          <button type="button" className='w-full bg-Secondary h-full rounded-full flex items-center justify-center'>
-                            <i className="ri-arrow-up-line text-lg text-white"></i>
-                          </button>
-                      </div>
                     </div>
                 </div>
+                <section className="home-section-5-mobile-view ">
+                  <div className="inner-home-section-5">
+                    <div className="">
+                        <div className="main-categories-home-sec-5">
+                            <div className="top-heading-part-categories flex flex-wrap justify-between gap-x-10 items-center mb-10">
+                                <div className="left-categories-heading-home">
+                                    <h2 className='text-30 text-white font-medium'>Explore Wide Range Categories</h2>
+                                </div>
+                                <div className="explore-all-cates-button">
+                                    <button type="button" onClick={openBrowseCategory} className='explore-cities-button-prev'>
+                                      <p className='text-Secondary text-lg font-medium'>Browse All</p>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="bottom-all-categories-section">
+                                <div className="grid grid-cols-4 gap-x-10p gap-y-60p home-categories-grid-section">
+                                  {allCategories.map((items , index) => {
+                                    return (
+                                      <button type='button' key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-2">
+                                          <div className="top-image-blk  w-40p h-40p flex items-center justify-center">
+                                              <img src={items.icon} className='duration-500 w-full group-hover:scale-125' alt="" />
+                                          </div>
+                                          <div className="bottom-text-blk">
+                                              <p className='text-white text-center text-xs'>{items.title}</p>
+                                          </div>
+                                      </button>
+                                    )
+                                  })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </section>
                 <div className="top-slider-search-section">
                   <div className="grid grid-cols-2 gap-x-16 items-center top-slider-grid-sec">
                     <div className="left-home-section-1">
@@ -605,7 +634,7 @@ const Home = () => {
               <AdSlider/> 
             </div>
           </section>
-          <section className="home-setion-5">
+          <section className="home-section-5">
             <div className="inner-home-section-5">
               <div className="container">
                   <div className="main-categories-home-sec-5">

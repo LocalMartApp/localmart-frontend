@@ -98,3 +98,15 @@ bun{
   }
   
 }
+
+
+@media only screen and (max-width: 674.90px) {
+  .container {
+    margin: 0px auto !important;
+    padding: 0px 15px !important;
+  }
+  .go-to-top-button-section {
+    bottom: 20px !important;
+    right: 20px !important;
+  }
+}
