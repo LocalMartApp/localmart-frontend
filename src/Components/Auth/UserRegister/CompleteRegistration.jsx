@@ -228,11 +228,11 @@ const CompleteRegistration = () => {
         <div className="UserRegister">
             <div className="userlogin-main-section bg-ProfileScreensBg py-20">
                 <div className="container">
-                    <div className="inner-user-register-grid-section-outer bg-white rounded-20p overflow-hidden">
+                    <div className="inner-user-register-grid-section-outer bg-white rounded-20p ">
                         <div className="grid grid-cols-12">
                             <div className="col-span-5">
                                 <div className="left-user-register-image h-full">
-                                    <img src={LeftRegisterImage} className='h-full object-cover' alt="" />
+                                    <img src={LeftRegisterImage} className='h-full object-cover rounded-l-20p' alt="" />
                                 </div>
                             </div>
                             <div className="col-span-7">

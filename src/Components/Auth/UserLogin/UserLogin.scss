@@ -1,1 +1,42 @@
-.UserLogin {}
+@media only screen and (max-width: 991.90px) {
+    .UserLogin {
+        .left-login-page-image-section , .right-login-page-form-changer {
+            grid-column: span 12 / span 12;
+        }
+        .left-login-page-image-section {
+            .left-user-login-image {
+                img {
+                    max-height: 400px;
+                }
+            }
+        }
+    }
+}
+
+
+@media only screen and (max-width: 674.90px) {
+    .UserLogin {
+        .userlogin-main-section  {
+            padding: 30px 0px;
+        }
+        .right-side-user-login-form-section  {
+            padding: 30px !important;
+            .right-side-user-login-form-section {
+                padding: 0px !important;
+            }
+        }
+    }
+}
+
+
+@media only screen and (max-width: 674.90px) {
+    .UserLogin {
+        .left-login-page-image-section {
+            .left-user-login-image {
+                img {
+                    max-height: 300px;
+                }
+            }
+        }
+    }
+}

@@ -30,6 +30,8 @@ import Modal from 'react-modal';
 import LoadingImage from '../../assets/images/loader-test.gif';
 import './Home.scss';
 import AppsSlider from './AppsSlider';
+import { useAuth } from '../../utils/AuthContext';
+
 
 
 
@@ -37,6 +39,9 @@ import AppsSlider from './AppsSlider';
 const Home = () => {
 
   const navigate = useNavigate();
+
+  const { authToken } = useAuth()
+
 
   const [headerBar , setHeaderBar] = useState(false);
   const [language , setLanguage] = useState(false);
@@ -66,12 +71,12 @@ const Home = () => {
   useEffect(() => {
 
     setTimeout(() => {
-      // openModal()
+      openModal()
     }, 2000)
 
     const getUserLocation = async () => {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
+          navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude } = position.coords;
             const city = await getCityFromCoordinates(latitude, longitude);
@@ -280,9 +285,12 @@ const Home = () => {
         {/* <button type="button" className='text-Black font-medium text-lg' onClick={closeLoaderModal}>Close MODAL</button> */}
       </Modal>
       <div className="main-home-section">
-        <div className="home-login-main-top-modal-section">
-          <LoginModal isOpen={isModalOpen} closeModal={closeModal} />
-        </div>
+        {authToken ? 
+            null : 
+            <div className="home-login-main-top-modal-section">
+             <LoginModal isOpen={isModalOpen} closeModal={closeModal} />
+           </div>
+        }
         <div className={`top-fixed-header-section hidden fixed left-0 w-full z-[99] shadow-customized duration-500 ${headerBar ? '-top-0 opacity-100 hidden' : '-top-full opacity-0'}`}>
           <div className="inner-header-section bg-white py-5">
             <div className="container">

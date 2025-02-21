@@ -35,8 +35,8 @@ const Notifications = () => {
           </div>
         </div>
         <div className="container">
-          <div className=" profile-section-navigation-details-card bg-white py-8 px-8 rounded-20p">
-              <div className="grid grid-cols-12 gap-9">
+          <div className=" profile-section-navigation-details-card bg-white py-8 px-8 rounded-20p similar-profile-sidebar-outer">
+              <div className="grid grid-cols-12 gap-9 profile-sidebar-main-grid">
                 <div className="col-span-3 left-sidebar-section-proile border-r border-BorderColor border-opacity-40">
                     <ProfileSideBar/>
                 </div>

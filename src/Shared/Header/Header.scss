@@ -27,8 +27,18 @@
     }
 }
 
+.header-mobile-menu-section {
+    display: none;
+}
 
 @media only screen and (max-width: 674.90px) {
+    .header-mobile-menu-section {
+        display: block !important;
+
+        button {
+            transition-duration: 0.3s !important;
+        }
+    } 
     .main-header-section {
         .header-search-section  , .header-buttons-sections{
             display: none;

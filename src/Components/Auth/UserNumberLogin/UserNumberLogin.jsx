@@ -70,14 +70,14 @@ const UserNumberLogin = () => {
                           <button type="button" className='text-sm text-Secondary text-medium'>Forgot Passowrd ?</button>
                         </div>
                       </div>
-                      <div className="grid grid-cols-12 mt-5 gap-x-5">
-                        <div className="recaptcha-section col-span-7">
+                      <div className="flex flex-col mt-5 gap-y-5">
+                        <div className="recaptcha-section">
                           <ReCAPTCHA
                               sitekey="6LeQ-7cqAAAAANpdsCQ1MFxudbS4-gS7sBVw8vIT"
                               onChange={handleCaptchaChange}
                           />
                         </div>
-                        <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
+                        <div className="bottom-form-submitter overflow-hidden relative group ">
                           <button type='button' disabled={!captchaVerified} onClick={handleSubmit} className='w-full py-3 px-4 rounded-xl text-white font-semibold text-lg h-full bg-Primary disabled:bg-opacity-35 '>Login</button>
                         </div>
                       </div>

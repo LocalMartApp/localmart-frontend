@@ -6,10 +6,18 @@ import Select from 'react-select';
 import FileUploadIcon from '../../assets/images/file-upload-icon.svg';
 import VegIcon from '../../assets/images/veg-icon.svg';
 import NonVegIcon from '../../assets/images/non-veg-icon.svg';
+import { useLocation , useNavigate } from 'react-router-dom';
 
 
 const BusinessUploadMedia = () => {
 
+    const location = useLocation();
+    const navigate = useNavigate();
+
+
+    const receivedResponse = location.state?.response || '';
+
+    console.log(receivedResponse , "response")
 
 
 

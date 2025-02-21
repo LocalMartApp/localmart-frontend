@@ -9,10 +9,14 @@ import makeAnimated from 'react-select/animated';
 import VegIcon from '../../assets/images/veg-icon.svg';
 import NonVegIcon from '../../assets/images/non-veg-icon.svg';
 import MapIcon from '../../assets/images/maps-icon-input.svg';
-
+import axios from 'axios';
+import Modal from 'react-modal';
 
 
 import { GoogleMap , LoadScript , Marker , useJsApiLoader , StandaloneSearchBox } from '@react-google-maps/api';
+import { config } from '../../env-services';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Loader from '../../utils/Loader/Loader';
 
 
 const animatedComponents = makeAnimated();
@@ -21,17 +25,148 @@ const GOOGLE_MAPS_API_KEY = "AIzaSyCfHCytpE0Oq4tvXmCWaOl05iyH_OfLGuM";
 
 
 const BusinessFormAdding = () => {
+
+  const navigate = useNavigate();
+  const location = useLocation()
+
+  const receivedMail = location.state?.readEmail || '';
+  const receivedToken = location.state?.token || '';
+
+
+
+  // console.log(receivedMail , receivedToken)
   
 
-  const [stateSelect , setStateSelect] = useState('');
-  const [citySelect , setCitySelect] = useState('');
-  const [busCateSelect , setBusCateSelect] = useState('');
   const [businessDoc , setBusinessDoc] = useState();
   const [multiAmentites , setMultiAmenities] = useState();
   const [businessPhotos , setBusinessPhotos] = useState([]);
   const [foodItemsArray , setFoodItemsArray] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.8040 });
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [modalIsOpen ,  setModalIsOpen] = useState(false);
+
+
+  const [busCates , setBusCates] = useState([]);
+  const [busAmenities , setBusAmenities] = useState([]);
+  const [states , setStates] = useState([]);
+  const [cities , setCities] = useState([]);
+  const [pincodes , setPincodes] = useState([]);
+
+  const [userToken , setUserToken] = useState('')
+
+
+
+  useEffect(() => {
+    getAllCategories()
+    getAllAmenities()
+    getStates()
+    getUserDetails()
+  } , [])
+
+
+  const getUserDetails = async () => {
+    const response = await localStorage.getItem('authToken');
+    const userParse = JSON.parse(response);
+    setUserToken(userParse);
+  };
+
+
+  const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      width: '600px',
+      borderRadius: 18,
+      paddingLeft: 40
+    },
+};
+
+  // console.log(userToken , "token")
+
+
+
+
+
+  // Get the options 
+
+  const getAllCategories = async () => {
+    try {
+      const response = await axios.get(config.api + `business-category`);
+      const categories = response?.data?.data.map(item => ({
+        value: item._id,
+        label: item.name
+      }));
+      
+      setBusCates(categories);
+      // console.log('Formatted Categories:', categories);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+  
+
+  const getAllAmenities = async () => {
+    try {
+      const response = await axios.get(config.api + `business-amenity`);
+      const amenities = response?.data?.data.map(item => ({
+        value: item._id,
+        label: item.name
+      }));
+      
+      setBusAmenities(amenities);
+      // console.log('Formatted amenities:', amenities);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+
+  const getStates = async() => {
+    await axios.get(config.api + 'locations/countries/678da88c9c4467c6aa4eeb86/states')
+    .then((response) => {
+     if (response?.data?.data) {
+         const formattedStates = response?.data?.data.map(item => ({
+             value: item._id, 
+             label: item.name ,
+         }));
+         
+         setStates(formattedStates);
+     }
+    })
+ }
+
+
+ const getCities = async(id) => {
+    await axios.get(config.api + `locations/states/${id}/cities`)
+    .then((response) => {
+     if (response?.data?.data) {
+         const formattedCities = response?.data?.data.map(item => ({
+             value: item._id, 
+             label: item.name ,
+         }));
+         setCities(formattedCities);
+     }
+    })
+ }
+
+ const getPincodes = async(id) => {
+     console.log(id)
+     await axios.get(config.api + `locations/cities/${id}/pincodes`)
+      .then((response) => {
+     if (response?.data?.data) {
+         const formattedCities = response.data.data.map(item => ({
+             value: item._id, 
+             label: item.code ,
+         }));
+         setPincodes(formattedCities);
+     }
+    })
+ }
+
 
   const inputRef = useRef(null)
 
@@ -89,35 +224,6 @@ const BusinessFormAdding = () => {
       itemPrice: ''
   }
 
-  const stateOptions = [
-    { value: 'Andhrapradesh', label: 'Andhrapradesh' },
-    { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
-    { value: 'Delhi', label: 'Delhi' },
-    { value: 'Banglore', label: 'Banglore' },
-  ]
-
-  const cityOptions = [
-    { value: 'Rajahmundry', label: 'Rajahmundry' },
-    { value: 'Kakinada', label: 'Kakinada' },
-    { value: 'Bheemavaram', label: 'Bheemavaram' },
-    { value: 'Banglore', label: 'Banglore' },
-    { value: 'Palakollu', label: 'Palakollu' },
-    { value: 'Amalapuram', label: 'Amalapuram' },
-    { value: 'Samalkot', label: 'Samalkot' },
-    { value: 'Peddapuram', label: 'Peddapuram' },
-    { value: 'Pithapuram', label: 'Pithapuram' },
-    { value: 'Vizag', label: 'Vizag' },
-    { value: 'Vizayawada', label: 'Vizayawada' },
-    { value: 'Tuni', label: 'Tuni' },
-  ]
-
-  const amenities = [
-    { value: 'Free Wifi', label: 'Free Wifi' },
-    { value: 'Parking', label: 'Parking' },
-    { value: 'Music', label: 'Music' },
-    { value: 'Air Condition', label: 'Air Condition' },
-    { value: 'Entertainement', label: 'Entertainement' },
-  ]
 
 
   const workingHours = [
@@ -133,14 +239,6 @@ const BusinessFormAdding = () => {
     { value: 'Both', label: 'Both' },
   ]
 
-  const busCateOptions = [
-    { value: 'Hospitals', label: 'Hospitals' },
-    { value: 'Home Decors', label: 'Home Decors' },
-    { value: 'Packers & Movers', label: 'Packers & Movers' },
-    { value: 'Car Rental', label: 'Car Rental' },
-    { value: 'Restaurants', label: 'Restaurants' },
-  ]
-
 
   const foodItemTypes = [
     { value: 'Veg', label: 'Veg' },
@@ -148,27 +246,18 @@ const BusinessFormAdding = () => {
   ]
 
 
-
-  
-  // const handleFileChange = async (e) => {
-  //   const selectedFiles = Array.from(e.target.files);
-  //   const validFiles = selectedFiles.filter(file =>
-  //     file.type === 'image/jpeg' || file.type === 'image/png'
-  //   );
-
-  //   if (validFiles.length < selectedFiles.length) {
-  //     alert('Only JPEG and PNG files are allowed!');
-  //   }
-
-  // 
-  //   const base64Photos = await Promise.all(
-  //     validFiles.map(file => fileToBase64(file))
-  //   );
-
-  //   setBusinessPhotos((prevPhotos) => [...prevPhotos, ...base64Photos]);
-  // };
-
-
+  const handleBusinessDocFile = async (event) => {
+      const file = event.target.files[0]; 
+      if (file) {
+        const maxSize = 4 * 1024 * 1024; 
+        if (file.size > maxSize) {
+          alert("File size exceeds 4MB. Please upload a smaller file.");
+          return;
+        }
+    
+        setBusinessDoc(file);
+      }    
+  }
 
 
   const handleFileChange = async (e) => {
@@ -182,9 +271,7 @@ const BusinessFormAdding = () => {
       return file.type === 'image/jpeg' || file.type === 'image/png';
     });
   
-    // if (validFiles.length < selectedFiles.length) {
-    //   alert('Only JPEG and PNG files under 2MB are allowed!');
-    // }
+
     const base64Photos = await Promise.all(
       validFiles.map(file => fileToBase64(file))
     );
@@ -211,7 +298,7 @@ const BusinessFormAdding = () => {
 
   const removeFoodItem = (index) => {
     setFoodItemsArray((prevFoodItemsArray) =>
-      prevFoodItemsArray.filter((_, i) => i !== index) // Remove item at the given index
+      prevFoodItemsArray.filter((_, i) => i !== index)
     );
   };
 
@@ -222,12 +309,73 @@ const BusinessFormAdding = () => {
     );
   };
 
-  const handleAddingBusiness = (data) => {
-    console.log(data)
+
+
+
+
+  const handleAddingBusiness = async (data) => {
+
+    const formData = new FormData()
+    formData.append("userName" , data.userName);
+    formData.append("name" , data.businessName);
+    formData.append("title" , data.businessTitle);
+    formData.append("mobileNumber" , data.mobileNumber);
+    formData.append('email' , data.email);
+    formData.append('socialMediaLink' , data.socialMedia);
+    formData.append("categoryId" , data.businessCategory);
+    formData.append("yearlyTurnOver" , data.yearlyTurnOver);
+    formData.append("noOfEmployees" , data.noOfEmployees);
+    formData.append("yearOfEstablishment" , data.yearOfEstablishment);
+    formData.append("websiteAddress" , data.websiteAddress);
+    formData.append("GSTNumber" , data.GSTNumber);
+    multiAmentites.forEach((amenities) => {
+      console.log(amenities)
+      formData.append("amenities[]", amenities.value);
+    });
+    formData.append("servicesOffer" , data.servicesOffer);
+    formData.append("stateId" , data.businessState);
+    formData.append("cityId" , data.businessCity);
+    formData.append("pincodeId" , data.pincode);
+    formData.append("completeAddress" , data.completeAddress);
+    formData.append("landmark" , data.landmark);
+    formData.append("workingHours" , data.workingHours);
+    formData.append("file" ,  businessDoc);
+    formData.append("latitude" , selectedLocation?.lat);
+    formData.append("longitude", selectedLocation?.lng);
+
+    console.log("formData" , formData)
+    setModalIsOpen(true)
+    try {
+      await axios.post(`${config.api}business`, formData, {
+        headers: {
+          Authorization: `Bearer ${userToken}`, 
+        },
+      }).then((response) => {
+        console.log(response)
+        setModalIsOpen(false)
+        navigate('/business/add-photos' , { state: { response } })
+
+      }).catch((err) => {
+        console.log(err)
+        setModalIsOpen(false)
+      })
+      console.log("Response:", response.data);
+    } catch (error) {
+      setModalIsOpen(false)
+      // console.error("Error:", error.response ? error.response.data : error.message);
+    }
+
   }
 
   return (
     <div className="BusinessFormAdding bg-LightBlue bg-opacity-80">
+        <Modal
+            isOpen={modalIsOpen}
+            style={customStyles}
+            contentLabel="Example Modal"
+        >
+            <Loader/>
+        </Modal>
         <div className="inner-main-business-form-section py-50p">
           <div className="container">
             <div className="top-business-form-heading mb-10">
@@ -269,7 +417,7 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Business Title(optional)</p>
                                 </div>
-                                <Field type="text" name="businessTitle" placeholder='Enter Business Name*'
+                                <Field type="text" name="businessTitle" placeholder='Enter Business Title (optional)'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
                                 />                                
                               </div>
@@ -315,7 +463,7 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Select Sate*</p>
                                 </div>
-                                <Select options={stateOptions} 
+                                <Select options={states} 
                                   placeholder='Choose State'
                                   name='businessState'
                                   styles={{
@@ -336,8 +484,8 @@ const BusinessFormAdding = () => {
                                         
                                       }),
                                     }}
-                                  value={stateOptions.find(option => option.value === values.businessState)} 
-                                  onChange={(option) => setFieldValue('businessState', option ? option.value : '')}
+                                  value={states.find(option => option.value === values.businessState)} 
+                                  onChange={(option) => {setFieldValue('businessState', option ? option.value : '') , getCities(option.value)}}
                                   
                                 />                               
                               </div>
@@ -345,7 +493,7 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Select City*</p>
                                 </div>
-                                <Select options={cityOptions} 
+                                <Select options={cities} 
                                   placeholder='Choose City'
                                   name='businessCity'
                                   styles={{
@@ -366,8 +514,8 @@ const BusinessFormAdding = () => {
                                         
                                       }),
                                     }}
-                                  value={cityOptions.find(option => option.value === values.businessCity)} 
-                                  onChange={(option) => setFieldValue('businessCity', option ? option.value : '')}
+                                  value={cities.find(option => option.value === values.businessCity)} 
+                                  onChange={(option) => {setFieldValue('businessCity', option ? option.value : '') , getPincodes(option.value)}}
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-12">
@@ -390,9 +538,30 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Pincode*</p>
                                 </div>
-                                <Field type="text" name="pincode" placeholder='Enter Pincode '
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.pincode && touched.pincode ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                />                                
+                                <Select options={pincodes} 
+                                  placeholder='Choose Pincode'
+                                  name='pincode'
+                                  styles={{
+                                      control: (baseStyles, state) => ({
+                                        ...baseStyles,
+                                        borderRadius: 10,
+                                        paddingLeft: 8,
+                                        paddingTop: 4,
+                                        paddingBottom: 4,
+                                        borderWidth: 1,
+                                        outlineWidth: 0,
+                                        borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
+                                        fontSize: 16,
+                                        minWidth: '100%',
+                                        height: 50,
+                                        // borderColor: state.isFocused ? 'grey' : 'red',
+                                        boxShadow: state.isFocused ? 'none' : 'none',
+                                        
+                                      }),
+                                    }}
+                                  value={pincodes.find(option => option.value === values.pincode)} 
+                                  onChange={(option) => setFieldValue('pincode', option ? option.value : '')}
+                                />                                    
                               </div>
                             </div>
                           </div>
@@ -436,7 +605,7 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Business Category*</p>
                                 </div>
-                                <Select options={busCateOptions} 
+                                <Select options={busCates} 
                                   placeholder='Select Business Category'
                                   name='businessCategory'
                                   styles={{
@@ -457,8 +626,8 @@ const BusinessFormAdding = () => {
                                         
                                       }),
                                     }}
-                                  value={busCateOptions.find(option => option.value === values.businessCategory)} 
-                                  onChange={(option) => setFieldValue('businessCategory', option ? option.value : '')}
+                                  value={busCates.find(option => option.value === values.businessCategory)} 
+                                  onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-6">
@@ -506,7 +675,7 @@ const BusinessFormAdding = () => {
                                   <p className='text-BusinessFormLabel'>Business Registration Documents*</p>
                                 </div>
                                 <div className="file-upload-outer-section-custom bg-ProfileScreensBg rounded-10p overflow-hidden relative h-50p">
-                                    <input type="file" name="" id="" onChange={(e) => setBusinessDoc(e.target.files[0])} className={`h-full w-full opacity-0 relative z-10 cursor-pointer ${businessDoc ? 'hidden' : 'block'}`}/>
+                                    <input type="file" name="" id="" onChange={(e) => handleBusinessDocFile(e)} className={`h-full w-full opacity-0 relative z-10 cursor-pointer ${businessDoc ? 'hidden' : 'block'}`}/>
                                     {businessDoc ? 
                                       <div className="inner-file-upload-butifier absolute top-1/2 left-1/2 w-full flex items-center px-5 gap-x-5 justify-between">
                                         <p className='text-Black'>{businessDoc?.name}</p>
@@ -523,7 +692,7 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Amenities*</p>
                                 </div>
-                                <Select options={amenities} 
+                                <Select options={busAmenities} 
                                   placeholder='Select Amenities'
                                   isMulti
                                   components={animatedComponents}
@@ -607,7 +776,7 @@ const BusinessFormAdding = () => {
                             </div>
                           </div>
 
-                          <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
+                          <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white hidden">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
                               <h4 className='text-lg font-medium text-Secondary'>Business Pics and media</h4>
                             </div>
@@ -638,7 +807,7 @@ const BusinessFormAdding = () => {
                           </div>
 
 
-                          <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
+                          <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white hidden">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
                               <h4 className='text-lg font-medium text-Secondary'>Items and info</h4>
                             </div>
@@ -709,7 +878,7 @@ const BusinessFormAdding = () => {
                             </div>
                           </div>
                           <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
-                              <button type='button' onClick={handleSubmit} disabled={!businessDoc || businessPhotos.length === 0} className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Submit Business Listing</button>
+                              <button type='button' onClick={handleSubmit} disabled={!businessDoc} className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Submit Business Listing</button>
                           </div>
                         </div>
                       </Form>

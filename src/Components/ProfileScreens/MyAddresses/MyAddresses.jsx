@@ -1,12 +1,66 @@
-import React from 'react';
+import React , {useState , useEffect} from 'react';
 import PropTypes from 'prop-types';
 import './MyAddresses.scss';
 import ProfileSideBar from '../../../Shared/ProfileSideBar/ProfileSideBar';
 import { useNavigate } from 'react-router-dom';
+import { config } from '../../../env-services';
+import axios from 'axios';
 
 const MyAddresses = () => {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const [userToken ,  setUserToken] = useState();
+  const [allAddress , setAllAddress] = useState("");
+
+
+    useEffect(() => {
+      getUserDetails()
+      getAddresses()
+    } , [])
+  
+  
+    const getUserDetails = async () => {
+      const response = await localStorage.getItem('authToken');
+      const userParse = JSON.parse(response);
+      setUserToken(userParse);
+      // getAllAddresses(userParse)
+    };
+
+
+    // const getAllAddresses = async(token) => {
+    //     await axios.post(`${config.api}address`, {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`, 
+    //       },
+    //     }).then((response) => {
+    //       // console.log(response);
+    //       setAllAddress(response)
+    //     }).catch((err) => {
+    //       console.log(err)
+    //     })
+    // }
+
+
+    const getAddresses = async() => {
+      console.log(userToken)
+      try {
+        await fetch(`${config.api}address` , {
+          method: 'GET',
+          headers: {
+              "Authorization": `Bearer ${userToken}` ,
+          }
+      }).then((response) => [
+        console.log( "response" , response)
+      ]).catch((err) => {
+        console.log(err)
+      })
+      }catch (error) {
+
+      }
+    }
+
+  
 
   const addresses = [
     {
@@ -60,8 +114,8 @@ const MyAddresses = () => {
           </div>
         </div>
         <div className="container">
-          <div className=" profile-section-navigation-details-card bg-white py-8 px-8 rounded-20p">
-              <div className="grid grid-cols-12 gap-9">
+          <div className=" profile-section-navigation-details-card bg-white py-8 px-8 rounded-20p similar-profile-sidebar-outer">
+              <div className="grid grid-cols-12 gap-9 profile-sidebar-main-grid">
                 <div className="col-span-3 left-sidebar-section-proile border-r border-BorderColor border-opacity-40">
                     <ProfileSideBar/>
                 </div>

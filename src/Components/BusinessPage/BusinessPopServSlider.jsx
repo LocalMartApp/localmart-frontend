@@ -90,6 +90,30 @@ const BusinessPopServSlider = ({ title }) => {
                         delay: 2500,
                         disableOnInteraction: false
                     }}
+                    breakpoints={{
+                        2000: {
+                            slidesPerView: 5,
+                            
+                        },
+                        1700 : {
+                            slidesPerView: 5
+                        },
+                        1200: {
+                            slidesPerView: 5
+                        },
+                        992: {
+                            slidesPerView: 4
+                        },
+                        674: {
+                            slidesPerView: 3
+                        },
+                        375: {
+                            slidesPerView: 1,
+                        },
+                        75: {
+                            slidesPerView: 1
+                        }
+                    }}
                     modules={[ Autoplay , Navigation]}
                 >
                     {popularServices.map((items , index) => {

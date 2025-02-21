@@ -22,6 +22,8 @@ import TermsandConditions from './Components/PoliciesPages/TermsandConditions'
 import PrivacyPolicy from './Components/PoliciesPages/PrivacyPolicy'
 import ScrollToTop from './utils/ScrollToTop'
 import React, { useState } from 'react'
+import { AuthProvider } from './utils/AuthContext'
+import ProtectedRoutes from './utils/ProtectedRoutes'
 
 
 
@@ -30,31 +32,34 @@ const Layout = () => {
 
 
   return (
-      <>
+      <AuthProvider>
         <Header/>
         <Routes>
           <Route exact={true} Component={Home} path='/' />
-          <Route exact={true} Component={MyProfile} path='/profile/my-profile' />
-          <Route exact={true} Component={MyAddresses} path='/profile/my-addresses' />
-          <Route exact={true} Component={MyBusiness} path='/profile/my-businesess' />
-          <Route exact={true} Component={MyFavourites} path='/profile/my-favourites' />
-          <Route exact={true} Component={Notifications} path='/profile/notifications' />
           <Route exact={true} Component={BusinessPage} path='/businesses'/>
           <Route exact={true} Component={UserLogin} path='/login' />
           <Route exact={true} Component={UserRegister} path='/register' />
           <Route exact={true} Component={CompleteRegistration} path='/register-details' />
           <Route exact={true} Component={SearchPage} path='/search' />
           <Route exact={true} Component={SearchDetails} path='/search/complete-details/:id'/>
-          <Route exact={true} Component={BusinessFormAdding} path='/business/add-business' />
-          <Route exact={true} Component={BusinessUploadMedia} path='/business/add-photos' />
-
           {/* Ploicies Pages */}
           <Route exact={true} Component={CancellationPolicy} path='/cancellation-policy'/>
           <Route exact={true} Component={TermsandConditions} path='/terms-conditions'/>
           <Route exact={true} Component={PrivacyPolicy} path='/privacy-policy'/>
+          {/* Protected Routes */}
+          <Route Component={ProtectedRoutes}>
+            <Route exact={true} Component={MyProfile} path='/profile/my-profile' />
+            <Route exact={true} Component={MyAddresses} path='/profile/my-addresses' />
+            <Route exact={true} Component={MyBusiness} path='/profile/my-businesess' />
+            <Route exact={true} Component={MyFavourites} path='/profile/my-favourites' />
+            <Route exact={true} Component={Notifications} path='/profile/notifications' />
+            <Route exact={true} Component={BusinessFormAdding} path='/business/add-business' />
+            <Route exact={true} Component={BusinessUploadMedia} path='/business/add-photos' />
+          </Route>
+
         </Routes>
         <Footer/>
-      </>
+      </AuthProvider>
   )
 }
 

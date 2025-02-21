@@ -32,6 +32,30 @@ const SearchTopPicksSlider = () => {
             location: 'Rajahmundry - Kothapilli',
             opens: 'Opens at 10:30 AM',
         },
+        {
+            image: BusinessImage,
+            title: 'Sri Megha Restaurant',
+            location: 'Rajahmundry - Kothapilli',
+            opens: 'Opens at 10:30 AM',
+        },
+        {
+            image: BusinessImage,
+            title: 'Kritunga Restaurant',
+            location: 'Rajahmundry - LalaCheruvu',
+            opens: 'Opens at 11:30 AM',
+        },
+        {
+            image: BusinessImage,
+            title: 'Paradise Biryani',
+            location: 'Rajahmundry - Bus stand',
+            opens: 'Opens at 09:00 AM',
+        },
+        {
+            image: BusinessImage,
+            title: 'Sri Megha Restaurant',
+            location: 'Rajahmundry - Kothapilli',
+            opens: 'Opens at 10:30 AM',
+        },
 
     ]
   return (
@@ -50,10 +74,10 @@ const SearchTopPicksSlider = () => {
                 className="mySwiper"
                 grabCursor={true}
                 centeredSlides={true}
-                slidesPerView={1}
+                slidesPerView={4}
                 speed={600}
                 loop={true}
-                spaceBetween={0}
+                spaceBetween={20}
                 preventClicks={true}
                 navigation={{
                     clickable: true,
@@ -63,6 +87,30 @@ const SearchTopPicksSlider = () => {
                 autoplay={{
                     delay: 2500,
                     disableOnInteraction: false
+                }}
+                breakpoints={{
+                    2000: {
+                        slidesPerView: 4,
+                        
+                    },
+                    1700 : {
+                        slidesPerView: 4
+                    },
+                    1200: {
+                        slidesPerView: 4
+                    },
+                    992: {
+                        slidesPerView: 3
+                    },
+                    674: {
+                        slidesPerView: 2
+                    },
+                    375: {
+                        slidesPerView: 1,
+                    },
+                    75: {
+                        slidesPerView: 1
+                    }
                 }}
                 modules={[ Autoplay , Navigation]}
             >

@@ -6,4 +6,70 @@
             }
         }
     }
+    .inner-left-searched-cards-sec-after-991-layout {
+        display: none;
+    }
+
+}
+
+
+
+
+@media only screen and (max-width: 991.90px) {
+    .SearchPage {
+        .inner-left-searched-cards-sec-before-991 {
+            display: none;
+        }
+        .inner-left-searched-cards-sec-after-991-layout {
+            display: flex !important;
+        }
+        .sorting-buttons-grid-section {
+            display: flex !important;
+            flex-wrap: wrap;
+            gap: 20px !important;
+        }
+        .breadcrum-inner-section {
+            ul {
+                flex-wrap: wrap;
+                gap: 10px 20px !important;
+            }
+        }
+    }
+}
+
+.rating-place-changed {
+    display: none !important;
+}
+
+@media only screen and (max-width: 674.90px) {
+    .SearchPage {
+        .inner-left-searched-cards-sec-before-991 {
+            display: none;
+        }
+        .inner-left-searched-cards-sec-after-991-layout {
+            display: flex !important;
+            .bottom-business-card-number-det {
+                flex-wrap: wrap !important;
+                gap: 15px;
+            }
+            .opens-at-location-combined {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            .people-rated-top-search-sec {
+                display: none;
+            }
+            .absolute-rating-business {
+                display: none;
+            }
+            .rating-place-changed {
+                display: flex !important;
+            }
+            .top-image-part-hotel-desc {
+                h4 {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
 }

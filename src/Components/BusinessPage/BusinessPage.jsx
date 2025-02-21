@@ -221,7 +221,7 @@ const BusinessPage = () => {
                       </div>
                   </div>
                   <div className="bottom-all-categories-section">
-                      <div className="grid grid-cols-6 gap-x-90p gap-y-60p">
+                      <div className="grid grid-cols-6 gap-x-90p gap-y-60p business-page-categories-sec">
                         {allCategories.map((items , index) => {
                           return (
                             <button type='button' key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-3">
@@ -260,13 +260,13 @@ const BusinessPage = () => {
                 </div>
               </div>
               <div className="business-sec-3-main-cards-section pt-10">
-                <div className="grid grid-cols-2 gap-5">
+                <div className="grid grid-cols-2 gap-5 verified-sellers-business-cards-grid">
                   {VerifiedSelles.map((items , index) => {
                     return (
                       <div className="single-business-sec-3-card  bg-white rounded-xl overflow-hidden group" key={index}>
-                        <div className="inner-verified-sellers-card-sec grid grid-cols-12">
-                          <div className="left-image-section-bus-sec-3 col-span-4 overflow-hidden">
-                              <img src={items.image} className='h-full max-h-[200px] group-hover:scale-125 duration-500' alt="" />
+                        <div className="inner-verified-sellers-card-sec grid grid-cols-12 h-full">
+                          <div className="left-image-section-bus-sec-3 col-span-4 overflow-hidden h-full">
+                              <img src={items.image} className='h-full object-cover group-hover:scale-125 duration-500' alt="" />
                           </div>
                           <div className="right-side-business-card-details relative p-5 col-span-8">
                             <div className="inner-seller-business-card-details flex flex-col justify-between h-full">
@@ -285,10 +285,10 @@ const BusinessPage = () => {
                               </div>
                               <div className="bottom-business-card-number-det flex items-center justify-between w-full mt-5">
                                 <div className="number-business-btn">
-                                  <button type="button" className='font-medium text-white bg-Green rounded-full py-[6px] px-6'>Show Number</button>
+                                  <button type="button" className='font-medium text-white bg-Green rounded-full  text-sm py-[7px] px-5'>Show Number</button>
                                 </div>
                                 <div className="send-enquiry-btn">
-                                  <button type="button" className='font-medium text-white bg-Primary rounded-full py-[6px] px-6'>Send Enquiry</button>
+                                  <button type="button" className='font-medium text-white bg-Primary rounded-full text-sm  py-[7px] px-5'>Send Enquiry</button>
                                 </div>
                               </div>
                             </div>
@@ -326,7 +326,7 @@ const BusinessPage = () => {
                   </div>
                 </div>
                 <div className="brands-business-page-main-sec mt-10">
-                  <div className="grid grid-cols-6 gap-16">
+                  <div className="grid grid-cols-6 gap-16 brands-business-grid-sec">
                     {exploreBrands.map((items , index) => {
                       return (
                         <div className="single-brand-sec-business" key={index}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './Header.scss';
 import Logo from '../../assets/images/logo-svg.svg';
@@ -6,6 +6,10 @@ import LanSvg from '../../assets/images/language-svg.svg'
 import MarqueeSlider from './MarqueeSlider';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
+import { useAuth } from '../../utils/AuthContext';
+
+import ProfileDummyImg from '../../assets/images/profile-dummy-image.svg';
+
 
 
 const Header = () => {
@@ -26,6 +30,8 @@ const Header = () => {
     setLanguage(!language)
   }
 
+  const { authToken, logout } = useAuth();
+
 
 
   const options = [
@@ -33,7 +39,7 @@ const Header = () => {
     { value: 'strawberry', label: 'Strawberry' },
     { value: 'vanilla', label: 'Vanilla' }
   ]
-  
+
 
   return (
     <div className="Header">
@@ -159,17 +165,26 @@ const Header = () => {
                         <p className='text-Black text-lg font-medium'>Advertise</p>
                       </button>
                     </div>
-                    <div className="login-button-header">
-                      <button type="button" onClick={() => navigate('/login')} className='bg-Primary h-10 border-Primary border-2 px-3 overflow-hidden rounded-full flex items-center gap-2 min-w-[190px] justify-center duration-300 group hover:bg-transparent  '>
-                        <i className="ri-login-circle-fill text-white text-lg duration-300 group-hover:text-Primary"></i>
-                        <p className='text-white font-medium text-lg duration-300 group-hover:text-Primary'>Login | Signup</p>
-                      </button>
-                    </div>
+                    {authToken ? 
+                      <div className="profile-image-showing-button">
+                        <button type="button" onClick={() => navigate('/profile/my-profile')}>
+                          <img src={ProfileDummyImg} className='w-10 h-10'/>
+                        </button>
+                      </div>
+                    :  
+                      <div className="login-button-header">
+                        <button type="button" onClick={() => navigate('/login')} className='bg-Primary h-10 border-Primary border-2 px-3 overflow-hidden rounded-full flex items-center gap-2 min-w-[190px] justify-center duration-300 group hover:bg-transparent  '>
+                          <i className="ri-login-circle-fill text-white text-lg duration-300 group-hover:text-Primary"></i>
+                          <p className='text-white font-medium text-lg duration-300 group-hover:text-Primary'>Login | Signup</p>
+                        </button>
+                      </div>
+                    }
+                    
                   </div>
                 </div>
-                <div className="header-mobile-menu-section">
-                  <button type="button">
-                    
+                <div className="header-mobile-menu-section text-center">
+                  <button type="button" className='duration-300'>
+                    <i className="text-3xl ri-menu-3-line "></i>
                   </button>
                 </div>
               </div>

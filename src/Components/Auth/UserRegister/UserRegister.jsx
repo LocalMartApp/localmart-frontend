@@ -17,13 +17,13 @@ const UserRegister = () => {
         <div className="userlogin-main-section bg-ProfileScreensBg py-20">
           <div className="container">
             <div className="inner-user-register-grid-section-outer bg-white rounded-20p overflow-hidden">
-              <div className="grid grid-cols-12">
-                <div className="col-span-6">
-                  <div className="left-user-register-image">
-                    <img src={LeftRegisterImage} alt="" />
+              <div className="grid grid-cols-12 user-register-main-form-image-grid">
+                <div className="col-span-6 left-user-basic-reg-image">
+                  <div className="left-user-register-image h-full">
+                    <img src={LeftRegisterImage} className='h-full object-cover' alt="" />
                   </div>
                 </div>
-                <div className="col-span-6">
+                <div className="col-span-6 right-user-basic-reg-form">
                   <div className="right-side-user-register-form-section px-12 py-10">
                     <div className="top-register-heading-section mb-10">
                       <h2 className='text-2xl font-medium text-Black'>Regitser your account</h2>

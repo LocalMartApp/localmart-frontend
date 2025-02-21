@@ -13,6 +13,9 @@ import axios from 'axios';
 import { config } from '../../../env-services';
 import Modal from 'react-modal';
 import Loader from '../../../utils/Loader/Loader';
+import { useAuth } from '../../../utils/AuthContext';
+
+
 
 
 
@@ -21,6 +24,8 @@ const UserEmailLogin = () => {
 
     const navigate = useNavigate();
 
+    
+    const { login } = useAuth();
 
     const [captchaVerified, setCaptchaVerified] = useState(false);
     const [passwordHandle , setPasswordHandle] = useState(false);
@@ -70,6 +75,7 @@ const UserEmailLogin = () => {
               setModalIsOpen(false)
               toast.success('Logged in Successfully');
               console.log(response , 'userreg-res');
+              login(response?.data?.data?.token)
               navigate('/profile/my-profile')
           }
         })
@@ -127,14 +133,14 @@ const UserEmailLogin = () => {
                             <button type="button" className='text-sm text-Secondary text-medium'>Forgot Passowrd ?</button>
                           </div>
                         </div>
-                        <div className="grid grid-cols-12 mt-5 gap-x-5">
-                          <div className="recaptcha-section col-span-7">
+                        <div className="flex flex-col mt-5 gap-y-5">
+                          <div className="recaptcha-section ">
                             <ReCAPTCHA
                                 sitekey="6LeQ-7cqAAAAANpdsCQ1MFxudbS4-gS7sBVw8vIT"
                                 onChange={handleCaptchaChange}
                             />
                           </div>
-                          <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
+                          <div className="bottom-form-submitter  overflow-hidden relative group ">
                             <button type='submit' disabled={!captchaVerified} onClick={handleSubmit} className='w-full py-3 px-4 rounded-xl text-white font-semibold text-lg h-full bg-Primary disabled:bg-opacity-35 '>Login</button>
                           </div>
                         </div>

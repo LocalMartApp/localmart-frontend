@@ -1,17 +1,39 @@
-import React ,  {useState}  from 'react';
+import React ,  {useState , useEffect}  from 'react';
 import PropTypes from 'prop-types';
 import './MyProfile.scss';
 import ProfileSideBar from '../../../Shared/ProfileSideBar/ProfileSideBar';
 import ProfileImage from '../../../assets/images/profile-image.svg';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { config } from '../../../env-services';
+
+
+
 
 const MyProfile = () => {
 
   const navigate = useNavigate()
-
-
+  const [userToken ,  setUserToken] = useState();
+  const [userData , setUserData] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
+  
+  
+    useEffect(() => {
+      getUserDetails()
+  
+    } , [])
+  
+  
+    const getUserDetails = async () => {
+      const response = await localStorage.getItem('authToken');
+      const userParse = JSON.parse(response);
+      setUserToken(userParse);
+      getPorfileData(userParse)
+    };
+
+
+
 
   function openModal() {
     setIsOpen(true);
@@ -64,6 +86,19 @@ const MyProfile = () => {
     }
   ]
 
+  const getPorfileData = async(token) => {
+        await axios.post(`${config.api}address`, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }).then((response) => {
+          // console.log(response);
+          setUserData(response)
+        }).catch((err) => {
+          console.log(err)
+        })
+  }
+
   return (
     <div className="MyProfile">
       <Modal
@@ -97,8 +132,8 @@ const MyProfile = () => {
           </div>
         </div>
         <div className="container">
-          <div className=" profile-section-navigation-details-card bg-white py-8 px-8 rounded-20p">
-              <div className="grid grid-cols-12 gap-9">
+          <div className=" profile-section-navigation-details-card bg-white py-8 px-8 rounded-20p similar-profile-sidebar-outer">
+              <div className="grid grid-cols-12 gap-9 profile-sidebar-main-grid">
                 <div className="col-span-3 left-sidebar-section-proile border-r border-BorderColor border-opacity-40">
                     <ProfileSideBar/>
                 </div>

@@ -100,6 +100,16 @@ bun{
 }
 
 
+@media only screen and (max-width: 991.90px) {
+  .similar-profile-sidebar-outer .profile-sidebar-main-grid {
+    display: block;
+  }
+  .similar-profile-sidebar-outer .profile-sidebar-main-grid .left-sidebar-section-proile {
+    border: none !important;
+  }
+}
+
+
 @media only screen and (max-width: 674.90px) {
   .container {
     margin: 0px auto !important;
