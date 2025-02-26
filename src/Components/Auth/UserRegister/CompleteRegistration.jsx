@@ -100,6 +100,19 @@ const CompleteRegistration = () => {
             name: 'hostel'
         }
     ]
+
+    
+    function numbersOnly(e) {
+        var key = e.key;
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            e.preventDefault();
+        }
+        else {
+            console.log("You pressed a key: " + key);
+        }
+    }
+
     
 
     const completeRegValues = {
@@ -276,7 +289,7 @@ const CompleteRegistration = () => {
                                                             </div>
                                                         </div>
                                                         <div className="form-inputsec relative col-span-6">
-                                                            <Field type="number" name="mobileNumber" placeholder='Enter Mobiile Number*'
+                                                            <Field type="tel" name="mobileNumber" placeholder='Enter Mobiile Number*' onKeyPress={(e) => numbersOnly(e)} maxLength={10}
                                                                 className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-70p pr-5 rounded-xl bg-white w-full text-Black  ${errors.mobileNumber && touched.mobileNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                                             />                                
                                                             <div className="email-input-icon pr-3 border-r border-r-BorderColor absolute left-4 top-1/2 h-full flex items-center">
@@ -299,7 +312,7 @@ const CompleteRegistration = () => {
                                                                 {({ field, form }) => (
                                                                     <input
                                                                         {...field}
-                                                                        type="date"
+                                                                        // type="date"
                                                                         onFocus={(e) => (e.target.type = "date")}
                                                                         onBlur={(e) => {
                                                                             if (!e.target.value) e.target.type = "text";
@@ -397,7 +410,7 @@ const CompleteRegistration = () => {
                                                                     //   borderColor: state.isFocused ? 'grey' : 'red',
                                                                     }),
                                                                   }}
-                                                                  value={pincodeOptions1.find(option => option.value === values.city)} 
+                                                                  value={pincodeOptions1.find(option => option.value === values.pincode)} 
                                                                   onChange={(option) => setFieldValue('pincode', option ? option.value : '')}
                                                             />
                                                             {/* <Field type="text" name="pincode" placeholder='Enter Pincode*'

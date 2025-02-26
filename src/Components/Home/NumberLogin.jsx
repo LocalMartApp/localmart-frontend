@@ -17,6 +17,19 @@ const NumberLogin = () => {
         number: ''
     }
 
+    
+  function numbersOnly(e) {
+    var key = e.key;
+    var regex = /[0-9]|\./;
+    if (!regex.test(key)) {
+      e.preventDefault();
+    }
+    else {
+      console.log("You pressed a key: " + key);
+    }
+}
+
+
 
     const handleNumberLogin = (values) => {
         console.log('values-Number' , values.number );
@@ -52,7 +65,7 @@ const NumberLogin = () => {
                     {({  errors, touched , handleSubmit}) => (
                     <Form>
                         <div className="form-inputsec relative">
-                            <Field type="number" name="number" placeholder='Enter Mobile Number*'
+                            <Field type="tel" name="number" placeholder='Enter Mobile Number*' onKeyPress={(e) => numbersOnly(e)} maxLength={10}
                                 className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-4 pl-20 pr-5 rounded-xl bg-white w-full text-Black  ${errors.number && touched.number ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                             />
                             <div className="email-input-icon pr-4 border-r border-r-BorderColor absolute left-4 top-1/2">

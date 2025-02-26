@@ -21,19 +21,26 @@ const MyProfile = () => {
   
     useEffect(() => {
       getUserDetails()
-  
     } , [])
   
   
     const getUserDetails = async () => {
-      const response = await localStorage.getItem('authToken');
+      const response = localStorage.getItem("authToken");
+      if (!response) return;
+    
       const userParse = JSON.parse(response);
       setUserToken(userParse);
-      getPorfileData(userParse)
+      getPorfileData(userParse);
     };
 
 
 
+    const formatDate = (isoString) => {
+      return new Date(isoString)
+        .toLocaleDateString("en-GB")
+        .replace(/\//g, "-");
+    };
+    
 
   function openModal() {
     setIsOpen(true);
@@ -58,15 +65,15 @@ const MyProfile = () => {
   const firstNameDetails = [
     {
       title: 'First Name',
-      desc: 'Carlson Jason'
+      desc: userData?.firstName
     },
     {
       title: 'Last Name',
-      desc: 'Jason Doe'
+      desc: userData?.lastName
     },
     {
       title: 'Date Of Birth',
-      desc: '18-12-1995'
+      desc: userData?.dateOfBirth
     }
   ]
 
@@ -74,28 +81,40 @@ const MyProfile = () => {
   const emailDetails = [
     {
       title: 'Email Address',
-      desc: 'carlsonjason1234@gmail.com'
+      desc: userData?.email
     },
     {
       title: 'Phone Number',
-      desc: '+91 915 845 9541'
+      desc: userData?.mobileNumber
     },
     {
-      title: 'Gender',
-      desc: 'Male'
+      title: 'User Since',
+      desc: formatDate(userData?.createdAt)
+    }
+  ]
+
+  const localityDetails = [
+    {
+      title: 'Country',
+      desc: userData?.country?.name
+    },
+    {
+      title: 'City',
+      desc: userData?.city?.name
     }
   ]
 
   const getPorfileData = async(token) => {
-        await axios.post(`${config.api}address`, {
+        await axios.get(`${config.api}auth/user-details`, {
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: "Bearer " + token, 
+            "content-type": "application/json"
           },
         }).then((response) => {
           // console.log(response);
-          setUserData(response)
+          setUserData(response?.data?.data)
         }).catch((err) => {
-          console.log(err)
+          // console.log(err)
         })
   }
 
@@ -150,20 +169,20 @@ const MyProfile = () => {
                       </div>
                     </div>
                     <div className="profile-details-main-cards-section flex flex-col gap-y-6 mt-4">
-                      <div className="profile-card flex items-center gap-x-10 justify-between px-5 py-4 border border-ProfileCardBorder rounded-[15px]">
+                      <div className="profile-card flex items-center gap-x-10 justify-between pl-5 pr-8 py-4 border border-ProfileCardBorder rounded-[15px]">
                         <div className="left-image-name-section-profile flex items-center gap-6">
                           <div className="profile-image">
                             <img src={ProfileImage} className='rounded-full' alt="" />
                           </div>
                           <div className="profile-details-prof">
-                            <h6 className='text-Black font-medium'>Carlson Jason Doe</h6>
-                            <p className='text-LightText'>carlsonjason1234@gmail.com</p>
+                            <h6 className='text-Black font-medium'>{userData?.firstName} {userData?.lastName} </h6>
+                            <p className='text-LightText'>{userData?.email}</p>
                           </div>
                         </div>
-                        <div className="right-phone-number-prof-section flex items-center gap-x-[15px]">
-                          <i class="ri-phone-fill text-ThemeGreen text-lg"></i>
-                          <p className='text-ThemeGreen font-medium text-lg'>+91 954 845 2546</p>
-                        </div>
+                        <button type='button' className="right-phone-number-prof-section flex items-center gap-x-[15px]">
+                          <i class="ri-upload-cloud-2-fill text-Secondary"></i>
+                          <p className='text-Secondary font-medium'>Update Profile image</p>
+                        </button>
                       </div>
                       <div className="profile-information-details-bottom-part  px-5 py-4 border border-ProfileCardBorder rounded-[15px]">
                           <div className="left-sdie-profile-info-heading">
@@ -179,8 +198,18 @@ const MyProfile = () => {
                               )
                             })}
                           </div>
-                          <div className="combined-details-screen-profile flex items-center gap-20">
+                          <div className="combined-details-screen-profile flex items-center gap-20  mb-12">
                             {emailDetails.map((items , index)=> {
+                              return (
+                                <div className="single-detail-profile-sec" key={index}>
+                                  <p className='text-LightBlack opacity-50'>{items.title}</p>
+                                  <h6 className='text-Black '>{items.desc}</h6>
+                                </div>
+                              )
+                            })}
+                          </div>
+                          <div className="combined-details-screen-profile flex items-center gap-20">
+                            {localityDetails.map((items , index)=> {
                               return (
                                 <div className="single-detail-profile-sec" key={index}>
                                   <p className='text-LightBlack opacity-50'>{items.title}</p>

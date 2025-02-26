@@ -44,6 +44,16 @@ export const completeUserRegValidation = yup.object().shape({
     pincode: yup.string().required('Please Enter Pincode'),
 })
 
+
+export const AddAddressValidationSchema = yup.object().shape({
+    addressType: yup.string().required('Please Select Address Type'),
+    address:  yup.string().required('Please Enter Complete Address'),
+    state: yup.string().required('Please Select State'),
+    city: yup.string().required('Please Select City'),
+    pincode: yup.string().required('Please Enter Pincode'),
+})
+
+
 export const businessFormAddValidation = yup.object().shape({
     userName: yup.string().required('Please Enter User Name'),
     businessName: yup.string().required('Please Enter Business Name'),
@@ -68,6 +78,13 @@ export const businessFormAddValidation = yup.object().shape({
     businessState: yup.string().required('Please select this field'),
     businessCity: yup.string().required('Please select this field'),
     
+})
+
+
+export const businessMediaValidation = yup.object().shape({
+    itemName:  yup.string().notRequired(),
+    itemType:  yup.string().notRequired(),
+    itemPrice: yup.string().notRequired(),
 })
 
 // export const signupschema = yup.object().shape({

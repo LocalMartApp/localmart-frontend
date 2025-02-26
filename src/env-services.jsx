@@ -1,5 +1,5 @@
 
-const storedToken = localStorage.getItem('token');
+const storedToken = localStorage.getItem('authToken');
 const tokenObject = storedToken ? JSON.parse(storedToken) : null;
 const token = tokenObject ? tokenObject.token : null;
 

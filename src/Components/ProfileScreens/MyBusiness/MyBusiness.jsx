@@ -83,7 +83,7 @@ const MyBusiness = () => {
                                   </div>
                               </div>
                             </button>
-                            <button type='button' className="single-mybusiness-card empty-mybusiness-cardbtn shadow-lg rounded-[15px] border border-dashed border-BorderColor group overflow-hidden relative flex items-center justify-center">
+                            <button type='button' onClick={() => navigate('/business/add-business')} className="single-mybusiness-card empty-mybusiness-cardbtn shadow-lg rounded-[15px] border border-dashed border-BorderColor group overflow-hidden relative flex items-center justify-center">
                                 <div className="inner-empty-business-card flex flex-col gap-5 items-center">
                                     <div className="top-icon-add-business-icon">
                                       <img src={BusinessAddIcon} className='w-8 h-8 duration-500 group-hover:rotate-90' alt="" />

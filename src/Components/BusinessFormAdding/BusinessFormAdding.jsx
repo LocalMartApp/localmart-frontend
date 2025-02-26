@@ -17,6 +17,8 @@ import { GoogleMap , LoadScript , Marker , useJsApiLoader , StandaloneSearchBox 
 import { config } from '../../env-services';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../../utils/Loader/Loader';
+import toast from 'react-hot-toast';
+
 
 
 const animatedComponents = makeAnimated();
@@ -46,6 +48,7 @@ const BusinessFormAdding = () => {
   const [modalIsOpen ,  setModalIsOpen] = useState(false);
 
 
+
   const [busCates , setBusCates] = useState([]);
   const [busAmenities , setBusAmenities] = useState([]);
   const [states , setStates] = useState([]);
@@ -65,11 +68,12 @@ const BusinessFormAdding = () => {
 
 
   const getUserDetails = async () => {
-    const response = await localStorage.getItem('authToken');
+    const response = localStorage.getItem("authToken");
+    if (!response) return;
+  
     const userParse = JSON.parse(response);
     setUserToken(userParse);
   };
-
 
   const customStyles = {
     content: {
@@ -177,6 +181,17 @@ const BusinessFormAdding = () => {
     libraries: ['places']
   })
 
+  function numbersOnly(e) {
+      var key = e.key;
+      var regex = /[0-9]|\./;
+      if (!regex.test(key)) {
+        e.preventDefault();
+      }
+      else {
+        console.log("You pressed a key: " + key);
+      }
+  }
+
 
 
   const handlePlacesChange = () => {
@@ -194,9 +209,6 @@ const BusinessFormAdding = () => {
 
 
   // console.log(selectedLocation , "selectedLocation")
-
-
-
 
 
   const businessAddValues = {
@@ -234,8 +246,8 @@ const BusinessFormAdding = () => {
 
 
   const servicesOffered = [
-    { value: 'B2B (Business-to-Business)', label: 'B2B (Business-to-Business)' },
-    { value: 'B2C (Business-to-Consumer)', label: 'B2C (Business-to-Consumer)' },
+    { value: 'B2B', label: 'B2B (Business-to-Business)' },
+    { value: 'B2C', label: 'B2C (Business-to-Consumer)' },
     { value: 'Both', label: 'Both' },
   ]
 
@@ -330,7 +342,7 @@ const BusinessFormAdding = () => {
     formData.append("GSTNumber" , data.GSTNumber);
     multiAmentites.forEach((amenities) => {
       console.log(amenities)
-      formData.append("amenities[]", amenities.value);
+      formData.append("amenities", amenities.value);
     });
     formData.append("servicesOffer" , data.servicesOffer);
     formData.append("stateId" , data.businessState);
@@ -352,8 +364,15 @@ const BusinessFormAdding = () => {
         },
       }).then((response) => {
         console.log(response)
+       if(response?.data?.status == 'success') {
+        toast.success('Business Created Successfully');
         setModalIsOpen(false)
-        navigate('/business/add-photos' , { state: { response } })
+        const busId = response?.data?.data?._id
+        navigate('/business/add-photos', { state: { busId } })
+       }else {
+        toast.error('Error in Creating business');
+        setModalIsOpen(false)
+       }
 
       }).catch((err) => {
         console.log(err)
@@ -432,7 +451,7 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Mobile Number*</p>
                                 </div>
-                                <Field type="number" name="mobileNumber" placeholder='Enter Mobile Number*'
+                                <Field type="tel" name="mobileNumber" placeholder='Enter Mobile Number*' maxLength={10} onKeyPress={(e) => numbersOnly(e)}
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.mobileNumber && touched.mobileNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
@@ -515,7 +534,7 @@ const BusinessFormAdding = () => {
                                       }),
                                     }}
                                   value={cities.find(option => option.value === values.businessCity)} 
-                                  onChange={(option) => {setFieldValue('businessCity', option ? option.value : '') , getPincodes(option.value)}}
+                                  onChange={(option) => { console.log(option) , setFieldValue('businessCity', option ? option.value : '') , getPincodes(option.value)}}
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-12">

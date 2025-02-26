@@ -49,7 +49,7 @@ const UserEmailLogin = () => {
 
     const handleCaptchaChange = (value) => {
       if (value) {
-        console.log(value)
+        // console.log(value)
           setCaptchaVerified(true);
       } else {
           setCaptchaVerified(false);
