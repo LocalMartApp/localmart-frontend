@@ -1,4 +1,4 @@
-import React , {useState , useEffect} from 'react';
+import React , {useState , useEffect , useRef} from 'react';
 import PropTypes from 'prop-types';
 import BannerSlider from './BannerSlider';
 import { useNavigate } from 'react-router-dom';
@@ -33,7 +33,9 @@ import AppsSlider from './AppsSlider';
 import { useAuth } from '../../utils/AuthContext';
 import axios from 'axios';
 import { config } from '../../env-services';
-
+import Lottie from 'lottie-react';
+import SearchLoader from '../../assets/images/animated-logos/search-loader.json'
+import useSearchStore from '../../Store/useSearchStore';
 
 
 
@@ -42,7 +44,9 @@ const Home = () => {
 
   const navigate = useNavigate();
 
-  const { authToken } = useAuth()
+  const { authToken } = useAuth();
+
+  const { filters , setFilter , removeFilter , fetchSearchResults } = useSearchStore();
 
 
   const [headerBar , setHeaderBar] = useState(false);
@@ -52,13 +56,18 @@ const Home = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allCategoryOpen , setAllCategoryOpen] = useState(false);
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [searchSuggest , setSearchSuggest] = useState(false);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [citySelect ,  setCitySelect] = useState(null)
   const [cityOptions , setCityOptions] = useState([]);
   const [userCity, setUserCity] = useState(null);
+
+
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const debounceTimeout = useRef(null);
   
   
 
@@ -75,6 +84,22 @@ const Home = () => {
 
   useEffect(() => {
     getCities()
+    if (query.trim() === "") {
+      setSuggestions([]);
+      return;
+    }
+
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      fetchSuggestions(query);
+    }, 300); // Adjust debounce time as needed
+
+
+
 
     setTimeout(() => {
       openModal()
@@ -85,7 +110,7 @@ const Home = () => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
         const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-        console.log(response?.data?.address)
+        // console.log(response?.data?.address)
         const cityName = response.data.address.city || response.data.address.town;
         
         setUserCity(cityName); // Save the city name
@@ -101,9 +126,9 @@ const Home = () => {
 
     // getUserLocation();
 
-    return () => clearInterval(interval);
+    return () => {clearInterval(interval) , clearTimeout(debounceTimeout.current)};
 
-  }, []);
+  }, [query]);
 
 
   const getCities = async() => {
@@ -123,7 +148,28 @@ const Home = () => {
         }
       }
     });
-}
+  }
+
+  const fetchSuggestions = async (searchTerm) => {
+    try {
+      await axios.get(
+        `${config.api}search/suggestions?q=${searchTerm}`
+      ).then(resposne => {
+        setSuggestions(resposne?.data?.data?.suggestions);
+        setSearchSuggest(true);
+      }).catch((err) => {
+        console.log(err)
+      })
+    } catch (error) {
+      // console.error("Error fetching search suggestions:", error);
+    }
+  };
+
+
+  const handleSuggestionClick = async (data) => {
+    setFilter("searchKey", data?.suggestion);   
+    navigate('/search');                        
+};
 
 
 useEffect(() => {
@@ -134,11 +180,11 @@ useEffect(() => {
 
 
   const openLoaderModal = () => {
-    setIsOpen(true);
+    setModalIsOpen(true);
   }
 
   const closeLoaderModal = () => {
-    setIsOpen(false)
+    setModalIsOpen(false)
   }
 
 
@@ -163,7 +209,7 @@ useEffect(() => {
     openLoaderModal();
     setTimeout(() => {
       navigate('/search')
-    } , 3000)
+    } , 2000)
   }
 
   const openModal = () => setIsModalOpen(true);
@@ -250,35 +296,7 @@ useEffect(() => {
     },
   ]
 
-  // const cityOptions = [
-  //     { value: 'Rajahmundry', label: 'Rajahmundry' },
-  //     { value: 'Kakinada', label: 'Kakinada' },
-  //     { value: 'Bheemavaram', label: 'Bheemavaram' },
-  //     { value: 'Banglore', label: 'Banglore' },
-  //     { value: 'Palakollu', label: 'Palakollu' },
-  //     { value: 'Amalapuram', label: 'Amalapuram' },
-  //     { value: 'Samalkot', label: 'Samalkot' },
-  //     { value: 'Peddapuram', label: 'Peddapuram' },
-  //     { value: 'Pithapuram', label: 'Pithapuram' },
-  //     { value: 'Vizag', label: 'Vizag' },
-  //     { value: 'Vizayawada', label: 'Vizayawada' },
-  //     { value: 'Tuni', label: 'Tuni' },
-  // ]
 
-  const categoryOptions = [
-    { value: 'Restaurants', label: 'Restaurants' },
-    { value: 'Hostels & PG’s', label: 'Hostels & PG’s' },
-    { value: 'Wedding Halls', label: 'Wedding Halls' },
-    { value: 'Packers & Movers', label: 'Packers & Movers' },
-    { value: 'Dental Hospitals', label: 'Dental Hospitals' },
-    { value: 'Hospitals', label: 'Hospitals' },
-    { value: 'Gyms', label: 'Gyms' },
-    { value: 'Courier Services', label: 'Courier Services' },
-    { value: 'Hotel Rooms', label: 'Hotel Rooms' },
-    { value: 'Home Decors', label: 'Home Decors' },
-  ]
-
-  
 
 
   
@@ -297,11 +315,6 @@ useEffect(() => {
 
 
 
-
-
-
-
-
   return (
     <div className="Home relative">
       <Modal
@@ -310,7 +323,10 @@ useEffect(() => {
           contentLabel="Example Modal"
           
       >
-        <img src={LoadingImage} className='w-full h-full max-w-[500px] max-h-[500px] mx-auto' alt="" />
+        {/* <img src={LoadingImage} className='w-full h-full max-w-[500px] max-h-[500px] mx-auto' alt="" /> */}
+          <div className="nodata-found-section flex justify-center flex-col items-center px-8 py-8 w-full">
+            <Lottie animationData={SearchLoader} style={{ width: 350}}/>
+          </div>
         {/* <button type="button" className='text-Black font-medium text-lg' onClick={closeLoaderModal}>Close MODAL</button> */}
       </Modal>
       <div className="main-home-section">
@@ -320,137 +336,6 @@ useEffect(() => {
              <LoginModal isOpen={isModalOpen} closeModal={closeModal} />
            </div>
         }
-        <div className={`top-fixed-header-section hidden fixed left-0 w-full z-[99] shadow-customized duration-500 ${headerBar ? '-top-0 opacity-100 hidden' : '-top-full opacity-0'}`}>
-          <div className="inner-header-section bg-white py-5">
-            <div className="container">
-              <div className="grid grid-cols-12 items-center">
-                <div className="header-left-logo-section  text-left">
-                  <div className="logo-inner-section">
-                    <img src={Logo} className='max-h-[50px] w-auto' alt="" />
-                  </div>
-                </div>
-                <div className="header-search-section col-span-6">
-                  <div className="inner-seacrh-section grid grid-cols-12  bg-white border-BorderColor border  rounded-full py-1 pr-1 pl-4 justify-between">
-                      <div className="col-span-5">
-                          <div className="category-section flex items-center gap-2">
-                            <div className="left-category-logo-search w-[10%]">
-                              <i className=" ri-map-pin-line text-Primary text-xl"></i>
-                            </div>
-                            <div className="right-category-dropdown-section w-[80%]">
-                                {/* <button type='button'>
-                                    <div className="top-section-category-select flex items-center gap-3">
-                                      <p className='text-LightBlack text-sm'>Category</p>
-                                      <i className="ri-arrow-down-s-line text-LightBlack"></i>
-                                    </div>
-                                </button> */}
-                                <Select options={cityOptions} 
-                                    placeholder='City'
-                                    styles={{
-                                        control: (baseStyles, state) => ({
-                                          ...baseStyles,
-                                          borderRadius: 10,
-                                          paddingLeft: 0,
-                                          paddingTop: 4,
-                                          paddingBottom: 4,
-                                          borderWidth: 0,
-                                          outlineWidth: 0,
-                                          boxShadow: state.isFocused ? 'none' : 'none',
-
-                                        }),
-                                      }}
-                                    value={citySelect}
-                                    onChange={(option) => setCitySelect(option)}
-                                />
-                            </div>
-                          </div>
-                      </div>
-                      <div className="col-span-5">
-                        <div className="location-section flex items-center gap-2">
-                            <div className="left-location-logo-search w-[10%]">
-                              <i className="ri-file-list-3-line text-Primary text-xl"></i>
-                            </div>
-                            <div className="right-location-dropdown-section w-[80%]">
-                                {/* <button type='button'>
-                                    <div className="top-section-location-select flex items-center gap-3">
-                                      <p className='text-LightBlack text-sm'>Location</p>
-                                      <i className="ri-arrow-down-s-line text-LightBlack"></i>
-                                    </div>
-                                </button> */}
-                                 <Select options={categoryOptions} 
-                                    placeholder='Category'
-                                    styles={{
-                                        control: (baseStyles, state) => ({
-                                          ...baseStyles,
-                                          borderRadius: 10,
-                                          paddingLeft: 0,
-                                          paddingTop: 4,
-                                          paddingBottom: 4,
-                                          borderWidth: 0,
-                                          outlineWidth: 0,
-                                          borderColor: '#fff',
-                                          outlineColor: '#fff',
-                                          // borderColor: state.isFocused ? 'grey' : 'red',
-                                          boxShadow: state.isFocused ? 'none' : 'none',
-                                        }), 
-                                      }}
-                                      value={categorySelect}
-                                    onChange={(option) => setCategorySelect(option)}
-                                />
-                            </div>
-                        </div>
-                      </div>
-                      <div className="col-span-2">
-                          <div className="cate-loc-search-btn h-full w-full">
-                            <button type="button" onClick={handleSearchNav} className='bg-Primary duration-300 h-full hover:scale-95 rounded-full py-1 flex items-center w-full justify-center shadow-customized'>
-                              <i className="text-white text-lg ri-search-line"></i>
-                            </button>
-                          </div>
-                      </div>
-                  </div>
-                </div>
-                <div className="header-buttons-sections col-span-5">
-                  <div className="flex items-center gap-8 justify-end">
-                    <div className="notification-header-button rounded-full">
-                      <button type='button' className=' bg-none w-10 h-10 flex items-center justify-center'>
-                        <i className="bi bi-bell text-xl text-Primary"></i>
-                      </button>
-                    </div>
-                    <div className={`language-selection-header relative duration-300 ${language ? 'rounded-xl rounded-b-none ' : 'rounded-[20px]'}`}>
-                      <button type="button" className='flex items-center gap-1 h-10 px-3 ' onClick={handleLanguageSelect}>
-                        <img src={LanSvg} className='max-w-[18px] min-w-[18px]' alt="" />
-                        <p className='text-Black'>{languageSelector}</p>
-                        <i className={`bi bi-chevron-down duration-300 ${language ? 'rotate-180' : 'rotate-0'}`}></i>
-                      </button>
-                      <div className={`bottom-languages-button z-10 flex-col py-2 flex gap-2 absolute bg-white outline outline-BorderColor outline-1 w-full rounded-b-xl duration-500 ${language ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-                        <button type="button" className='py-1 text-center ' onClick={() => {setLanguageSelector('EN') , handleLanguageSelect()}}>
-                          <p className='text-Black text-center'>EN</p>
-                        </button>
-                        <button type="button" className='py-1 text-center ' onClick={() => {setLanguageSelector('TE') , handleLanguageSelect()}}>
-                          <p className='text-Black text-center'>TE</p>
-                        </button>
-                        <button type="button" className='py-1 text-center ' onClick={() => {setLanguageSelector('HI') , handleLanguageSelect()}}>
-                          <p className='text-Black text-center'>HI</p>
-                        </button>
-                      </div>
-                    </div>
-                    <div className="advertise-button-header">
-                      <button type="button" className='flex items-center gap-3'>
-                      <i className="ri-megaphone-line text-Black"></i>
-                        <p className='text-Black text-lg font-medium'>Advertise</p>
-                      </button>
-                    </div>
-                    <div className="login-button-header">
-                      <button type="button" onClick={() => navigate('/login')} className='bg-Primary h-10 px-3 overflow-hidden rounded-full flex items-center gap-2 min-w-[190px] justify-center'>
-                        <i className="ri-login-circle-fill text-white text-lg"></i>
-                        <p className='text-white font-medium text-lg'>Login | Signup</p>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className="inner-home-section">
           <section className="home-section-1 relative">
             <div className="inner-home-section-1 bg-BlockBlack">
@@ -497,8 +382,9 @@ useEffect(() => {
                                 <div className="grid grid-cols-10 h-full">
                                   <div className="col-span-8">
                                     <div className="main-search-input-section h-full relative">
-                                      <input type="text" onFocus={() => setSearchSuggest(true)} placeholder={placeholders[currentIndex]} name="" id=""  className='text-xl text-Black h-full max-h-[58px] font-medium pl-9 pr-5 w-full bg-transparent focus:outline-none focus:border-none outline-none border-none'/>
-                                      {searchSuggest ? <button type="button" onClick={() => setSearchSuggest(false)} className='absolute top-1/2 right-10 text-xl search-clear-icon'><i className="ri-close-large-fill text-red-400"></i></button> : null}
+                                      <input type="text" onFocus={() => setSearchSuggest(true)} value={query} onChange={(e) => setQuery(e.target.value)} placeholder={placeholders[currentIndex]} 
+                                      name="" id=""  className='text-xl text-Black h-full max-h-[58px] font-medium pl-9 pr-5 w-full bg-transparent focus:outline-none focus:border-none outline-none border-none'/>
+                                      {searchSuggest && ( <button type="button"  onClick={() => {setQuery("") ; setSearchSuggest(false) ; setSuggestions([])}}  className='absolute top-1/2 right-10 text-xl search-clear-icon'><i className="ri-close-large-fill text-red-400"></i></button> )}
                                     </div>
                                   </div>
                                   <div className="col-span-2">
@@ -509,16 +395,28 @@ useEffect(() => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] border-t border-BorderColor left-0 z-[9999999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'} ${headerBar ? 'border-[2px] border-t-[1px] border-BorderColor' : ''}`}>
-                                    <div className="inner-searched-results-section">
-                                      <button type="button">
-                                        <div className="left-goto-icon">
-                                            
+                                <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] overflow-hidden overflow-y-auto border-t border-BorderColor left-0 z-[9999999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'} ${headerBar ? 'border-[2px] border-t-[1px] border-BorderColor' : ''}`}>
+                                    <div className="inner-searched-results-section px-4 py-4 flex flex-col gap-y-4">
+                                      {searchSuggest && suggestions.length > 0 ? suggestions.map((items , index) => {
+                                        return (
+                                          <button type="button" onClick={() => handleSuggestionClick(items)} className='text-left flex items-center gap-x-4 w-full bg-LightBlue px-4 py-3 rounded-lg' key={index}>
+                                            <div className="left-goto-icon w-10 h-10 flex items-center justify-center bg-white rounded-full">
+                                              <i class="bi bi-arrow-up-right"></i>
+                                            </div>
+                                            <div className="right-text-below-text text-left">
+                                              <p className='text-lg font-semibold'>{items?.suggestion}</p>
+                                              <div className="sub-text">
+                                                <p className='opacity-60'>Category</p>
+                                              </div>
+                                            </div>
+                                          </button>
+                                        )
+                                      }) : 
+                                      <button type="button" className='text-left flex items-center gap-x-4 w-full bg-LightGrayBg px-4 py-3 rounded-lg'>
+                                        <div className="right-text-below-text text-left">
+                                          <p className='text-lg font-semibold'>No Data Found</p>
                                         </div>
-                                        <div className="right-text-below-text">
-                                          <p>Restaurants Near Me</p>
-                                        </div>
-                                      </button>
+                                      </button>}
                                     </div>
                                 </div>
                             </div>

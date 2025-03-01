@@ -8,11 +8,18 @@ import BusinessImage2 from '../../assets/images/business-card-image-2.jpg';
 import BusinessImage3 from '../../assets/images/business-card-image-3.jpg';
 import BusinessImage4 from '../../assets/images/business-card-image-4.jpg';
 import GmailIcon from '../../assets/images/gmail-icon.svg';
+import useSearchStore from '../../Store/useSearchStore';
+import ShimmerSearch from '../../utils/SkeltonLoaders/ShimmerSearch';
 
 
 const SearchPage = () => {
   
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const {filters, results , loading , error , fetchSearchResults} = useSearchStore();
+
+  console.log(results)
+  
 
   const [sortByBtn , setSortByBtn] = useState(false);
   const [topRatedBtn , setTopRatedBtn] = useState(false);
@@ -22,7 +29,9 @@ const SearchPage = () => {
   const [priceSlect , setPriceSelect] = useState('Price');
 
   const [favorite , setFavorite] = useState(false);
-
+useEffect(() => {
+  fetchSearchResults();  
+}, [filters])
 
   const handleNavigate = (item) => {
     navigate(`/search/complete-details/${item.id}`);
@@ -72,23 +81,6 @@ const SearchPage = () => {
     },
   ]
 
-
-
-  // const handleOutsideClick = () => {
-  //   setSortByBtn(false);
-  //   setPriceBtn(false);
-  // };
-
-
-  // useEffect(() => {
-  //   // Attach event listener to the document
-  //   document.addEventListener("mousedown", handleOutsideClick);
-
-  //   // Cleanup listener on component unmount
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleOutsideClick);
-  //   };
-  // }, []);
 
 
   return (
@@ -200,7 +192,8 @@ const SearchPage = () => {
                 <div className="grid grid-cols-12 gap-30p">
                   <div className="col-span-12 left-searched-cards">
                     <div className="inner-left-searched-cards-sec-before-991 flex flex-col gap-y-30p">
-                    {searchedContent.map((items , index) => {
+                    {loading && (<ShimmerSearch/>)}
+                    {!loading && results && results.length > 0 ? results.map((items , index) => {
                         return (
                           <div className="single-searched-cards">
                               <button onClick={() => handleNavigate(items)} className="single-business-sec-3-card w-full bg-white rounded-xl text-left  shadow-customized overflow-hidden group" key={index}>
@@ -279,7 +272,7 @@ const SearchPage = () => {
                               </button>
                           </div>
                         )
-                      })}
+                      }) : null}
                     </div>
 
                     {/* Responsive Section */}

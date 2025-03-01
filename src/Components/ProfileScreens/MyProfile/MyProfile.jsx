@@ -145,7 +145,7 @@ const MyProfile = () => {
             "content-type": "application/json"
           },
         }).then((response) => {
-          console.log(response);
+          // console.log(response);
           setUserData(response?.data?.data)
         }).catch((err) => {
           // console.log(err)
@@ -159,7 +159,7 @@ const MyProfile = () => {
     formData.append("file", profPic);
 
 
-    console.log("formData" , formData);
+    // console.log("formData" , formData);
 
 
     setModalIsOpen(true);
@@ -171,7 +171,7 @@ const MyProfile = () => {
         },
       })
       .then((response) => {
-        console.log(response)
+        // console.log(response)
         if(response?.data) {
             toast.success('Profile Pic Uploaded Successfully');
             setModalIsOpen(false)

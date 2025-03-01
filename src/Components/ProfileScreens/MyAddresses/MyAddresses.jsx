@@ -192,7 +192,7 @@ const MyAddresses = () => {
           customAddressType : otherAddressType,
           description :  completeAddress
       }
-      console.log(obj , "obj")
+      // console.log(obj , "obj")
       setModalIsOpen(true)
       try {
           await axios.post(`${config.api}address` , obj , {

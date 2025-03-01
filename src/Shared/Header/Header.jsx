@@ -20,7 +20,7 @@ const Header = () => {
   const location = useLocation();
 
 
-  console.log(location)
+  // console.log(location)
 
   const [language , setLanguage] = useState(false);
   const [languageSelector , setLanguageSelector] = useState('EN');

@@ -24,7 +24,7 @@ const MyBusinessDetail = () => {
 
     const location = useLocation();
     const receivedData = location.state?.items || '';
-    console.log(receivedData , "receivedData")
+    // console.log(receivedData , "receivedData")
 
 
 

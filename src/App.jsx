@@ -59,7 +59,6 @@ const Layout = () => {
             <Route exact={true} Component={BusinessUploadMedia} path='/business/add-photos' />
             <Route exact={true} Component={MyBusinessDetail} path='/busniess/complete-details/:id'/>
           </Route>
-
         </Routes>
         <Footer/>
       </AuthProvider>

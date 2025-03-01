@@ -44,7 +44,7 @@ const MyBusiness = () => {
         }
     })
     .then(response => {
-      console.log(response)
+      // console.log(response)
       setAllBusinesses(response?.data?.data)
     })
     .catch((err) => {
