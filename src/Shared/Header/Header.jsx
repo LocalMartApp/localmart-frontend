@@ -9,6 +9,8 @@ import Select from 'react-select';
 import { useAuth } from '../../utils/AuthContext';
 
 import ProfileDummyImg from '../../assets/images/profile-dummy-image.svg';
+import axios from 'axios';
+import { config } from '../../env-services';
 
 
 
@@ -24,7 +26,27 @@ const Header = () => {
   const [languageSelector , setLanguageSelector] = useState('EN');
   const [categorySelect , setCategorySelect] = useState();
   const [citySelect ,  setCitySelect] = useState();
-  const [notificationToggle , setNotificationToggle] = useState(false)
+  const [notificationToggle , setNotificationToggle] = useState(false);
+
+  const [userToken ,  setUserToken] = useState();
+  const [userData , setUserData] = useState("");
+
+
+    useEffect(() => {
+      getUserDetails()
+    } , [])
+    
+
+
+  const getUserDetails = async () => {
+    const response = localStorage.getItem("authToken");
+    if (!response) return;
+  
+    const userParse = JSON.parse(response);
+    setUserToken(userParse);
+    getPorfileData(userParse);
+  };
+
 
   const handleLanguageSelect = () => {
     setLanguage(!language)
@@ -39,6 +61,22 @@ const Header = () => {
     { value: 'strawberry', label: 'Strawberry' },
     { value: 'vanilla', label: 'Vanilla' }
   ]
+
+
+  
+  const getPorfileData = async(token) => {
+    await axios.get(`${config.api}auth/user-details`, {
+      headers: {
+        Authorization: "Bearer " + token, 
+        "content-type": "application/json"
+      },
+    }).then((response) => {
+      setUserData(response?.data?.data)
+    }).catch((err) => {
+      // console.log(err)
+    })
+}
+
 
 
   return (
@@ -168,7 +206,7 @@ const Header = () => {
                     {authToken ? 
                       <div className="profile-image-showing-button">
                         <button type="button" onClick={() => navigate('/profile/my-profile')}>
-                          <img src={ProfileDummyImg} className='w-10 h-10'/>
+                          <img src={userData?.profilePicture ? userData?.profilePicture : ProfileDummyImg} className='w-10 h-10 rounded-full'/>
                         </button>
                       </div>
                     :  

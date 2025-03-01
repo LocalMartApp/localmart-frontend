@@ -31,7 +31,7 @@ const BrowseAllCategories = ({ isCategoryOpen , closeCategory }) => {
         await axios.get(config.api + `business-category`)
         .then((response) => {
             setLocalmartCategories(response?.data?.data)
-            console.log('response' , response)
+            // console.log('response' , response)
        })
     }
 

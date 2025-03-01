@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Rating } from '@smastrom/react-rating';
 import '@smastrom/react-rating/style.css';
 import SingleSearchImage1 from '../../assets/images/restaurant-pics-search-1.jpg';
@@ -21,6 +21,9 @@ import "swiper/css/effect-coverflow";
 const SearchDetails = () => {
 
   const [rating  , setRating] = useState();
+  const location = useLocation();
+
+  const receivedData = location.state?.busId || '';
 
   const amenities = [
     {
@@ -157,7 +160,7 @@ const SearchDetails = () => {
                       </div>
                     </div>
                     <div className="business-profile-section-searched flex items-center justify-between gap-10 mt-12">
-                      <div className="left-searched-business-profile flex items-center gap-2">
+                      <div className="left-searched-business-profile  items-center gap-2 hidden">
                         <div className="left-image-business-pro">
                           <img src={BusinessOwner} className='max-w-[60px] max-h-[60px] rounded-full' alt="" />
                         </div>

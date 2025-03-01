@@ -24,6 +24,7 @@ import ScrollToTop from './utils/ScrollToTop'
 import React, { useState } from 'react'
 import { AuthProvider } from './utils/AuthContext'
 import ProtectedRoutes from './utils/ProtectedRoutes'
+import MyBusinessDetail from './Components/ProfileScreens/MyBusiness/MyBusinessDetail'
 
 
 
@@ -42,6 +43,7 @@ const Layout = () => {
           <Route exact={true} Component={CompleteRegistration} path='/register-details' />
           <Route exact={true} Component={SearchPage} path='/search' />
           <Route exact={true} Component={SearchDetails} path='/search/complete-details/:id'/>
+
           {/* Ploicies Pages */}
           <Route exact={true} Component={CancellationPolicy} path='/cancellation-policy'/>
           <Route exact={true} Component={TermsandConditions} path='/terms-conditions'/>
@@ -55,6 +57,7 @@ const Layout = () => {
             <Route exact={true} Component={Notifications} path='/profile/notifications' />
             <Route exact={true} Component={BusinessFormAdding} path='/business/add-business' />
             <Route exact={true} Component={BusinessUploadMedia} path='/business/add-photos' />
+            <Route exact={true} Component={MyBusinessDetail} path='/busniess/complete-details/:id'/>
           </Route>
 
         </Routes>

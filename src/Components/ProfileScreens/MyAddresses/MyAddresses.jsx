@@ -32,13 +32,11 @@ const MyAddresses = () => {
   const [cityOptions1 , setCityOptions1] = useState([]);
   const [pincodeOptions1 , setPincodeOptions1] = useState([]);
   const [addAddressToggle , setAddAddressToggle] = useState(false);
-
-
+  const [addressItem , setAddressItem] = useState('');
   const [state , setState] = useState("");
   const [city , setCity] = useState("");
   const [pincode , setPincode] = useState("");
   const [completeAddress , setCompleteAddress] = useState("");
-
 
 
   
@@ -152,6 +150,8 @@ const MyAddresses = () => {
    
 
 
+
+
   const addressTypesArray = [
       {
           name: 'home'
@@ -220,36 +220,6 @@ const MyAddresses = () => {
         }
   }
 
-
-
-  
-
-  const addresses = [
-    {
-      type: 'Home',
-      addressNumber: '+91 901 901 9548',
-      completeAddress: '301, 3rd Floor , Arcade Apartments new Era , Floris Street , Near Gaming Club , 4th Block',
-      city: 'Hyderabad',
-      state: 'Telangana',
-      pincode: '500018',
-    },
-    {
-      type: 'Work',
-      addressNumber: '+91 901 901 9548',
-      completeAddress: '301, 3rd Floor , Arcade Apartments new Era , Floris Street , Near Gaming Club , 4th Block',
-      city: 'Rajahmundry',
-      state: 'Andhra Pradesh',
-      pincode: '533010',
-    },
-    {
-      type: 'Gym',
-      addressNumber: '+91 901 901 9548',
-      completeAddress: '301, 3rd Floor , Arcade Apartments new Era , Floris Street , Near Gaming Club , 4th Block',
-      city: 'Hyderabad',
-      state: 'Telangana',
-      pincode: '500018',
-    },
-  ]
 
   return (
     <div className="MyAddresses">
@@ -324,15 +294,15 @@ const MyAddresses = () => {
                             <Select options={cityOptions1} 
                               placeholder='Select City'
                               styles={{
-                                  control: (baseStyles, state) => ({
+                                  control: (baseStyles , state) => ({
                                       ...baseStyles,
                                       borderRadius: 10,
                                       paddingLeft: 10,
                                       paddingTop: 6,
                                       paddingBottom: 6,
                                       // borderColor: errors.city ? '#FF4E4E' : '#B3B3B3',
-                                  //   borderColor: state.isFocused ? 'grey' : 'red',
-                                  }),
+                                      // borderColor: state.isFocused ? 'grey' : 'red',
+                                    }),
                                   }}
                                   value={cityOptions1.find(option => option.value === city)}
                                   onChange={(option) => {
@@ -443,8 +413,12 @@ const MyAddresses = () => {
                               </div>
                               <div className="address-delete-edit-section absolute top-5 right-5">
                                 <div className="address-delete-edit-inner-sec flex items-center gap-4">
-                                  <div className="address-edit-btn"><button type="button" className='w-9 h-9 rounded-full bg-white flex items-center justify-center'><i className="ri-edit-line text-Secondary text-lg"></i></button></div>
-                                  <div className="address-delete-btn"><button type="button" className='w-9 h-9 rounded-full bg-white flex items-center justify-center'><i className="bi bi-trash3 text-red-500 text-lg"></i></button></div>
+                                  <div className="address-edit-btn">
+                                    <button type="button" onClick={() => setAddressItem(items)} className='w-9 h-9 rounded-full bg-white flex items-center justify-center'><i className="ri-edit-line text-Secondary text-lg"></i></button>
+                                  </div>
+                                  <div className="address-delete-btn">
+                                    <button type="button" className='w-9 h-9 rounded-full bg-white flex items-center justify-center'><i className="bi bi-trash3 text-red-500 text-lg"></i></button>
+                                  </div>
                                 </div>
                               </div>
                           </div>

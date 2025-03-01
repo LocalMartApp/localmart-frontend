@@ -31,6 +31,8 @@ import LoadingImage from '../../assets/images/loader-test.gif';
 import './Home.scss';
 import AppsSlider from './AppsSlider';
 import { useAuth } from '../../utils/AuthContext';
+import axios from 'axios';
+import { config } from '../../env-services';
 
 
 
@@ -47,13 +49,16 @@ const Home = () => {
   const [language , setLanguage] = useState(false);
   const [languageSelector , setLanguageSelector] = useState('EN');
   const [categorySelect , setCategorySelect] = useState();
-  const [citySelect ,  setCitySelect] = useState()
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allCategoryOpen , setAllCategoryOpen] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [searchSuggest , setSearchSuggest] = useState(false);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [citySelect ,  setCitySelect] = useState(null)
+  const [cityOptions , setCityOptions] = useState([]);
+  const [userCity, setUserCity] = useState(null);
   
   
 
@@ -69,42 +74,63 @@ const Home = () => {
 
 
   useEffect(() => {
+    getCities()
 
     setTimeout(() => {
       openModal()
     }, 2000)
 
-    const getUserLocation = async () => {
-      if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords;
-            const city = await getCityFromCoordinates(latitude, longitude);
-            const matchedCity = cityOptions.find(
-              (option) => option.value.toLowerCase() === city.toLowerCase()
-            );
-            if (matchedCity) {
-              setCitySelect(matchedCity);
-            }
-          },
-          (error) => {
-            console.error("Error getting location:", error);
-          }
-        );
-      } else {
-        alert("Geolocation is not supported by this browser.");
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+        console.log(response?.data?.address)
+        const cityName = response.data.address.city || response.data.address.town;
+        
+        setUserCity(cityName); // Save the city name
+      },
+      (error) => {
+        console.error("Error getting location:", error);
       }
-    };
+    );
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % placeholders.length);
     }, 2000);
 
-    getUserLocation();
+    // getUserLocation();
 
     return () => clearInterval(interval);
 
   }, []);
+
+
+  const getCities = async() => {
+    await axios.get(config.api + `locations/states/678daa989c4467c6aa4eeb89/cities`)
+    .then((response) => {
+      if (response?.data?.data) {
+        const formattedCities = response.data.data.map(item => ({
+          value: item._id,
+          label: item.name,
+        }));
+        setCityOptions(formattedCities);
+
+        // Check if user's city exists in the list
+        const matchedCity = formattedCities.find(city => city.label.toLowerCase() === userCity?.toLowerCase());
+        if (matchedCity) {
+          setCitySelect(matchedCity);
+        }
+      }
+    });
+}
+
+
+useEffect(() => {
+  if (userCity) {
+    getCities();
+  }
+}, [userCity]);
 
 
   const openLoaderModal = () => {
@@ -224,20 +250,20 @@ const Home = () => {
     },
   ]
 
-  const cityOptions = [
-      { value: 'Rajahmundry', label: 'Rajahmundry' },
-      { value: 'Kakinada', label: 'Kakinada' },
-      { value: 'Bheemavaram', label: 'Bheemavaram' },
-      { value: 'Banglore', label: 'Banglore' },
-      { value: 'Palakollu', label: 'Palakollu' },
-      { value: 'Amalapuram', label: 'Amalapuram' },
-      { value: 'Samalkot', label: 'Samalkot' },
-      { value: 'Peddapuram', label: 'Peddapuram' },
-      { value: 'Pithapuram', label: 'Pithapuram' },
-      { value: 'Vizag', label: 'Vizag' },
-      { value: 'Vizayawada', label: 'Vizayawada' },
-      { value: 'Tuni', label: 'Tuni' },
-  ]
+  // const cityOptions = [
+  //     { value: 'Rajahmundry', label: 'Rajahmundry' },
+  //     { value: 'Kakinada', label: 'Kakinada' },
+  //     { value: 'Bheemavaram', label: 'Bheemavaram' },
+  //     { value: 'Banglore', label: 'Banglore' },
+  //     { value: 'Palakollu', label: 'Palakollu' },
+  //     { value: 'Amalapuram', label: 'Amalapuram' },
+  //     { value: 'Samalkot', label: 'Samalkot' },
+  //     { value: 'Peddapuram', label: 'Peddapuram' },
+  //     { value: 'Pithapuram', label: 'Pithapuram' },
+  //     { value: 'Vizag', label: 'Vizag' },
+  //     { value: 'Vizayawada', label: 'Vizayawada' },
+  //     { value: 'Tuni', label: 'Tuni' },
+  // ]
 
   const categoryOptions = [
     { value: 'Restaurants', label: 'Restaurants' },
@@ -268,6 +294,9 @@ const Home = () => {
       borderRadius: 20
     },
   };
+
+
+
 
 
 
@@ -482,7 +511,14 @@ const Home = () => {
                                 </div>
                                 <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] border-t border-BorderColor left-0 z-[9999999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'} ${headerBar ? 'border-[2px] border-t-[1px] border-BorderColor' : ''}`}>
                                     <div className="inner-searched-results-section">
-                                      
+                                      <button type="button">
+                                        <div className="left-goto-icon">
+                                            
+                                        </div>
+                                        <div className="right-text-below-text">
+                                          <p>Restaurants Near Me</p>
+                                        </div>
+                                      </button>
                                     </div>
                                 </div>
                             </div>

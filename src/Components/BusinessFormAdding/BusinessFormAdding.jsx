@@ -188,7 +188,7 @@ const BusinessFormAdding = () => {
         e.preventDefault();
       }
       else {
-        console.log("You pressed a key: " + key);
+        // console.log("You pressed a key: " + key);
       }
   }
 
@@ -624,6 +624,7 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Business Category*</p>
                                 </div>
+                                <div className="poitions-relative relative z-[9999999]">
                                 <Select options={busCates} 
                                   placeholder='Select Business Category'
                                   name='businessCategory'
@@ -647,7 +648,8 @@ const BusinessFormAdding = () => {
                                     }}
                                   value={busCates.find(option => option.value === values.businessCategory)} 
                                   onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
-                                />                               
+                                />    
+                                </div>                             
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
