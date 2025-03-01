@@ -213,7 +213,7 @@ const MyProfile = () => {
               <h4 className='text-2xl  mb-8'>Click on below to upload profile picture</h4>
               <div className="top-onclickprofile-pic relative h-48 w-48 mx-auto">
                   <input type="file" onChange={(e) => handleFileChange(e) }  name="" id="" className='opacity-0 h-full w-full relative z-10 cursor-pointer'/>
-                  <img src={preview ? preview : userData?.profilePicture} className='rounded-full absolute top-0 left-0 w-full' alt="" />
+                  <img src={preview ? preview : userData?.profilePicture ? userData?.profilePicture : ProfileDummyImg} className='rounded-full absolute top-0 left-0 w-full' alt="" />
                 <div className="button-upload-icon w-10 h-10 flex items-center justify-center bg-white shadow-lg rounded-full absolute bottom-0 right-5">
                   <i class="ri-upload-cloud-2-fill text-xl text-Primary"></i>
                 </div>
