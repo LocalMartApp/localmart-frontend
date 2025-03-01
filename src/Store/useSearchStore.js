@@ -9,7 +9,8 @@ const useSearchStore = create(
       filters: {
         searchKey: "",
         city: "",
-        category: "",
+        categoryId: "",
+        businessName: "",
       },
       results: [],
       loading: false,
@@ -32,35 +33,35 @@ const useSearchStore = create(
 
         // Optional - Clean filters
         const cleanedFilters = Object.fromEntries(
-            Object.entries(filters).filter(([_, value]) => value)
+          Object.entries(filters).filter(([_, value]) => value)
         );
-    
+
         set({ loading: true, error: null });
 
         const params = new URLSearchParams(filters);
-    
+
         try {
           let config = {
-            method: 'get',
+            method: "get",
             maxBodyLength: Infinity,
-            url: `http://13.234.223.21:8080/search/businesses?searchKey=Med Plus near me&category&city`,
-            headers: { }
+            url: `http://localhost:8080/search/businesses?${params}`,
+            headers: {},
           };
-          
-          axios.request(config)
-          .then((response) => {
-            console.log(JSON.stringify(response.data));
-          })
-          .catch((error) => {
-            console.log(error);
-            set({ results: response.data.data, loading: false });
-          });
-    
-        } catch (err) {
-            set({
-                error: err.message || "Failed to fetch search results",
-                loading: false,
+
+          axios
+            .request(config)
+            .then((response) => {
+              console.log(JSON.stringify(response.data));
+            })
+            .catch((error) => {
+              console.log(error);
+              set({ results: response.data.data, loading: false });
             });
+        } catch (err) {
+          set({
+            error: err.message || "Failed to fetch search results",
+            loading: false,
+          });
         }
       },
       resetFilters: () =>

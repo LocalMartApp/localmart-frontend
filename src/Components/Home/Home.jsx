@@ -167,9 +167,19 @@ const Home = () => {
 
 
   const handleSuggestionClick = async (data) => {
-    setFilter("searchKey", data?.suggestion);   
-    navigate('/search');                        
-};
+    let filterKey = "searchKey"; 
+
+    if (data?.type === "category") {
+      filterKey = "categoryId";
+    } else if (data?.type === "business") {
+      filterKey = "businessId";
+    } else if (data?.type) {
+      filterKey = data?.type; 
+    }
+
+    setFilter(filterKey, data?.id);
+    navigate("/search");
+  };
 
 
 useEffect(() => {
