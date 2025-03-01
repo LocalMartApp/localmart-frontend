@@ -14,7 +14,8 @@ import toast from 'react-hot-toast';
 import Loader from '../../../utils/Loader/Loader';
 import { AddAddressValidationSchema } from '../../../utils/Validation';
 import Select from 'react-select';
-
+import Lottie from 'lottie-react';
+import EmptyLoader from '../../../assets/images/animated-logos/emptyastro.json'
 
 
 const MyAddresses = () => {
@@ -423,7 +424,17 @@ const MyAddresses = () => {
                               </div>
                           </div>
                         )
-                      }) : null}
+                      }) : 
+                      <div className="loader-empty-section w-full col-span-2">
+                        <div className="nodata-found-section flex justify-center flex-col items-center pt-10 pb-5 w-full">
+                          <Lottie animationData={EmptyLoader} style={{ width: 300}}/>
+                          <div className="no-data-found-text-btn mt-5 text-center">
+                            <p className='text-center'>No Addresses Found</p>
+                            <button type="button" onClick={() =>  setAddAddressToggle(true)} className="text-Secondary font-semibold text-xl mt-5">Add Address</button>
+                          </div>
+                        </div>
+                      </div>
+                      }
                     </div>
                   </div> }
                 </div>
