@@ -10,7 +10,7 @@ import BusinessImage4 from '../../assets/images/business-card-image-4.jpg';
 import GmailIcon from '../../assets/images/gmail-icon.svg';
 import useSearchStore from '../../Store/useSearchStore';
 import ShimmerSearch from '../../utils/SkeltonLoaders/ShimmerSearch';
-
+import Emptymedia from '../../assets/images/emptymedia-business.png';
 
 const SearchPage = () => {
   
@@ -34,7 +34,7 @@ useEffect(() => {
 }, [filters])
 
   const handleNavigate = (item) => {
-    navigate(`/search/complete-details/${item.id}`);
+    navigate(`/search/complete-details/${item._id}` , { state: { item }});
   };
 
 
@@ -199,12 +199,12 @@ useEffect(() => {
                               <button onClick={() => handleNavigate(items)} className="single-business-sec-3-card w-full bg-white rounded-xl text-left  shadow-customized overflow-hidden group" key={index}>
                                 <div className="inner-verified-sellers-card-sec grid grid-cols-12">
                                   <div className="left-image-section-bus-sec-3 col-span-3 overflow-hidden">
-                                      <img src={items.image} className='h-full w-full group-hover:scale-125 duration-500 object-cover max-h-[260px]' alt="" />
+                                      <img src={items?.mediaFiles[0]?.fileUrl ? items?.mediaFiles[0]?.fileUrl : Emptymedia} className='h-full w-full group-hover:scale-125 duration-500 object-cover max-h-[260px]' alt="" />
                                   </div>
                                   <div className="right-side-business-card-details relative px-7 py-6 col-span-9  ">
                                     <div className="inner-seller-business-card-details flex flex-col gap-y-4 h-full">
                                       <div className="business-card-title">
-                                        <h4 className='text-2xl font-medium text-Black'>{items.title}</h4>
+                                        <h4 className='text-2xl font-medium text-Black'>{items?.name}</h4>
                                       </div>
                                       <div className="business-card-recommend-address-section flex flex-col gap-y-2">
                                         <div className="business-recommended-section flex items-center gap-10p opacity-60">
@@ -214,11 +214,11 @@ useEffect(() => {
                                         <div className="opens-at-location-combined flex items-center gap-x-4">
                                             <button type='button' className="business-recommended-section flex items-center gap-10p  justify-center w-fit">
                                                 <i className="ri-time-line text-Black opacity-40"></i>
-                                                <p className='text-sm text-Green '>{items.opensAt}</p>
+                                                <p className='text-sm text-Green '>{items?.workingHours}</p>
                                             </button>
                                           <button type='button' className="business-recommended-section flex items-center gap-10p opacity-60">
                                             <i className="ri-map-pin-line text-Black"></i>
-                                            <p className='text-sm text-LightText'>{items.location}</p>
+                                            <p className='text-sm text-LightText'>{items?.stateId?.name + " - " + items?.cityId?.name}</p>
                                           </button>
                                         </div>
                                         <div className="people-rated-top-search-sec flex items-center gap-x-4">

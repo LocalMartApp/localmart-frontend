@@ -23,7 +23,10 @@ const SearchDetails = () => {
   const [rating  , setRating] = useState();
   const location = useLocation();
 
-  const receivedData = location.state?.busId || '';
+  const receivedData = location.state?.item || '';
+
+
+  console.log("receivedData" , receivedData)
 
   const amenities = [
     {
@@ -84,6 +87,18 @@ const SearchDetails = () => {
     },
   ]
 
+
+
+  const long = receivedData?.location?.coordinates[0] ;
+  const lat = receivedData?.location?.coordinates[1]
+
+
+  const openGoogleMaps = () => {
+    const url = `https://www.google.com/maps?q=${lat},${long}`;
+    window.open(url, "_blank");
+  }
+  
+
   return (
     <div className='main-search-info-section'>
         <section className="search-info-page-section-1 py-10">
@@ -91,13 +106,13 @@ const SearchDetails = () => {
             <div className="container">
               <div className="breadcrum-inner-section">
                 <ul className='flex items-center gap-x-2'>
-                  <li><NavLink className={`text-Black `}>Rajahmundry</NavLink></li>
-                  <li><i className="ri-arrow-right-s-line"></i></li>
+                  <li><NavLink className={`text-Black `} to={'/'}>{receivedData?.cityId?.name}</NavLink></li>
+                  {/* <li><i className="ri-arrow-right-s-line"></i></li>
                   <li><p className={`text-Black `}>Restaurants in Mumbai</p></li>
                   <li><i className="ri-arrow-right-s-line"></i></li>
-                  <li><p className={`text-Black `}>150+ Listings</p></li>
+                  <li><p className={`text-Black `}>150+ Listings</p></li> */}
                   <li><i className="ri-arrow-right-s-line"></i></li>
-                  <li><p className={`text-Black `}>Sri Megha Restaurant</p></li>
+                  <li><p className={`text-Black `}>{receivedData?.name}</p></li>
                 </ul>
               </div>
             </div>
@@ -108,11 +123,11 @@ const SearchDetails = () => {
               <div className="container">
                   <div className="top-searched-detail-rating-favorite-sec flex items-center justify-between gap-x-5">
                     <div className="left-title-rating-search ">
-                      <h4 className='text-2xl font-medium text-Black'>Sri Megha Restaurant</h4>
+                      <h4 className='text-2xl font-medium text-Black'>{receivedData?.name}</h4>
                       <div className="location-rating-seperate-search flex items-center gap-x-5 mt-3">
                         <button type='button' className="business-recommended-section flex items-center gap-10p opacity-60">
                           <i className="ri-map-pin-line text-Black"></i>
-                          <p className='text-sm text-LightText'>Rajahmundry - Kothappalli</p>
+                          <p className='text-sm text-LightText'>{receivedData?.stateId?.name} - {receivedData?.cityId?.name}</p>
                         </button>
                         <div className="seperator-div h-5 w-[1px] bg-Black"></div>
                         <div className="rating-review-search-text flex items-center gap-x-2">
@@ -134,66 +149,96 @@ const SearchDetails = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="photos-section-searched my-5">
-                    <div className="grid grid-cols-12 gap-5">
-                      <div className="col-span-6">
-                        <div className="big-image-section-searched searched-image-sections h-full">
-                          <img src={SingleSearchImage1} className='h-full w-full rounded-xl' alt="" />
-                        </div>
-                      </div>
-                      <div className="col-span-4">
-                        <div className="med-image-section-searched searched-image-sections h-full">
-                          <img src={SingleSearchImage2} className='h-full w-full rounded-xl' alt="" />
-                        </div>
-                      </div>
-                      <div className="col-span-2">
-                        <div className="small-image-section-searched searched-image-sections h-full max-h-[354px]">
-                            <div className="grid grid-cols-2 gap-y-5">
-                              <div className="med-image-section-searched searched-image-sections h-full col-span-2">
-                                <img src={SingleSearchImage3} className='h-full w-full rounded-xl' alt="" />
-                              </div>
-                              <div className="med-image-section-searched searched-image-sections h-full col-span-2">
-                                <img src={SingleSearchImage2} className='h-full w-full rounded-xl' alt="" />
-                              </div>
-                            </div>
-                        </div>
+                <div className="photos-section-searched my-5">
+                  <div className="grid grid-cols-12 gap-5">
+                    <div className="col-span-6">
+                      <div className="big-image-section-searched searched-image-sections h-full max-h-[360px]">
+                        <img
+                          src={receivedData?.mediaFiles[0]?.fileUrl}
+                          className="h-full w-full rounded-xl object-cover"
+                          alt=""
+                        />
                       </div>
                     </div>
-                    <div className="business-profile-section-searched flex items-center justify-between gap-10 mt-12">
-                      <div className="left-searched-business-profile  items-center gap-2 hidden">
-                        <div className="left-image-business-pro">
-                          <img src={BusinessOwner} className='max-w-[60px] max-h-[60px] rounded-full' alt="" />
-                        </div>
-                        <div className="right-text-business-profile">
-                          <h4 className='text-lg font-semibold text-Black'>SM. Srinivas Kiran</h4>
-                          <p className='text-sm font-medium text-Black opacity-50'>Manager at sri Megha restaurant</p>
-                        </div>
+                    <div className="col-span-4">
+                      <div className="med-image-section-searched searched-image-sections h-full max-h-[360px]">
+                        <img
+                          src={receivedData?.mediaFiles[1]?.fileUrl}
+                          className="h-full w-full object-cover rounded-xl"
+                          alt=""
+                        />
                       </div>
-                      <div className="bottom-business-card-number-det flex items-center gap-x-6">
-                        <div className="send-enquiry-btn">
-                          <button type="button" className='font-medium text-white bg-Primary rounded-full py-2 px-7'>Send Enquiry</button>
-                        </div>
-                        <div className="number-business-btn">
-                          <button type="button" className='font-medium text-white bg-Green rounded-full py-2 px-7'>Show Number</button>
-                        </div>
-                        <div className="directions-button-search">
-                            <button className='h-9 w-9 rounded-full bg-Secondary flex items-center justify-center'>
-                                <i className="ri-direction-fill text-white text-lg duration-300 "></i>
-                            </button>
-                        </div>
-                        <div className="directions-button-search">
-                            <button className='h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center'>
-                                <i className="ri-share-fill text-Secondary text-lg duration-300 "></i>
-                            </button>
-                        </div>
-                        <div className="directions-button-search">
-                            <button className='h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center'>
-                                <img src={GmailIcon} className='w-5 h-20' alt="" />
-                            </button>
-                        </div>
+                    </div>
+                    <div className="col-span-2 h-full max-h-[360px] flex flex-col justify-between">
+                      <div className="med-image-section-searched searched-image-sections h-[48%] ">
+                        <img
+                          src={receivedData?.mediaFiles[0]?.fileUrl}
+                          className="h-full w-full object-cover  rounded-xl"
+                          alt=""
+                        />
+                      </div>
+                      <div className="med-image-section-searched searched-image-sections h-[48%] ">
+                        <img
+                          src={receivedData?.mediaFiles[1]?.fileUrl}
+                          className="h-full w-full object-cover  rounded-xl"
+                          alt=""
+                        />
                       </div>
                     </div>
                   </div>
+                  <div className="business-profile-section-searched flex items-center justify-between gap-10 mt-12">
+                    <div className="left-searched-business-profile  items-center gap-2 hidden">
+                      <div className="left-image-business-pro">
+                        <img
+                          src={BusinessOwner}
+                          className="max-w-[60px] max-h-[60px] rounded-full"
+                          alt=""
+                        />
+                      </div>
+                      <div className="right-text-business-profile">
+                        <h4 className="text-lg font-semibold text-Black">
+                          SM. Srinivas Kiran
+                        </h4>
+                        <p className="text-sm font-medium text-Black opacity-50">
+                          Manager at sri Megha restaurant
+                        </p>
+                      </div>
+                    </div>
+                    <div className="bottom-business-card-number-det  items-center gap-x-6 hidden">
+                      <div className="send-enquiry-btn">
+                        <button
+                          type="button"
+                          className="font-medium text-white bg-Primary rounded-full py-2 px-7"
+                        >
+                          Send Enquiry
+                        </button>
+                      </div>
+                      <div className="number-business-btn">
+                        <button
+                          type="button"
+                          className="font-medium text-white bg-Green rounded-full py-2 px-7"
+                        >
+                          Show Number
+                        </button>
+                      </div>
+                      <div className="directions-button-search">
+                        <button className="h-9 w-9 rounded-full bg-Secondary flex items-center justify-center">
+                          <i className="ri-direction-fill text-white text-lg duration-300 "></i>
+                        </button>
+                      </div>
+                      <div className="directions-button-search">
+                        <button className="h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center">
+                          <i className="ri-share-fill text-Secondary text-lg duration-300 "></i>
+                        </button>
+                      </div>
+                      <div className="directions-button-search">
+                        <button className="h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center">
+                          <img src={GmailIcon} className="w-5 h-20" alt="" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                   <div className="about-business-section pb-12">
                     <div className="inner-about-business-grid-section">
                       <div className="grid grid-cols-12 gap-x-5">
@@ -205,19 +250,18 @@ const SearchDetails = () => {
                             </div>
                             <div className="amenities-section-searched">
                                 <h4 className='text-20 font-medium text-Black mb-3'>Amenities</h4>
-                                <div className="amenities-mapped-section flex items-center gap-x-30p">
-                                  {amenities.map((items , index) => {
+                                <div className="amenities-mapped-section flex items-center gap-x-30p flex-wrap gap-y-4">
+                                  {receivedData?.amenities && receivedData?.amenities.length ? receivedData?.amenities.map((items , index) => {
                                   return (
                                     <div className="single-amenities-searched" key={index}>
                                       <div className="inner-single-amenities flex items-center gap-x-3">
-                                        <div className="left-amanitie-icon h-9 w-9 rounded-full flex items-center justify-center bg-AmenitiesLightGray">
-                                          <i className={`${items.icon} text-xl`}></i>
+                                        <div className="left-amanitie-icon px-6 py-3  rounded-full flex items-center justify-center bg-AmenitiesLightGray">
+                                         <p className='text-Black '>{items.name}</p>
                                         </div>
-                                        <p className='text-Black '>{items.title}</p>
                                       </div>
                                     </div>
                                   )
-                                  })}
+                                  }) : null}
                                 </div>
                             </div>
                             <div className="food-items-section-searched">
@@ -339,14 +383,14 @@ const SearchDetails = () => {
                                 </div>
                                 <button type='button' className="number-info-section flex items-center gap-x-3 text-left">
                                   <i className='ri-phone-fill text-Secondary'></i>
-                                  <p className='font-medium text-Secondary'>show Number</p>
+                                  <p className='font-medium text-Secondary'>{receivedData?.mobileNumber}</p>
                                 </button>
                               </div>
                               <div className="address-info-section py-5 border-b border-BorderColor">
                                 <h4 className='text-lg font-medium text-Black mb-2'>Address</h4>
-                                <p className='text-Black opacity-40'>320BH Road , Jamal Street , Near Hospital , Kotipalli Bustand , Lala Cheruvu , Rajahmundry Andhrapradesh - 533100</p>
+                                <p className='text-Black opacity-40'>{receivedData?.completeAddress}</p>
                                 <div className="directions-copy-address-btns flex items-center gap-x-5 justify-between mt-4">
-                                  <button type='button' className="direcions-btn flex items-center gap-x-3 text-left">
+                                  <button  type='button' onClick={openGoogleMaps} className="direcions-btn flex items-center gap-x-3 text-left">
                                     <i className='ri-corner-up-right-line text-lg text-Secondary'></i>
                                     <p className='font-medium text-Secondary'>Get Directions</p>
                                   </button>
@@ -359,7 +403,7 @@ const SearchDetails = () => {
                               <div className="opens-share-place-section flex flex-col gap-y-4 py-5 border-b border-BorderColor">
                                   <div className="opens-outer-sec flex items-center gap-x-3 text-left">
                                     <i className='ri-timer-line text-lg text-Secondary'></i>
-                                    <p className='font-medium text-Black'>Opens at <span className='text-Green'>10:30 AM</span></p>
+                                    <p className='font-medium text-Black'><span className='text-Green'>{receivedData?.workingHours}</span></p>
                                   </div>
                                   <button type='button' className="share-place-btn flex items-center gap-x-3 text-left">
                                     <i className='ri-share-fill text-lg text-Secondary'></i>

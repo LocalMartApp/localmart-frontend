@@ -91,7 +91,7 @@ const MyBusiness = () => {
                       <ProfileSideBar/>
                   </div>
                   <div className="col-span-9 right-business-content-section">
-                      <div className="business-main-details-heading-part">
+                      <div className="business-main-details-heading-part h-full">
                         <div className="left-main-prof-det-head">
                           <h4 className='text-Black font-medium text-lg'>Your Businesses</h4>
                         </div>
@@ -100,8 +100,8 @@ const MyBusiness = () => {
                             {allBusinesses && allBusinesses.length > 0 ?  
                               allBusinesses.map((items , index) => {  
                                 return (
-                                <button type='button' onClick={() => navigate(`/busniess/complete-details/${items?._id}`, { state: { items }})} key={index} className="text-left single-mybusiness-card shadow-lg rounded-[15px] group border-BorderColor overflow-hidden border relative">
-                                  <div className="top-image-mybusiness-section max-h-[220px] h-full overflow-hidden">
+                                <button type='button' onClick={() => navigate(`/busniess/complete-details/${items?._id}`, { state: { items }})} key={index} className="text-left single-mybusiness-card shadow-lg rounded-[15px] group border-BorderColor overflow-hidden h-full border relative">
+                                  <div className="top-image-mybusiness-section max-h-[180px] h-full overflow-hidden">
                                     <img src={items?.mediaFiles[0] ? items?.mediaFiles[0]?.fileUrl : BusinessImage } className='w-full h-full group-hover:scale-110 duration-300 object-cover' alt="" />
                                   </div>
                                   <div className="inner-bottom-mybusiness-section px-5 pt-5 pb-4">
@@ -138,7 +138,7 @@ const MyBusiness = () => {
                                 </button>
                                 )
                               }) : null }
-                            <button type='button' onClick={() => navigate('/business/add-business')} className="single-mybusiness-card empty-mybusiness-cardbtn shadow-lg rounded-[15px] border border-dashed border-BorderColor group overflow-hidden relative flex items-center justify-center min-h-80">
+                            <button type='button' onClick={() => navigate('/business/add-business')} className="single-mybusiness-card empty-mybusiness-cardbtn shadow-lg rounded-[15px] border border-dashed border-BorderColor group overflow-hidden relative flex items-center justify-center min-h-80 max-h-full">
                                 <div className="inner-empty-business-card flex flex-col gap-5 items-center">
                                     <div className="top-icon-add-business-icon">
                                       <img src={BusinessAddIcon} className='w-8 h-8 duration-500 group-hover:rotate-90' alt="" />

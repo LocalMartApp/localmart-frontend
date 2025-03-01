@@ -44,7 +44,7 @@ const useSearchStore = create(
           let config = {
             method: "get",
             maxBodyLength: Infinity,
-            url: `http://localhost:8080/search/businesses?${params}`,
+            url: `http://13.234.223.21:8080/search/businesses?${params}`,
             headers: {},
           };
 
@@ -52,10 +52,11 @@ const useSearchStore = create(
             .request(config)
             .then((response) => {
               console.log(JSON.stringify(response.data));
+              set({ results: response.data.data, loading: false });
             })
             .catch((error) => {
               console.log(error);
-              set({ results: response.data.data, loading: false });
+
             });
         } catch (err) {
           set({
