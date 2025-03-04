@@ -14,13 +14,19 @@ import PetShop from '../../assets/images/categories-logos/petshop.svg';
 
 import axios from 'axios';
 import { config } from '../../env-services';
-
+import { useNavigate } from 'react-router-dom';
+import useSearchStore from '../../Store/useSearchStore';
 
 
 const BrowseAllCategories = ({ isCategoryOpen , closeCategory }) => {
 
 
+
+    const navigate = useNavigate()
+
     const [localmartCategories , setLocalmartCategories] = useState([])
+
+    const { setFilter } = useSearchStore()
 
 
     useEffect(() => {
@@ -30,64 +36,19 @@ const BrowseAllCategories = ({ isCategoryOpen , closeCategory }) => {
     const getAllCategories = async () => {
         await axios.get(config.api + `business-category`)
         .then((response) => {
+            console.log(response)
             setLocalmartCategories(response?.data?.data)
             // console.log('response' , response)
        })
     }
 
+    const handleSuggestionClick = async (data) => {
+        setFilter("categoryId", data);
+        navigate("/search");
+      };
 
 
-    const allCategories = [
-        {
-            image: PgHostel,
-            rightText: "Hostels & PG's"
-        },
-        {
-            image: Hospital,
-            rightText: "Hospitals"
-        },
 
-        {
-            image: HomeDecor,
-            rightText: "Home Decors"
-        },
-        {
-            image: Packers,
-            rightText: "Packers&Movers"
-        },
-        {
-            image: HotelRoom,
-            rightText: "Hotels"
-        },
-        {
-            image: Restaurants,
-            rightText: "Restaurants"
-        },
-        {
-            image: Courier,
-            rightText: "Couriers"
-        },
-        {
-            image: Gym,
-            rightText: "Gym"
-        },
-        {
-            image: Dental,
-            rightText: "Dental"
-        },
-        {
-            image: FunctionHall,
-            rightText: "Function Halls"
-        },
-        {
-            image: WeddingHall,
-            rightText: "Wedding Halls"
-        },
-        {
-            image: PetShop,
-            rightText: "Pet Shop"
-        },
-    ]
 
     
     const [searchTerm, setSearchTerm] = useState('');
@@ -120,16 +81,16 @@ const BrowseAllCategories = ({ isCategoryOpen , closeCategory }) => {
                 <div className="grid grid-cols-4 gap-5">
                     {localmartCategories && localmartCategories.length > 0 ? filteredCategories.map((items , index) => {
                         return (
-                            <div className="single-category-item bg-white rounded-10p p-[15px]" key={index}>
+                            <button type='button' onClick={() => handleSuggestionClick(items?._id)} className="single-category-item bg-white rounded-10p p-[15px]" key={index}>
                                 <div className="inner-single-category-item flex items-center gap-5">
                                     <div className="left-side-image-category">
-                                        <img src={items.image} className='object-contain max-w-[35px] max-h-[35px] min-w-[35px]' alt="" />
+                                        <img src={items?.icon} className='object-contain max-w-[40px] max-h-[40px] min-w-[35px]' alt="" />
                                     </div>
                                     <div className="right-side-category-name">
                                         <p className='text-Black font-medium'>{items.name}</p>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         )
                     }) : null}
                 </div>

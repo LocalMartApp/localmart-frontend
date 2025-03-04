@@ -6,7 +6,8 @@ const token = tokenObject ? tokenObject.token : null;
 
 
 const config = {
-    api: "http://13.234.223.21:8080/",
+    // api: "http://13.234.223.21:8080/",
+    api: "https://stage-api.localmart.app:8443/" ,
     // api: "http://localhost:8142/api/v1/",
     options: {
       headers: {
@@ -16,7 +17,8 @@ const config = {
   };
 
   
-  const hostUrl = "http://13.234.223.21:8080";
+  // const hostUrl = "http://13.234.223.21:8080";
+  const hostUrl = "https://stage-api.localmart.app:8443";
 
 
   const handleResponse = (response) => {

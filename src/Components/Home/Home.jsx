@@ -399,7 +399,7 @@ useEffect(() => {
                                   </div>
                                   <div className="col-span-2">
                                     <div className="cate-loc-search-btn h-full w-full">
-                                      <button type="button"  onClick={handleSearchNav} className='bg-Primary duration-300 hover:scale-95 rounded-full h-full max-h-[58px] flex items-center w-full justify-center shadow-customized'>
+                                      <button type="button"  onClick={() => fetchSuggestions(query)} className='bg-Primary duration-300 hover:scale-95 rounded-full h-full max-h-[58px] flex items-center w-full justify-center shadow-customized'>
                                         <p className='text-white  font-medium'>Search</p>
                                       </button>
                                     </div>

@@ -11,6 +11,10 @@ import GmailIcon from '../../assets/images/gmail-icon.svg';
 import useSearchStore from '../../Store/useSearchStore';
 import ShimmerSearch from '../../utils/SkeltonLoaders/ShimmerSearch';
 import Emptymedia from '../../assets/images/emptymedia-business.png';
+import Lottie from 'lottie-react';
+import EmptyLoader from '../../assets/images/animated-logos/emptyastro.json';
+
+
 
 const SearchPage = () => {
   
@@ -272,12 +276,22 @@ useEffect(() => {
                               </button>
                           </div>
                         )
-                      }) : null}
+                      }) : 
+                      <div className="no-bus-found">
+                        <div className="nodata-found-section flex justify-center flex-col items-center pt-10 pb-5 w-full">
+                          <Lottie animationData={EmptyLoader} style={{ width: 300}}/>
+                          <div className="no-data-found-text-btn mt-8 text-center" >
+                            <p className='text-center text-xl font-medium'>No Business found based on your search.</p>
+                            {/* <button type="button" onClick={() =>  setAddAddressToggle(true)} className="text-Secondary font-semibold text-xl mt-5">Add Address</button> */}
+                          </div>
+                        </div>
+                      </div>
+                      }
                     </div>
 
                     {/* Responsive Section */}
                     <div className="inner-left-searched-cards-sec-after-991-layout flex flex-col gap-y-30p">
-                    {searchedContent.map((items , index) => {
+                    {!loading && results && results.length > 0 ? results.map((items , index) => {
                         return (
                           <div className="single-searched-cards">
                               <button onClick={() => handleNavigate(items)} className="single-business-sec-3-card w-full bg-white rounded-xl text-left  shadow-customized overflow-hidden group" key={index}>
@@ -318,7 +332,7 @@ useEffect(() => {
                                           </button>
                                         <button type='button' className="business-recommended-section flex items-center gap-10p opacity-60">
                                           <i className="ri-map-pin-line text-Black"></i>
-                                          <p className='text-sm text-LightText'>{items.location}</p>
+                                          {/* <p className='text-sm text-LightText'>{items.location}</p> */}
                                         </button>
                                         <div className="rating-section-right-side-business rating-place-changed bg-LightGrayBg rounded-[5px] px-10p py-1 flex items-center gap-2">
                                           <i className="ri-star-fill text-StarGold"></i>
@@ -364,7 +378,7 @@ useEffect(() => {
                               </button>
                           </div>
                         )
-                      })}
+                      }) : null}
                     </div>
                   </div>
                   <div className="col-span-12">

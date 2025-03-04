@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import axios from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -62,6 +62,59 @@ const useSearchStore = create(
     }
   )
 );
+
+    const allCategories = [
+        {
+            image: PgHostel,
+            rightText: "Hostels & PG's"
+        },
+        {
+            image: Hospital,
+            rightText: "Hospitals"
+        },
+
+        {
+            image: HomeDecor,
+            rightText: "Home Decors"
+        },
+        {
+            image: Packers,
+            rightText: "Packers&Movers"
+        },
+        {
+            image: HotelRoom,
+            rightText: "Hotels"
+        },
+        {
+            image: Restaurants,
+            rightText: "Restaurants"
+        },
+        {
+            image: Courier,
+            rightText: "Couriers"
+        },
+        {
+            image: Gym,
+            rightText: "Gym"
+        },
+        {
+            image: Dental,
+            rightText: "Dental"
+        },
+        {
+            image: FunctionHall,
+            rightText: "Function Halls"
+        },
+        {
+            image: WeddingHall,
+            rightText: "Wedding Halls"
+        },
+        {
+            image: PetShop,
+            rightText: "Pet Shop"
+        },
+    ]
+
 
 
 
