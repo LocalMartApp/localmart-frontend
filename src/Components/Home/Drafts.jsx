@@ -43,7 +43,7 @@ const useSearchStore = create(
           // const params = new URLSearchParams(filters);
 
           const response = await axios.get(
-            `http://13.234.223.21:8080/search/businesses?${queryParams}`
+            `https://stage-api.localmart.app:8443/search/businesses?${queryParams}`
           );
           set({ results: response.data.data, loading: false });
         } catch (err) {

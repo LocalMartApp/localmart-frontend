@@ -44,7 +44,7 @@ const useSearchStore = create(
           let config = {
             method: "get",
             maxBodyLength: Infinity,
-            url: `http://13.234.223.21:8080/search/businesses?${params}`,
+            url: `https://stage-api.localmart.app:8443//search/businesses?${params}`,
             headers: {},
           };
 
