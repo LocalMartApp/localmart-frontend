@@ -18,7 +18,7 @@ const LoginModal = ({ isOpen, closeModal }) => {
 
 
   return (
-    <div className={`main-login-modal-section fixed left-0 w-full duration-500 h-full z-[9999] ${isOpen ? 'top-0 visible' : '-top-full invisible'}`}>
+    <div className={`main-login-modal-section fixed left-0 w-full duration-500 h-full z-[99999999] ${isOpen ? 'top-0 visible' : '-top-full invisible'}`}>
         <div className="inner-login-modal-section relative h-full">
             <div className="inner-modal-relative-section absolute top-1/2 left-1/2 w-full bg-white p-8 rounded-20p">
                 <div className="login-modal-top-section w-fit">

@@ -415,10 +415,10 @@ const MyAddresses = () => {
                               <div className="address-delete-edit-section absolute top-5 right-5">
                                 <div className="address-delete-edit-inner-sec flex items-center gap-4">
                                   <div className="address-edit-btn">
-                                    <button type="button" onClick={() => setAddressItem(items)} className='w-9 h-9 rounded-full bg-white flex items-center justify-center'><i className="ri-edit-line text-Secondary text-lg"></i></button>
+                                    <button type="button" onClick={() => setAddressItem(items)} className=''><i className="ri-edit-line text-Secondary text-lg"></i></button>
                                   </div>
                                   <div className="address-delete-btn">
-                                    <button type="button" className='w-9 h-9 rounded-full bg-white flex items-center justify-center'><i className="bi bi-trash3 text-red-500 text-lg"></i></button>
+                                    <button type="button" className=''><i className="bi bi-trash3 text-red-500 text-lg"></i></button>
                                   </div>
                                 </div>
                               </div>
