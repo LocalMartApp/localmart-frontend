@@ -296,12 +296,12 @@ useEffect(() => {
                           <div className="single-searched-cards">
                               <button onClick={() => handleNavigate(items)} className="single-business-sec-3-card w-full bg-white rounded-xl text-left  shadow-customized overflow-hidden group" key={index}>
                                 <div className="inner-verified-sellers-card-sec">
-                                  <div className="right-side-business-card-details relative px-5 py-5">
-                                    <div className="top-image-part-hotel-desc flex gap-x-5">
-                                      <div className="left-image-section-bus-sec-3 overflow-hidden max-w-20 rounded-full max-h-20">
-                                          <img src={items.image} className='h-full w-full group-hover:scale-125 duration-500 object-cover ' alt="" />
+                                  <div className="right-side-business-card-details relative ">
+                                    <div className="top-image-part-hotel-desc  gap-x-5">
+                                      <div className="left-image-section-bus-sec-3 overflow-hidden">
+                                          <img src={items?.mediaFiles[0]?.fileUrl ? items?.mediaFiles[0]?.fileUrl : Emptymedia} className='h-56 w-full group-hover:scale-125 duration-500 object-cover ' alt="" />
                                       </div>
-                                      <div className="inner-seller-business-card-details flex flex-col gap-y-1 h-full">
+                                      <div className="inner-seller-business-card-details flex flex-col gap-y-1 h-full ">
                                         <div className="business-card-title">
                                           <h4 className='text-2xl font-medium text-Black'>{items.title}</h4>
                                         </div>
@@ -313,6 +313,7 @@ useEffect(() => {
                                         </div>
                                       </div>
                                     </div>
+                                    <div className="inner-search-card-after-991 px-5 py-5">
                                     <div className="absoulte-rating-favorite-sec absolute top-4 right-6 ">
                                       <div className="inner-rating-favorite-sec flex items-center gap-x-20p">
                                         <div className="rating-section-right-side-business absolute-rating-business bg-LightGrayBg rounded-[5px] px-10p py-1 flex items-center gap-2">
@@ -372,6 +373,7 @@ useEffect(() => {
                                               <img src={GmailIcon} className='w-5 h-20' alt="" />
                                           </button>
                                       </div>
+                                    </div>
                                     </div>
                                   </div>
                                 </div>

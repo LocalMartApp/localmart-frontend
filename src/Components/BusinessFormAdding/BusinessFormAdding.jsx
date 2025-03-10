@@ -54,6 +54,8 @@ const BusinessFormAdding = () => {
   const [states , setStates] = useState([]);
   const [cities , setCities] = useState([]);
   const [pincodes , setPincodes] = useState([]);
+  const [socialMediaInput, setSocialMediaInput] = useState("");
+  const [socialMediaLinks, setSocialMediaLinks] = useState([]);
 
   const [userToken , setUserToken] = useState('')
 
@@ -209,6 +211,22 @@ const BusinessFormAdding = () => {
 
 
   // console.log(selectedLocation , "selectedLocation")
+
+
+
+
+    // Add Link Function
+    const addSocialMediaLink = () => {
+        if (socialMediaInput.trim() !== "") {
+            setSocialMediaLinks([...socialMediaLinks, socialMediaInput]);
+            setSocialMediaInput("");
+        }
+    };
+
+    // Remove Link Function
+    const removeSocialMediaLink = (index) => {
+        setSocialMediaLinks(socialMediaLinks.filter((_, i) => i !== index));
+    };
 
 
   const businessAddValues = {
@@ -467,9 +485,23 @@ const BusinessFormAdding = () => {
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Social Media Links(optional)</p>
                                 </div>
-                                <Field type="text" name="socialMedia" placeholder='Enter Social Media Link'
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
-                                />
+                                <div className="social-media-adding-section relative">
+                                  <Field type="text" name="socialMedia" placeholder='Enter Social Media Link' onKeyUp={(e) => setSocialMediaInput(e.target.value)}
+                                      className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${errors.socialMedia  ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                  />
+                                  {/* <button type="button" onClick={addSocialMediaLink}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-LightBlue text-Secondary'>Add Link</button> */}
+                                </div>                                      
+                              </div>
+                              <div className="social-meida-links-displayer col-span-12 hidden">
+                                <div className="left-side-link-icon flex items-center justify-between">
+                                    <div className="text-link-icon-outer flex items-center gap-4">
+                                      <i className="ri-link text-lg text-Secondary"></i>
+                                      <div className="right-text">
+                                          <p className='text-Secondary font-medium'>https://www.sg-codes.netlify.app</p>
+                                      </div>
+                                    </div>
+                                    <div className="remove-link-btn"><button type="button" className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
+                                </div>
                               </div>
                             </div>
                           </div>

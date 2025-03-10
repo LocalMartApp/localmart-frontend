@@ -29,10 +29,13 @@ import BMWLogo from '../../assets/images/bmw-logo.svg';
 import HaierLogo from '../../assets/images/haier-logo.svg';
 import LGlogo from '../../assets/images/lg-logo.svg';
 import HaveelsLogo from '../../assets/images/haveels.svg'
+import { useNavigate } from 'react-router-dom';
 
 
 
 const BusinessPage = () => {
+
+  const navigate = useNavigate()
 
 
     const allCategories = [
@@ -145,7 +148,7 @@ const BusinessPage = () => {
         <div className="list-business-top-section">
           <div className="container">
             <div className="right-side-list-business-button flex items-center justify-end">
-              <button type="button">
+              <button type="button" onClick={() => navigate('/business/add-business')}>
                   <div className="list-business-btn-inner flex items-center gap-3">
                     <div className="left-icon-list-business">
                       <i className="ri-shake-hands-line text-Secondary text-2xl"></i>

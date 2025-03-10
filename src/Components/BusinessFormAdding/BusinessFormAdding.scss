@@ -7,6 +7,12 @@
     .left-map-icon {
         transform: translate(-50% , -50%);
     }
+    .social-media-adding-button {
+        transform: translate(-0% , -50%);
+        &:active {
+            transform: translate(-0% , -50%) scale(1) !important;
+        }
+    }
 }
 
 
