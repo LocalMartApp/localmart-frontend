@@ -71,6 +71,30 @@ const BannerSlider = () => {
             pagination={{
                 clickable: true,
             }}
+            breakpoints={{
+              2000: {
+                  slidesPerView: 2,
+                  
+              },
+              1700 : {
+                  slidesPerView: 2
+              },
+              1200: {
+                  slidesPerView: 2
+              },
+              992: {
+                  slidesPerView: 1
+              },
+              674: {
+                  slidesPerView: 1
+              },
+              375: {
+                  slidesPerView: 1,
+              },
+              75: {
+                  slidesPerView: 1
+              }
+          }}
             modules={[EffectCoverflow , Autoplay]}
             className="mySwiper"
             onClick={(swiper) => swiper.slideTo(swiper.clickedIndex)} 

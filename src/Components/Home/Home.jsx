@@ -67,6 +67,9 @@ const Home = () => {
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+
+
+  
   const debounceTimeout = useRef(null);
   
   
@@ -74,7 +77,7 @@ const Home = () => {
   const placeholders = [
     'Search for anything?',
     'Search for restaurants',
-    'Search for people',
+    'Search for businesses',
     'Search for products'
   ];
 
@@ -101,9 +104,9 @@ const Home = () => {
 
 
 
-    setTimeout(() => {
-      openModal()
-    }, 2000)
+    // setTimeout(() => {
+    //   openModal()
+    // }, 2000)
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -165,6 +168,7 @@ const Home = () => {
     }
   };
 
+  // console.log("citySelect" , citySelect)
 
   const handleSuggestionClick = async (data) => {
     let filterKey = "searchKey"; 
@@ -177,7 +181,7 @@ const Home = () => {
       filterKey = data?.type; 
     }
 
-    setFilter(filterKey, data?.id);
+    setFilter(filterKey, data?.id , citySelect?.value);
     navigate("/search");
   };
 
@@ -305,6 +309,9 @@ useEffect(() => {
       title: 'Pet Shops'
     },
   ]
+
+
+  
 
 
 
@@ -436,6 +443,20 @@ useEffect(() => {
                     </div>
                     </div>
                 </div>
+
+                <div className="top-slider-search-section">
+                  <div className="grid grid-cols-2 gap-x-16 items-center top-slider-grid-sec">
+                    <div className="left-home-section-1">
+                      <div className="heading-section-1 flex flex-col gap-5">
+                        <h1 className='text-white font-semibold text-50'>Find Everything <br /> You Need, Every Day!</h1>
+                        <p className='text-white text-xl'>Looking for deals, services, or a place to <br /> buy and sell? We’ve got you covered.</p>
+                      </div>
+                    </div>
+                    <div className="right-home-section-1">
+                      <BannerSlider/>
+                    </div>
+                  </div>
+                </div>
                 <section className="home-section-5-mobile-view ">
                   <div className="inner-home-section-5">
                     <div className="">
@@ -470,94 +491,6 @@ useEffect(() => {
                     </div>
                   </div>
                 </section>
-                <div className="top-slider-search-section">
-                  <div className="grid grid-cols-2 gap-x-16 items-center top-slider-grid-sec">
-                    <div className="left-home-section-1">
-                      <div className="heading-section-1 flex flex-col gap-5">
-                        <h1 className='text-white font-semibold text-50'>Find Everything <br /> You Need, Every Day!</h1>
-                        <p className='text-white text-xl'>Looking for deals, services, or a place to <br /> buy and sell? We’ve got you covered.</p>
-                      </div>
-                      {/* <div className={`home-search-section-1 mt-14 `}>
-                        <div className="inner-seacrh-section grid grid-cols-12 bg-white rounded-full p-3 pl-5 justify-between">
-                            <div className="col-span-5">
-                                <div className="category-section flex items-center gap-2">
-                                  <div className="left-category-logo-search w-[10%]">
-                                    <i className="ri-map-pin-line text-Primary text-2xl"></i>
-                                  </div>
-                                  <div className="right-category-dropdown-section w-[80%]">
-                                      <div>
-                                          <Select options={cityOptions} 
-                                              placeholder='Choose Location'
-                                              styles={{
-                                                  control: (baseStyles, state) => ({
-                                                    ...baseStyles,
-                                                    borderRadius: 10,
-                                                    paddingLeft: 0,
-                                                    paddingTop: 4,
-                                                    paddingBottom: 4,
-                                                    borderWidth: 0,
-                                                    outlineWidth: 0,
-                                                    borderColor: '#fff',
-                                                    outlineColor: '#fff',
-                                                    fontSize: 14,
-                                                    // borderColor: state.isFocused ? 'grey' : 'red',
-                                                    boxShadow: state.isFocused ? 'none' : 'none',
-                                                  }),
-                                                }}
-                                              value={citySelect}
-                                              onChange={(option) => setCitySelect(option)}
-                                          />
-                                      </div>
-                                  </div>
-                                </div>
-                            </div>
-                            <div className="col-span-5">
-                                <div className="category-section flex items-center gap-2">
-                                  <div className="left-category-logo-search w-[10%]">
-                                    <i className="ri-file-list-3-line text-Primary text-2xl"></i>
-                                  </div>
-                                  <div className="right-category-dropdown-section w-[80%]">
-                                      <div>
-                                          <Select options={categoryOptions} 
-                                              placeholder='Choose Category'
-                                              styles={{
-                                                  control: (baseStyles, state) => ({
-                                                    ...baseStyles,
-                                                    borderRadius: 10,
-                                                    paddingLeft: 0,
-                                                    paddingTop: 4,
-                                                    paddingBottom: 4,
-                                                    borderWidth: 0,
-                                                    outlineWidth: 0,
-                                                    borderColor: '#fff',
-                                                    outlineColor: '#fff',
-                                                     fontSize: 14,
-                                                    boxShadow: state.isFocused ? 'none' : 'none',
-
-                                                  }),
-                                                }}
-                                              value={categorySelect}
-                                              onChange={(option) => setCategorySelect(option)}
-                                          />
-                                      </div>
-                                  </div>
-                                </div>
-                            </div>
-                            <div className="col-span-2">
-                                <div className="cate-loc-search-btn h-full w-full">
-                                  <button type="button"  onClick={handleSearchNav} className='bg-Primary duration-300 hover:scale-95 rounded-full h-full flex items-center w-full justify-center shadow-customized'>
-                                    <p className='text-white  font-medium'>Search</p>
-                                  </button>
-                                </div>
-                            </div>
-                        </div>
-                      </div> */}
-                    </div>
-                    <div className="right-home-section-1">
-                      <BannerSlider/>
-                    </div>
-                  </div>
-                </div>
               </div>
               <div className="bottom-apps-home-section-1 mt-16">
                   <AppsSlider/>

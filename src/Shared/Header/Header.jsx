@@ -18,34 +18,36 @@ const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-
+  const { userData } = useAuth();
 
   // console.log(location)
+
 
   const [language , setLanguage] = useState(false);
   const [languageSelector , setLanguageSelector] = useState('EN');
   const [categorySelect , setCategorySelect] = useState();
   const [citySelect ,  setCitySelect] = useState();
   const [notificationToggle , setNotificationToggle] = useState(false);
+  const [mobileMenu , setMobileMenu] = useState(false)
 
   const [userToken ,  setUserToken] = useState();
-  const [userData , setUserData] = useState("");
+  // const [userData , setUserData] = useState("");
 
 
-    useEffect(() => {
-      getUserDetails()
-    } , [])
+    // useEffect(() => {
+    //   getUserDetails()
+    // } , [])
     
 
 
-  const getUserDetails = async () => {
-    const response = localStorage.getItem("authToken");
-    if (!response) return;
+  // const getUserDetails = async () => {
+  //   const response = localStorage.getItem("authToken");
+  //   if (!response) return;
   
-    const userParse = JSON.parse(response);
-    setUserToken(userParse);
-    getPorfileData(userParse);
-  };
+  //   const userParse = JSON.parse(response);
+  //   setUserToken(userParse);
+  //   getPorfileData(userParse);
+  // };
 
 
   const handleLanguageSelect = () => {
@@ -64,18 +66,18 @@ const Header = () => {
 
 
   
-  const getPorfileData = async(token) => {
-    await axios.get(`${config.api}auth/user-details`, {
-      headers: {
-        Authorization: "Bearer " + token, 
-        "content-type": "application/json"
-      },
-    }).then((response) => {
-      setUserData(response?.data?.data)
-    }).catch((err) => {
-      // console.log(err)
-    })
-}
+//   const getPorfileData = async(token) => {
+//     await axios.get(`${config.api}auth/user-details`, {
+//       headers: {
+//         Authorization: "Bearer " + token, 
+//         "content-type": "application/json"
+//       },
+//     }).then((response) => {
+//       setUserData(response?.data?.data)
+//     }).catch((err) => {
+//       // console.log(err)
+//     })
+// }
 
 
 
@@ -221,10 +223,36 @@ const Header = () => {
                   </div>
                 </div>
                 <div className="header-mobile-menu-section text-center">
-                  <button type="button" className='duration-300'>
+                  <button type="button" className='duration-300' onClick={() => setMobileMenu(true)}>
                     <i className="text-3xl ri-menu-3-line "></i>
                   </button>
                 </div>
+                <div className={`fixed-mobile-menu-section fixed z-[999999] top-0 h-full w-9/12 bg-white duration-300 ${mobileMenu ? 'right-0' : '-right-full'}`}>
+                    <div className="inner-fixed-mobile-menu-section px-4 py-6">
+                      <div className="top-backsection-mobile-menu mb-5">
+                        <button type="button" onClick={() => setMobileMenu(false)} className="w-8 h-8 rounded-full flex items-center justify-center">
+                          <i class="bi bi-arrow-left text-2xl"></i>
+                        </button>
+                      </div>
+                      {!authToken ? 
+                        <div className="profile-image-showing-button">
+                          <button type="button" onClick={() => navigate('/profile/my-profile')}>
+                            <img src={userData?.profilePicture ? userData?.profilePicture : ProfileDummyImg} className='w-10 h-10 rounded-full'/>
+                          </button>
+                        </div>
+                      :  
+                      <div className="login-button-header">
+                        <button type="button" onClick={() => navigate('/login')} className='bg-Primary h-10 border-Primary border-2 px-3 overflow-hidden rounded-full flex items-center gap-2 min-w-[190px] justify-center duration-300 group hover:bg-transparent  '>
+                          <i className="ri-login-circle-fill text-white text-lg duration-300 group-hover:text-Primary"></i>
+                          <p className='text-white font-medium text-lg duration-300 group-hover:text-Primary'>Login | Signup</p>
+                        </button>
+                      </div>                      
+                      }
+                    </div>
+                </div>
+                <button onClick={() => setMobileMenu(false)} className={`fixed-mobile-overlay-section fixed z-[99999] top-0  h-full w-full bg-black bg-opacity-20 ${mobileMenu ? 'left-0' : '-left-full'}`}>
+
+                </button>
               </div>
             </div>
           </div>

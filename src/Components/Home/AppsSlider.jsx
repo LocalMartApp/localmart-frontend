@@ -42,36 +42,12 @@ const AppsSlider = () => {
           heading: 'Food Delivery',
           title : 'Food at your Doorstep',
           link: '/',
-        },
-        {
-            icon: ShoppingApp,
-            heading: 'Online Shopping',
-            title : 'Wide Range Shopping',
-            link: '/',
-          },
-          {
-            icon: FoodDelivery,
-            heading: 'Food Delivery',
-            title : 'Food at your Doorstep',
-            link: '/',
-          },
-          {
-            icon: BusinessApp,
-            heading: 'Local Search',
-            title : 'Local Search',
-            link: '/businesses',
-          },
-          {
-            icon: LocalClassifieds,
-            heading: 'Local Classifieds',
-            title : 'Buy and Sell Products',
-            link: '/',
-          },
+        }
       ]
 
   return (
     <div className="main-aps-slider-section-home">
-        <div className="relative">
+        <div className="relative hidden">
             {/* <div className="app-select-home-right-sliding-buttons flex items-center gap-7 ">
                 <button type="button" className='apps-button-prev w-10 h-10 rounded-lg border-LightBlack border'><i className="ri-arrow-left-s-line text-Black text-2xl"></i></button>
                 <button type="button" className='apps-button-next w-10 h-10 rounded-lg bg-Black'><i className="ri-arrow-right-s-line text-white text-2xl"></i></button>
@@ -124,7 +100,7 @@ const AppsSlider = () => {
             >
                 {appCards.map((items , index) => {
                     return (
-                        <SwiperSlide onClick={() => navigate(items.link)}>
+                        <SwiperSlide>
                             <button type='button'  className="group text-left single-home-app-cards-sec-1 flex items-center gap-5 bg-white py-5 px-5 rounded-xl w-full" key={index}>
                                 <div className="left-app-logo w-50p h-50p">
                                     <img src={items.icon} className='group-hover:scale-110 duration-300' alt="" />
@@ -138,7 +114,25 @@ const AppsSlider = () => {
                     )
                 })}
             </Swiper>     
-        </div>       
+        </div>  
+        <div className="container localmart-business-app-container">
+            <div className="grid grid-cols-4 px-6 gap-4 localmart-apps-section-banner">
+                {appCards.map((items , index) => {
+                    return (
+                        <button type='button'  onClick={() => navigate(items.link)} className="group text-left single-home-app-cards-sec-1 flex items-center gap-5 bg-white py-5 px-5 rounded-xl w-full" key={index}>
+                            <div className="left-app-logo w-50p h-50p">
+                                <img src={items.icon} className='group-hover:scale-110 duration-300' alt="" />
+                            </div>
+                            <div className="right-app-heading-title-sec">
+                                <h2 className='text-Black text-xl'>{items.heading}</h2>
+                                <p className='text-LightText text-sm'>{items.title}</p>
+                            </div>
+                        </button>
+                    )
+                })}
+                
+            </div>  
+        </div>   
     </div>
   )
 }

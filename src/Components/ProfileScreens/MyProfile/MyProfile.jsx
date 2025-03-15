@@ -10,6 +10,7 @@ import axios from 'axios';
 import { config } from '../../../env-services';
 import Loader from '../../../utils/Loader/Loader';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../../utils/AuthContext';
 
 
 
@@ -18,11 +19,12 @@ const MyProfile = () => {
 
   const navigate = useNavigate()
   const [userToken ,  setUserToken] = useState();
-  const [userData , setUserData] = useState("");
+  // const [userData , setUserData] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [profilePicModal , setProfilePicModal] = useState(false);
   const [profPic , setProPic] = useState();
   const [preview, setPreview] = useState(); 
+  const { authToken, userData, setUserData, getProfileData } = useAuth();
   
 
     useEffect(() => {
@@ -138,19 +140,59 @@ const MyProfile = () => {
     }
   ]
 
-  const getPorfileData = async(token) => {
-        await axios.get(`${config.api}auth/user-details`, {
-          headers: {
-            Authorization: "Bearer " + token, 
-            "content-type": "application/json"
-          },
-        }).then((response) => {
-          // console.log(response);
-          setUserData(response?.data?.data)
-        }).catch((err) => {
-          // console.log(err)
-        })
-  }
+
+  const allMobileViewDetailsProfile = [
+    {
+      title: 'First Name',
+      desc: userData?.firstName
+    },
+    {
+      title: 'Last Name',
+      desc: userData?.lastName
+    },
+    {
+      title: 'Date Of Birth',
+      desc: userData?.dateOfBirth
+    },
+    {
+      title: 'Email Address',
+      desc: userData?.email
+    },
+    {
+      title: 'Phone Number',
+      desc: userData?.mobileNumber
+    },
+    {
+      title: 'User Since',
+      desc: formatDate(userData?.createdAt)
+    },
+    {
+      title: 'Country',
+      desc: userData?.country?.name
+    },
+    {
+      title: 'State',
+      desc: userData?.state?.name
+    },
+    {
+      title: 'City',
+      desc: userData?.city?.name
+    }
+  ]
+
+  // const getPorfileData = async(token) => {
+  //       await axios.get(`${config.api}auth/user-details`, {
+  //         headers: {
+  //           Authorization: "Bearer " + token, 
+  //           "content-type": "application/json"
+  //         },
+  //       }).then((response) => {
+  //         // console.log(response);
+  //         setUserData(response?.data?.data)
+  //       }).catch((err) => {
+  //         // console.log(err)
+  //       })
+  // }
 
 
   const handleUploadPoriflePic = async () => {
@@ -176,7 +218,7 @@ const MyProfile = () => {
             toast.success('Profile Pic Uploaded Successfully');
             setModalIsOpen(false)
             setProfilePicModal(false)
-            getPorfileData(userToken)
+            getProfileData(userToken)
         }else {
             toast.error('Error in upload file');
             setModalIsOpen(false)
@@ -239,7 +281,7 @@ const MyProfile = () => {
       <div className="my-profile-inner-section bg-ProfileScreensBg">
         <div className="top-similar-header-section-profile-screens mb-30p">
           <div className="container">
-            <div className="top-similar-header-section-profile-inner flex items-center gap-10 justify-between">
+            <div className="top-similar-header-section-profile-inner flex items-center gap-10 justify-between flex-wrap">
               <div className="left-profilescreens-heading">
                 <h4 className='text-xl text-Black font-medium'>My Account</h4>
               </div>
@@ -259,7 +301,7 @@ const MyProfile = () => {
           </div>
         </div>
         <div className="container">
-          <div className=" profile-section-navigation-details-card bg-white py-8 px-8 rounded-20p similar-profile-sidebar-outer">
+          <div className=" profile-section-navigation-details-card bg-white py-8 px-8 rounded-20p similar-profile-sidebar-outer relative">
               <div className="grid grid-cols-12 gap-9 profile-sidebar-main-grid">
                 <div className="col-span-3 left-sidebar-section-proile border-r border-BorderColor border-opacity-40">
                     <ProfileSideBar/>
@@ -280,7 +322,7 @@ const MyProfile = () => {
                       <div className="profile-card flex items-center gap-x-10 justify-between pl-5 pr-8 py-4 border border-ProfileCardBorder rounded-[15px]">
                         <div className="left-image-name-section-profile flex items-center gap-6">
                           <div className="profile-image">
-                            <img src={userData?.profilePicture ? userData.profilePicture : ProfileDummyImg} className='rounded-full w-16 h-16' alt="" />
+                            <img src={userData?.profilePicture ? userData.profilePicture : ProfileDummyImg} className='rounded-full w-16 h-16 min-w-16 min-h-16' alt="" />
                           </div>
                           <div className="profile-details-prof">
                             <h6 className='text-Black font-medium'>{userData?.firstName} {userData?.lastName} </h6>
@@ -296,35 +338,47 @@ const MyProfile = () => {
                           <div className="left-sdie-profile-info-heading">
                             <h4 className='text-lg font-medium text-Black'>Personal Information</h4>
                           </div>
-                          <div className="combined-details-screen-profile flex items-center gap-20 mb-12 mt-3">
-                            {firstNameDetails.map((items , index)=> {
-                              return (
-                                <div className="single-detail-profile-sec" key={index}>
-                                  <p className='text-LightBlack opacity-50'>{items.title}</p>
-                                  <h6 className='text-Black '>{items.desc}</h6>
-                                </div>
-                              )
-                            })}
+                          <div className="top-deskview-combined-details-section-profile">
+                            <div className="combined-details-screen-profile flex items-center gap-20 mb-12 mt-3">
+                              {firstNameDetails.map((items , index)=> {
+                                return (
+                                  <div className="single-detail-profile-sec" key={index}>
+                                    <p className='text-LightBlack opacity-50'>{items.title}</p>
+                                    <h6 className='text-Black '>{items.desc}</h6>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                            <div className="combined-details-screen-profile flex items-center gap-20  mb-12">
+                              {emailDetails.map((items , index)=> {
+                                return (
+                                  <div className="single-detail-profile-sec" key={index}>
+                                    <p className='text-LightBlack opacity-50'>{items.title}</p>
+                                    <h6 className='text-Black '>{items.desc}</h6>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                            <div className="combined-details-screen-profile flex items-center gap-20">
+                              {localityDetails.map((items , index)=> {
+                                return (
+                                  <div className="single-detail-profile-sec" key={index}>
+                                    <p className='text-LightBlack opacity-50'>{items.title}</p>
+                                    <h6 className='text-Black '>{items.desc}</h6>
+                                  </div>
+                                )
+                              })}
+                            </div>
                           </div>
-                          <div className="combined-details-screen-profile flex items-center gap-20  mb-12">
-                            {emailDetails.map((items , index)=> {
-                              return (
-                                <div className="single-detail-profile-sec" key={index}>
-                                  <p className='text-LightBlack opacity-50'>{items.title}</p>
-                                  <h6 className='text-Black '>{items.desc}</h6>
-                                </div>
-                              )
-                            })}
-                          </div>
-                          <div className="combined-details-screen-profile flex items-center gap-20">
-                            {localityDetails.map((items , index)=> {
-                              return (
-                                <div className="single-detail-profile-sec" key={index}>
-                                  <p className='text-LightBlack opacity-50'>{items.title}</p>
-                                  <h6 className='text-Black '>{items.desc}</h6>
-                                </div>
-                              )
-                            })}
+                          <div className="mobile-view-combined-details-profile flex flex-wrap gap-10 mt-8">
+                              {allMobileViewDetailsProfile.map((items , index) => {
+                                return (
+                                  <div className="single-detail-profile-sec" key={index}>
+                                    <p className='text-LightBlack opacity-50'>{items.title}</p>
+                                    <h6 className='text-Black '>{items.desc}</h6>
+                                  </div>
+                                )
+                              })}
                           </div>
                       </div>
                     </div>

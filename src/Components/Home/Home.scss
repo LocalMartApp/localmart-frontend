@@ -116,6 +116,20 @@ button {
 
 
 // Responsove Styles
+
+
+@media only screen and (max-width:1200px) {
+    .localmart-apps-section-banner {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .all-categories-grid-section {
+        .inner-all-categories-grid-section {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+}
+
+
 @media only screen and (max-width: 991.90px) {
     .home-section-1 {
         .search-grid-container-main {
@@ -170,10 +184,31 @@ button {
 }
 
 
+@media only screen and (max-width: 767px) {
+    .main-browse-all-categories-section  {
+        padding: 20px;
+    }
+    .all-categories-grid-section {
+        .inner-all-categories-grid-section {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+}
+
+
 
 
 @media only screen and (max-width: 674.90px) {
     .home-section-1 {
+        .localmart-business-app-container.container {
+            max-width: 100% !important;
+            padding: 0px !important;
+        }
+        .localmart-apps-section-banner {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            width: 100% !important;
+            padding: 0px !important;
+        }
         .search-grid-section-home-main {
             .top-search-section-grid-parent {
                 display: block !important;
@@ -243,12 +278,37 @@ button {
 
 
 @media only screen and (max-width: 574.90px) {
-    .home-section-1 {
-        .top-slider-search-section {
+    .inner-home-2-slider-sec  {
+        padding: 20px !important;
+    }
+    .all-categories-grid-section {
+        .inner-all-categories-grid-section {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+    }
+    .single-explore-cities-card {
+        .absolute-arrow-explore-section {
             display: none !important;
+        }
+    }
+    .Home .home-section-2 .inner-home-section-2 {
+        padding: 40px 0px  !important;
+    }
+    .home-section-1 {
+        // .top-slider-search-section {
+        //     display: none !important;
+        // }
+        .left-pop-serv-heading {
+            h2 {
+                font-size: 18px;
+                br {
+                    display: none;
+                }
+            }
         }
         .home-section-5-mobile-view {
             display: block !important;
+            margin-top: 30px !important;
             .left-categories-heading-home {
                 h2 {
                     font-size: 18px;

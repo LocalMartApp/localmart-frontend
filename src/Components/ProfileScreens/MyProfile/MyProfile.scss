@@ -1,2 +1,57 @@
-.MyProfile {}
+.MyProfile {
+    .mobile-view-combined-details-profile {
+        display: none !important;
+    } 
+    .top-deskview-combined-details-section-profile {
+        display: block !important;
+    }
+}
 
+
+
+@media only screen and (max-width: 767.99px) {
+    .MyProfile {
+        .top-deskview-combined-details-section-profile {
+            display: none !important;
+        }
+        .mobile-view-combined-details-profile {
+            display: flex !important;
+        }
+    }
+    .profile-details-main-cards-section {
+        .profile-card {
+            flex-direction: column !important;
+            gap: 20px 0px !important;
+            align-items: baseline !important;
+        }
+    }
+}
+
+
+@media only screen and (max-width: 574px) {
+    .right-edit-prof-button {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50% , -50%);
+    }
+    .profile-section-navigation-details-card  {
+        padding-bottom: 80px !important;
+    }
+}
+
+
+@media only screen and (max-width: 474px) {
+    .profile-details-main-cards-section {
+        .profile-card {
+            .left-image-name-section-profile {
+                flex-direction: column !important;
+                gap: 20px 0px !important;
+                align-items: baseline !important;
+            }
+        }
+    } 
+    .profile-section-navigation-details-card  {
+        padding: 15px 15px 80px 15px !important;
+    }
+}

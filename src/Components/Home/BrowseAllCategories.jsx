@@ -78,7 +78,7 @@ const BrowseAllCategories = ({ isCategoryOpen , closeCategory }) => {
                 </div>
             </div>
             <div className="all-categories-grid-section mt-10">
-                <div className="grid grid-cols-4 gap-5">
+                <div className="grid grid-cols-4 gap-5 inner-all-categories-grid-section">
                     {localmartCategories && localmartCategories.length > 0 ? filteredCategories.map((items , index) => {
                         return (
                             <button type='button' onClick={() => handleSuggestionClick(items?._id)} className="single-category-item bg-white rounded-10p p-[15px]" key={index}>
