@@ -340,12 +340,12 @@ const SearchDetails = () => {
                                       <div className="food-items-heading">
                                         <h4 className='text-20 font-medium text-Black'>Food Items</h4>
                                       </div>
-                                      <div className="food-items-sliding-buttons flex items-center gap-7">
+                                      <div className="food-items-sliding-buttons  items-center gap-7 hidden">
                                           <button type="button" className='food-items-button-prev w-8 h-8 rounded-full bg-Secondary bg-opacity-10 '><i className="ri-arrow-left-s-line text-Secondary text-2xl"></i></button>
                                           <button type="button" className='food-items-button-next w-8 h-8 rounded-full bg-Secondary bg-opacity-10'><i className="ri-arrow-right-s-line text-Secondary text-2xl"></i></button>
                                       </div>
                                   </div>
-                                  <div className="food-items-bottom-slider-section">
+                                  <div className="food-items-bottom-slider-section hidden">
                                       <Swiper 
                                           className="mySwiper"
                                           grabCursor={true}
@@ -383,7 +383,22 @@ const SearchDetails = () => {
                                               )
                                           })}
                                       </Swiper>
-                                  </div>                        
+                                  </div>      
+                                  <div className="food-items-bottom-slider-section grid grid-cols-3 gap-4">
+                                      {foodItems.map((items , index) => {
+                                          return (
+                                              <div className="single-food-item-searched bg-AddressCard rounded-lg p-3" key={index}>
+                                                <div className="top-veg-nonveg-part flex items-center gap-x-2">
+                                                    <img src={items.veg ? VegIcon : NonVegIcon} className='w-[14px] h-[14px]' alt="" />
+                                                    <p className='text-Black'>{items.title}</p>
+                                                </div>  
+                                                <div className="bottom-price-section mt-3">
+                                                  <h4 className='text-Black font-medium'>{items.pirce} / <span className='text-sm opacity-50'>person</span></h4>
+                                                </div>
+                                              </div>
+                                          )
+                                      })}
+                                  </div>                   
                                 </div>
                             </div>
                             <div className="rating-section-searched">

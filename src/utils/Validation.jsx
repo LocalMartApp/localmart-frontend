@@ -55,11 +55,11 @@ export const AddAddressValidationSchema = yup.object().shape({
 
 
 export const businessFormAddValidation = yup.object().shape({
-    userName: yup.string().required('Please Enter User Name'),
+    userName: yup.string().notRequired(''),
     businessName: yup.string().required('Please Enter Business Name'),
     businessTitle: yup.string().notRequired(),
-    mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
-    email: yup.string().email('Please Enter Valid Email').required('Email Address Required'),
+    mobileNumber: yup.number().notRequired(),
+    email: yup.string().email('Please Enter Valid Email').notRequired(''),
     socialMedia: yup.string().url().notRequired(),
     completeAddress: yup.string().required('Please Enter Complete Address'),
     landmark: yup.string().notRequired(),    

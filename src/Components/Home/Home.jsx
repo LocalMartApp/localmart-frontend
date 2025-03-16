@@ -87,11 +87,62 @@ const Home = () => {
 
   useEffect(() => {
     getCities()
+
+    const fetchLocation = async () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`;
+
+            try {
+              const response = await fetch(url);
+              const data = await response.json();
+
+              if (data.status === "OK") {
+                const addressComponents = data.results[0]?.address_components || [];
+                const cityComponent = addressComponents.find((component) =>
+                  component.types.includes("locality")
+                );
+
+                if (cityComponent) {
+                  const userCity = cityComponent.long_name;
+
+                  // Find the city in cityOptions
+                  const matchedCity = cityOptions.find(
+                    (city) => city.label.toLowerCase() === userCity.toLowerCase()
+                  );
+
+                  // Only set if user hasn't changed it manually
+                  if (matchedCity) {
+                    setCitySelect(matchedCity);
+                    setUserCity(matchedCity)
+                  }
+                }
+              }
+            } catch (error) {
+              console.error("Error fetching location:", error);
+            }
+          },
+          (error) => {
+            console.error("Error getting location:", error);
+          },
+          { enableHighAccuracy: true }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    };
+
+
+    fetchLocation();
+
+
+
     if (query.trim() === "") {
       setSuggestions([]);
       return;
     }
-
 
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
@@ -99,29 +150,12 @@ const Home = () => {
 
     debounceTimeout.current = setTimeout(() => {
       fetchSuggestions(query);
-    }, 300); // Adjust debounce time as needed
-
-
+    }, 300); 
 
 
     // setTimeout(() => {
     //   openModal()
     // }, 2000)
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-        // console.log(response?.data?.address)
-        const cityName = response.data.address.city || response.data.address.town;
-        
-        setUserCity(cityName); // Save the city name
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-      }
-    );
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % placeholders.length);
@@ -156,7 +190,7 @@ const Home = () => {
   const fetchSuggestions = async (searchTerm) => {
     try {
       await axios.get(
-        `${config.api}search/suggestions?q=${searchTerm}`
+        `${config.api}search/suggestions?q=${searchTerm}&city_id=${citySelect?.value}`
       ).then(resposne => {
         setSuggestions(resposne?.data?.data?.suggestions);
         setSearchSuggest(true);
@@ -181,7 +215,7 @@ const Home = () => {
       filterKey = data?.type; 
     }
 
-    setFilter(filterKey, data?.id , citySelect?.value);
+    setFilter(filterKey, data?.id);
     navigate("/search");
   };
 

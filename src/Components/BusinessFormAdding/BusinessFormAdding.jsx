@@ -450,9 +450,9 @@ const BusinessFormAdding = () => {
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-4">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>User Name*</p>
+                                  <p className='text-BusinessFormLabel'>User Name (optional)</p>
                                 </div>
-                                <Field type="text" name="userName" placeholder='Enter User Name*'
+                                <Field type="text" name="userName" placeholder='Enter User Name'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.userName && touched.userName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
@@ -466,7 +466,7 @@ const BusinessFormAdding = () => {
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Title(optional)</p>
+                                  <p className='text-BusinessFormLabel'>Business Title (optional)</p>
                                 </div>
                                 <Field type="text" name="businessTitle" placeholder='Enter Business Title (optional)'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
@@ -481,23 +481,23 @@ const BusinessFormAdding = () => {
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Mobile Number*</p>
+                                  <p className='text-BusinessFormLabel'>Mobile Number (optional)</p>
                                 </div>
-                                <Field type="tel" name="mobileNumber" placeholder='Enter Mobile Number*' maxLength={10} onKeyPress={(e) => numbersOnly(e)}
+                                <Field type="tel" name="mobileNumber" placeholder='Enter Mobile Number' maxLength={10} onKeyPress={(e) => numbersOnly(e)}
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.mobileNumber && touched.mobileNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Email Address*</p>
+                                  <p className='text-BusinessFormLabel'>Email Address (optional)</p>
                                 </div>
-                                <Field type="email" name="email" placeholder='Enter Email Address*'
+                                <Field type="email" name="email" placeholder='Enter Email Address'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Social Media Links(optional)</p>
+                                  <p className='text-BusinessFormLabel'>Social Media Links (optional)</p>
                                 </div>
                                 <div className="social-media-adding-section relative">
                                   <Field type="text" name="socialMedia" placeholder='Enter Social Media Link' onKeyUp={(e) => setSocialMediaInput(e.target.value)} 
@@ -743,7 +743,7 @@ const BusinessFormAdding = () => {
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Registration Documents*</p>
+                                  <p className='text-BusinessFormLabel'>Business Registration Documents (optional)</p>
                                 </div>
                                 <div className="file-upload-outer-section-custom bg-ProfileScreensBg rounded-10p overflow-hidden relative h-50p">
                                     <input type="file" name="" id="" onChange={(e) => handleBusinessDocFile(e)} className={`h-full w-full opacity-0 relative z-10 cursor-pointer ${businessDoc ? 'hidden' : 'block'}`}/>
@@ -949,7 +949,7 @@ const BusinessFormAdding = () => {
                             </div>
                           </div>
                           <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
-                              <button type='button' onClick={handleSubmit} disabled={!businessDoc} className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Submit Business Listing</button>
+                              <button type='button' onClick={handleSubmit}  className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Submit Business Listing</button>
                           </div>
                         </div>
                       </Form>

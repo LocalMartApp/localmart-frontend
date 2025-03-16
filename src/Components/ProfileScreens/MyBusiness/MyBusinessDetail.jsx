@@ -135,16 +135,12 @@ const MyBusinessDetail = () => {
 
   return (
     <div className='main-search-info-section'>
-        <section className="search-info-page-section-1 py-10">
+        <section className="search-info-page-section-1 pt-10 pb-6">
           <div className="inner-search-info-section-1 breadcrumb-section-search">
             <div className="container">
               <div className="breadcrum-inner-section">
                 <ul className='flex items-center gap-x-2'>
                   <li><NavLink className={`text-Black `} to={'/'}>{receivedData?.cityId?.name}</NavLink></li>
-                  {/* <li><i className="ri-arrow-right-s-line"></i></li>
-                  <li><p className={`text-Black `}>Restaurants in Mumbai</p></li>
-                  <li><i className="ri-arrow-right-s-line"></i></li>
-                  <li><p className={`text-Black `}>150+ Listings</p></li> */}
                   <li><i className="ri-arrow-right-s-line"></i></li>
                   <li><p className={`text-Black `}>{receivedData?.name}</p></li>
                 </ul>
@@ -152,6 +148,21 @@ const MyBusinessDetail = () => {
             </div>
           </div>
         </section>
+        <div className="business-status-displayer-band mb-8">
+          <div className="container">
+            <div className="inner-business-displayer-band bg-orange-100 bg-opacity-50 px-6 py-3 rounded-xl">
+              <div className="displayer-card-status flex items-center gap-4">
+                <div className="left-logo-section">
+                  <i class="bi bi-clock-history text-4xl text-orange-500"></i>
+                </div>
+                <div className="right-text-status">
+                  <h4 className="text-2xl font-medium text-orange-500">Business is In-Review</h4>
+                  <p className="opacity-60">Your business has been sent to our reviewer. Please be patient while the review is in progress. We will notify you once it is published</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <section className="search-info-page-section-2">
             <div className="inner-search-info-section-2">
               <div className="container">
@@ -346,12 +357,12 @@ const MyBusinessDetail = () => {
                                       <div className="food-items-heading">
                                         <h4 className='text-20 font-medium text-Black'>Food Items</h4>
                                       </div>
-                                      <div className="food-items-sliding-buttons flex items-center gap-7">
+                                      <div className="food-items-sliding-buttons  items-center gap-7 hidden">
                                           <button type="button" className='food-items-button-prev w-8 h-8 rounded-full bg-Secondary bg-opacity-10 '><i className="ri-arrow-left-s-line text-Secondary text-2xl"></i></button>
                                           <button type="button" className='food-items-button-next w-8 h-8 rounded-full bg-Secondary bg-opacity-10'><i className="ri-arrow-right-s-line text-Secondary text-2xl"></i></button>
                                       </div>
                                   </div>
-                                  <div className="food-items-bottom-slider-section">
+                                  <div className="food-items-bottom-slider-section hidden">
                                       <Swiper 
                                           className="mySwiper"
                                           grabCursor={true}
@@ -389,7 +400,22 @@ const MyBusinessDetail = () => {
                                               )
                                           })}
                                       </Swiper>
-                                  </div>                        
+                                  </div>
+                                  <div className="food-items-bottom-slider-section grid grid-cols-3 gap-4">
+                                      {foodItems.map((items , index) => {
+                                          return (
+                                              <div className="single-food-item-searched bg-AddressCard rounded-lg p-3" key={index}>
+                                                <div className="top-veg-nonveg-part flex items-center gap-x-2">
+                                                    <img src={items.veg ? VegIcon : NonVegIcon} className='w-[14px] h-[14px]' alt="" />
+                                                    <p className='text-Black'>{items.title}</p>
+                                                </div>  
+                                                <div className="bottom-price-section mt-3">
+                                                  <h4 className='text-Black font-medium'>{items.pirce} / <span className='text-sm opacity-50'>person</span></h4>
+                                                </div>
+                                              </div>
+                                          )
+                                      })}
+                                  </div>                                    
                                 </div>
                             </div>
                             <div className="rating-section-searched">
