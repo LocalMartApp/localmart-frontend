@@ -27,7 +27,8 @@ export default {
         LightGrayBg: '#F4F4F4',
         StarGold: '#FFB730',
         AmenitiesLightGray: '#EDEDED',
-        BusinessFormLabel: '#959595'
+        BusinessFormLabel: '#959595',
+        DashboardGray: '#F5F6FA'
       },
       fontSize: {
         10: '10px',

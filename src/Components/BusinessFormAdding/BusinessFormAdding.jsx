@@ -363,7 +363,9 @@ const BusinessFormAdding = () => {
     formData.append("title" , data.businessTitle);
     formData.append("mobileNumber" , data.mobileNumber);
     formData.append('email' , data.email);
-    formData.append('socialMediaLink' , data.socialMedia);
+    socialMediaLinks.forEach((items) => {
+      formData.append('socialMediaLink' , items);
+    })
     formData.append("categoryId" , data.businessCategory);
     formData.append("yearlyTurnOver" , data.yearlyTurnOver);
     formData.append("noOfEmployees" , data.noOfEmployees);

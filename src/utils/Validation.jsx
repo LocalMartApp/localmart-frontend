@@ -87,6 +87,16 @@ export const businessMediaValidation = yup.object().shape({
     itemPrice: yup.string().notRequired(),
 })
 
+
+export const profileEditValidation = yup.object().shape({
+    firstName: yup.string().required('Please Enter First Name'),
+    lastName: yup.string().required('Please Enter Last Name'),
+    birthDate: yup.string().required('Please Enter Birthdate'),
+    state: yup.string().required('Please Select State'),
+    city: yup.string().required('Please Select City'),
+    pincode: yup.string().required('Please Enter Pincode'),
+})
+
 // export const signupschema = yup.object().shape({
 //   email: yup
 //     .string()
@@ -100,6 +110,20 @@ export const businessMediaValidation = yup.object().shape({
 //   .required("Please confirm your password")
 //   .oneOf([ref("password")], "Passwords do not match"),
 // })
+
+
+
+export const addAdvertValidation = yup.object().shape({
+    email: yup.string().email('Please Enter Valid Email').required('Email Address Required'),
+    firstName: yup.string().required('Please Enter First Name'),
+    lastName: yup.string().required('Please Enter Last Name'),
+    mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
+    alternateMobile: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
+    advertTitle: yup.string().required('Please Enter Advertisement Title'),
+    advertLink: yup.string().url().required('Please Enter Advertisement Link (URL)'),
+    subject: yup.string().required('Please Enter Subject'),
+    message: yup.string().required('Please Enter Message'),
+})
 
 
 

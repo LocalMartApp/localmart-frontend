@@ -120,3 +120,11 @@ bun{
     right: 20px !important;
   }
 }
+
+
+
+@media only screen and (max-width: 474px) {
+  .recaptcha-section {
+    transform: scale(0.8) translate(-10% , -20%) !important; 
+  }
+}

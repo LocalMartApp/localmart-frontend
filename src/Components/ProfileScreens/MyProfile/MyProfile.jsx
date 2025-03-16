@@ -272,7 +272,7 @@ const MyProfile = () => {
                     <button type="button" onClick={() => setProfilePicModal(false)} className='bg-LightGrayBg w-full px-5 py-3 rounded-md text-lg border-Black border border-opacity-40'>Cancel</button>
                   </div>
                   <div className="upload-button w-[48%]">
-                    <button type="button" disabled={!profPic} onClick={() => handleUploadPoriflePic()} className='bg-Primary px-5 w-full py-3 text-lg rounded-md text-white disabled:opacity-50'>Upload</button>
+                    <button type="button" disabled={!profPic || modalIsOpen} onClick={() => handleUploadPoriflePic()} className='bg-Primary px-5 w-full py-3 text-lg rounded-md text-white disabled:opacity-50'>Upload</button>
                   </div>
               </div>
           </div>
@@ -312,7 +312,7 @@ const MyProfile = () => {
                         <h4 className='text-Black font-medium text-lg'>Your Profile</h4>
                       </div>
                       <div className="right-edit-prof-button">
-                        <button type="button"  className='flex items-center gap-x-[15px] rounded-full bg-Primary justify-center px-6 py-2 border border-Primary duration-300 hover:bg-white group'>
+                        <button type="button" onClick={() => navigate('/profile/edit-profile')} className='flex items-center gap-x-[15px] rounded-full bg-Primary justify-center px-6 py-2 border border-Primary duration-300 hover:bg-white group'>
                           <p className='text-white group-hover:text-Primary duration-300'>Edit Profile</p>
                           <i className="text-white ri-edit-line group-hover:text-Primary duration-300"></i>
                         </button>

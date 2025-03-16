@@ -155,11 +155,7 @@ const MyBusiness = () => {
                 </div>
             </div>
           </div>
-        </div>
-
-        
-
-
+      </div>
     </div>
   );
 }

@@ -46,8 +46,8 @@ const ProfileSideBar = () => {
       button: false,
     },
     {
-      title: 'Customer Care',
-      link: '/customer-care',
+      title: 'Change Password',
+      link: '/profile/change-password',
       button: false,
     },
     {
@@ -122,7 +122,7 @@ const ProfileSideBar = () => {
                     slidesPerView: 4
                 },
                 375: {
-                    slidesPerView: 1,
+                    slidesPerView: 2,
                 },
                 75: {
                     slidesPerView: 1

@@ -11,7 +11,7 @@ import VegIcon from '../../assets/images/veg-icon.svg';
 import NonVegIcon from '../../assets/images/non-veg-icon.svg';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay , Navigation} from 'swiper/modules';
+import { Autoplay , Navigation,  Pagination} from 'swiper/modules';
 
 
 import "swiper/css";
@@ -43,6 +43,34 @@ const SearchDetails = () => {
     },
   ]
 
+
+  const businessPhotos = [
+    {
+      image: receivedData?.mediaFiles[0]?.fileUrl
+    },
+    {
+      image: receivedData?.mediaFiles[1]?.fileUrl
+    },
+    {
+      image: receivedData?.mediaFiles[0]?.fileUrl
+    },
+    {
+      image: receivedData?.mediaFiles[1]?.fileUrl
+    },
+    {
+      image: receivedData?.mediaFiles[0]?.fileUrl
+    },
+    {
+      image: receivedData?.mediaFiles[1]?.fileUrl
+    },
+    {
+      image: receivedData?.mediaFiles[0]?.fileUrl
+    },
+    {
+      image: receivedData?.mediaFiles[1]?.fileUrl
+    },
+
+  ]
 
   const foodItems = [
     {
@@ -121,10 +149,10 @@ const SearchDetails = () => {
         <section className="search-info-page-section-2">
             <div className="inner-search-info-section-2">
               <div className="container">
-                  <div className="top-searched-detail-rating-favorite-sec flex items-center justify-between gap-x-5">
+                  <div className="top-searched-detail-rating-favorite-sec flex flex-wrap gap-y-6 items-center justify-between gap-x-5">
                     <div className="left-title-rating-search ">
                       <h4 className='text-2xl font-medium text-Black'>{receivedData?.name}</h4>
-                      <div className="location-rating-seperate-search flex items-center gap-x-5 mt-3">
+                      <div className="location-rating-seperate-search flex items-center gap-x-5 mt-3 flex-wrap gap-y-3">
                         <button type='button' className="business-recommended-section flex items-center gap-10p opacity-60">
                           <i className="ri-map-pin-line text-Black"></i>
                           <p className='text-sm text-LightText'>{receivedData?.stateId?.name} - {receivedData?.cityId?.name}</p>
@@ -137,7 +165,7 @@ const SearchDetails = () => {
                       </div>
                     </div>
                     <div className="right-title-rating-favorite-section">
-                      <div className="rating-section-searched flex items-center gap-x-6">
+                      <div className="rating-section-searched flex items-center gap-x-6 flex-wrap gap-y-3">
                         <div className="click-rate-text flex items-center gap-x-2">
                           <p>Click to Rate</p>
                           <Rating style={{ maxWidth: 130 }} items={5} value={rating} onChange={setRating}/>
@@ -149,8 +177,8 @@ const SearchDetails = () => {
                       </div>
                     </div>
                   </div>
-                <div className="photos-section-searched my-5">
-                  <div className="grid grid-cols-12 gap-5">
+                <div className="photos-section-searched my-5 ">
+                  <div className=" grid-cols-12 gap-5 hidden">
                     <div className="col-span-6">
                       <div className="big-image-section-searched searched-image-sections h-full max-h-[360px]">
                         <img
@@ -186,7 +214,49 @@ const SearchDetails = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="business-profile-section-searched flex items-center justify-between gap-10 mt-12">
+                  <div className="searched-business-photos rounded-xl overflow-hidden relative">
+                    <Swiper 
+                        className="mySwiper"
+                        grabCursor={true}
+                        centeredSlides={true}
+                        pagination={true}
+                        slidesPerView={1}
+                        speed={600}
+                        loop={true}
+                        initialSlide={2}
+                        spaceBetween={20}
+                        preventClicks={true}
+                        navigation={{
+                          clickable: true,
+                          nextEl: '.right-side-business-photo-slide-btn',
+                          prevEl: '.left-side-business-photo-slide-btn',
+                      }}
+                        autoplay={{
+                            delay: 2500,
+                            disableOnInteraction: false
+                        }}
+                        modules={[ Autoplay , Navigation , Pagination]}
+                    >
+                      {businessPhotos.map((items , index) => {
+                        return (
+                        <SwiperSlide key={index}>
+                            <div className="big-image-section-searched searched-image-sections h-[500px]">
+                              <img src={items.image} className="h-[500px] object-cover flex" alt="" />
+                            </div>
+                        </SwiperSlide>
+                        )
+                      })}
+
+                    </Swiper>
+                    <button type="button" className='left-side-business-photo-slide-btn similar-business-media-slide-btns w-10 h-10 bg-white shadow-2xl z-[999] rounded-full flex items-center justify-center absolute left-4 top-1/2'>
+                      <i className="bi bi-chevron-left text-2xl"></i>
+                    </button>
+                    <button type="button" className='right-side-business-photo-slide-btn similar-business-media-slide-btns w-10 h-10 bg-white shadow-2xl z-[999] rounded-full flex items-center justify-center absolute right-4 top-1/2'>
+                      <i className="bi bi-chevron-right text-2xl"></i>
+                    </button>
+                  </div>
+
+                  <div className="business-profile-section-searched flex items-center justify-between gap-10 mt-12 ">
                     <div className="left-searched-business-profile  items-center gap-2 hidden">
                       <div className="left-image-business-pro">
                         <img
@@ -241,7 +311,7 @@ const SearchDetails = () => {
                 </div>
                   <div className="about-business-section pb-12">
                     <div className="inner-about-business-grid-section">
-                      <div className="grid grid-cols-12 gap-x-5">
+                      <div className="grid grid-cols-12 gap-x-5 search-details-main-section-grid">
                         <div className="col-span-8 about-para-rating-items-section">
                           <div className="inner-about-rating-section flex flex-col gap-y-10">
                             <div className="top-about-para-section-searched">
@@ -322,62 +392,34 @@ const SearchDetails = () => {
                                     <h4 className='text-20 font-medium text-Black'>Ratings</h4>
                                     <p className='text-sm text-Black opacity-50'>Total 305 People Rated this place</p>
                                   </div>
-                                  <div className="rating-searched-sliding-buttons flex items-center gap-7">
-                                      <button type="button" className='rating-searched-button-prev w-8 h-8 rounded-full bg-Secondary bg-opacity-10 '><i className="ri-arrow-left-s-line text-Secondary text-2xl"></i></button>
-                                      <button type="button" className='rating-searched-button-next w-8 h-8 rounded-full bg-Secondary bg-opacity-10'><i className="ri-arrow-right-s-line text-Secondary text-2xl"></i></button>
-                                  </div>
                               </div>
-                              <div className="rating-searched-bottom-slider-section">
-                                  <Swiper 
-                                      className="mySwiper2"
-                                      grabCursor={true}
-                                      centeredSlides={true}
-                                      slidesPerView={3}
-                                      speed={600}
-                                      loop={true}
-                                      initialSlide={2}
-                                      spaceBetween={20}
-                                      preventClicks={true}
-                                      navigation={{
-                                          clickable: true,
-                                          nextEl: '.rating-searched-button-next',
-                                          prevEl: '.rating-searched-button-prev',
-                                      }}
-                                      autoplay={{
-                                          delay: 2500,
-                                          disableOnInteraction: false
-                                      }}
-                                      modules={[ Autoplay , Navigation]}
-                                  >
-                                      {foodItems.map((items , index) => {
-                                          return (
-                                              <SwiperSlide key={index} className='py-1'>
-                                                    <div className="single-rating-profile flex items-center gap-x-2">
-                                                      <div className="left-image-rating-pro">
-                                                        <img src={BusinessOwner} className='max-w-[50px] max-h-[50px] rounded-full' alt="" />
-                                                      </div>
-                                                      <div className="right-text-rating-profile">
-                                                        <h4 className='font-medium text-Black'>SM. Srinivas Kiran</h4>
-                                                        <div className="five-stars-section flex items-center gap-x-1">
-                                                          <i className='ri-star-fill text-StarGold'></i>
-                                                          <i className='ri-star-fill text-StarGold'></i>
-                                                          <i className='ri-star-fill text-StarGold'></i>
-                                                          <i className='ri-star-fill text-StarGold'></i>
-                                                          <i className='ri-star-fill text-StarGold'></i>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                              </SwiperSlide>
-                                          )
-                                      })}
-                                  </Swiper>
+                              <div className="rating-searched-bottom-slider-section flex items-center flex-wrap gap-10">
+                                {foodItems.map((items , index) => {
+                                    return (
+                                      <div className="single-rating-profile flex items-center gap-x-2" key={index}>
+                                        <div className="left-image-rating-pro">
+                                          <img src={BusinessOwner} className='max-w-[50px] max-h-[50px] rounded-full' alt="" />
+                                        </div>
+                                        <div className="right-text-rating-profile">
+                                          <h4 className='font-medium text-Black'>SM. Srinivas Kiran</h4>
+                                          <div className="five-stars-section flex items-center gap-x-1">
+                                            <i className='ri-star-fill text-StarGold'></i>
+                                            <i className='ri-star-fill text-StarGold'></i>
+                                            <i className='ri-star-fill text-StarGold'></i>
+                                            <i className='ri-star-fill text-StarGold'></i>
+                                            <i className='ri-star-fill text-StarGold'></i>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )
+                                })}
                               </div>   
                             </div>
                           </div>
                         </div>
                         <div className="col-span-4 business-contact-details-right">
-                          <div className="inner-business-contact-details-right bg-white border-BorderColor shadow-xl rounded-xl px-5 py-6 sticky top-10">
-                              <div className="top-contact-number-section pb-[18px] border-b border-BorderColor">
+                          <div className="inner-business-contact-details-right bg-white border border-BorderColor  border-opacity-30 rounded-2xl shadow-xl px-5 py-6 sticky top-10">
+                              <div className="top-contact-number-section pb-[18px] border-b border-BorderColor border-opacity-50">
                                 <div className="contatc-info-head mb-3">
                                   <h2 className='text-20 font-medium text-Black'>Contact Information</h2>
                                 </div>
@@ -386,7 +428,7 @@ const SearchDetails = () => {
                                   <p className='font-medium text-Secondary'>{receivedData?.mobileNumber}</p>
                                 </button>
                               </div>
-                              <div className="address-info-section py-5 border-b border-BorderColor">
+                              <div className="address-info-section py-5 border-b border-BorderColor border-opacity-50">
                                 <h4 className='text-lg font-medium text-Black mb-2'>Address</h4>
                                 <p className='text-Black opacity-40'>{receivedData?.completeAddress}</p>
                                 <div className="directions-copy-address-btns flex items-center gap-x-5 justify-between mt-4">
@@ -400,7 +442,7 @@ const SearchDetails = () => {
                                   </button>
                                 </div>
                               </div>
-                              <div className="opens-share-place-section flex flex-col gap-y-4 py-5 border-b border-BorderColor">
+                              <div className="opens-share-place-section flex flex-col gap-y-4 py-5 border-b border-opacity-50 border-BorderColor">
                                   <div className="opens-outer-sec flex items-center gap-x-3 text-left">
                                     <i className='ri-timer-line text-lg text-Secondary'></i>
                                     <p className='font-medium text-Black'><span className='text-Green'>{receivedData?.workingHours}</span></p>

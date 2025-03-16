@@ -254,7 +254,7 @@ const MyAddresses = () => {
           </div>
         </div>
         <div className="container">
-          <div className=" profile-section-navigation-details-card bg-white py-8 px-8 rounded-20p similar-profile-sidebar-outer">
+          <div className=" profile-section-navigation-details-card bg-white py-8 relative px-8 rounded-20p similar-profile-sidebar-outer">
               <div className="grid grid-cols-12 gap-9 profile-sidebar-main-grid">
                 <div className="col-span-3 left-sidebar-section-proile border-r border-BorderColor border-opacity-40">
                     <ProfileSideBar/>
@@ -365,19 +365,19 @@ const MyAddresses = () => {
                       </div>
 
                   </div> :
-                  <div className="inner-profile-content-section">
+                  <div className="inner-profile-content-section ">
                     <div className="profile-main-details-heading-part flex items-center justify-between gap-x-40">
                       <div className="left-main-prof-det-head">
                         <h4 className='text-Black font-medium text-lg'>Addresses</h4>
                       </div>
-                      <div className="right-edit-prof-button">
+                      <div className="address-right-edit-prof-button ">
                         <button type="button" onClick={() => setAddAddressToggle(true)} className='flex items-center gap-x-[15px] rounded-full bg-Primary justify-center px-6 py-2 border border-Primary duration-300 hover:bg-white group'>
                           <p className='text-white group-hover:text-Primary duration-300'>Add Address</p>
                           <i className="text-white ri-add-circle-line group-hover:text-Primary duration-300"></i>
                         </button>
                       </div>
                     </div>
-                    <div className="profile-details-main-cards-section grid grid-cols-2 gap-6 mt-4">
+                    <div className="profile-details-main-cards-section address-mine-main-grid-section grid grid-cols-2 gap-6 mt-4">
                       {allAddress && allAddress.length > 0 ? allAddress.map((items , index) => {
                         return (
                           <div className="single-address-card-prof bg-AddressCard p-5 rounded-[15px] relative" key={index}>
@@ -398,7 +398,7 @@ const MyAddresses = () => {
                                 <div className="middle-complete-address-sec mt-5 mb-3">
                                   <p className='text-[#777777]'>{items.description}</p>
                                 </div>
-                                <div className="bottom-address-city-state-pin-section flex gap-10 items-center justify-between">
+                                <div className="bottom-address-city-state-pin-section flex gap-10 items-center justify-between flex-wrap gap-y-2">
                                   <div className="address-city-pin flex items-center gap-5">
                                     <div className="address-city">
                                       <p className='text-Black font-medium'>{items.cityId?.name}</p>

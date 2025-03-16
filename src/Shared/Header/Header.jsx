@@ -4,7 +4,7 @@ import './Header.scss';
 import Logo from '../../assets/images/logo-svg.svg';
 import LanSvg from '../../assets/images/language-svg.svg'
 import MarqueeSlider from './MarqueeSlider';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import { useAuth } from '../../utils/AuthContext';
 
@@ -18,7 +18,7 @@ const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { userData } = useAuth();
+  const { authToken, logout , userData } = useAuth();
 
   // console.log(location)
 
@@ -54,7 +54,7 @@ const Header = () => {
     setLanguage(!language)
   }
 
-  const { authToken, logout } = useAuth();
+
 
 
 
@@ -200,7 +200,7 @@ const Header = () => {
                       </div>
                     </div>
                     <div className="advertise-button-header">
-                      <button type="button" className='flex items-center gap-3'>
+                      <button type="button" className='flex items-center gap-3' onClick={() => navigate('/advertise')}>
                       <i className="ri-megaphone-line text-Black"></i>
                         <p className='text-Black text-lg font-medium'>Advertise</p>
                       </button>
@@ -234,20 +234,32 @@ const Header = () => {
                           <i class="bi bi-arrow-left text-2xl"></i>
                         </button>
                       </div>
-                      {!authToken ? 
-                        <div className="profile-image-showing-button">
-                          <button type="button" onClick={() => navigate('/profile/my-profile')}>
-                            <img src={userData?.profilePicture ? userData?.profilePicture : ProfileDummyImg} className='w-10 h-10 rounded-full'/>
-                          </button>
-                        </div>
-                      :  
-                      <div className="login-button-header">
-                        <button type="button" onClick={() => navigate('/login')} className='bg-Primary h-10 border-Primary border-2 px-3 overflow-hidden rounded-full flex items-center gap-2 min-w-[190px] justify-center duration-300 group hover:bg-transparent  '>
-                          <i className="ri-login-circle-fill text-white text-lg duration-300 group-hover:text-Primary"></i>
-                          <p className='text-white font-medium text-lg duration-300 group-hover:text-Primary'>Login | Signup</p>
-                        </button>
-                      </div>                      
-                      }
+                      <div className="innermobile-header-menu">
+                        {authToken ? 
+                            <div className="profile-image-showing-button flex items-center bg-LightBlue flex-wrap gap-3 mb-4  border rounded-xl border-BorderColor border-opacity-55 px-3 py-3">
+                              <button type="button" onClick={() => {setMobileMenu(false) , navigate('/profile/my-profile')}}>
+                                <img src={userData?.profilePicture ? userData?.profilePicture : ProfileDummyImg} className='w-[60px] h-[60px] min-w-[60px] rounded-full'/>
+                              </button>
+                              <div className="right-email-section">
+                                <p className=' font-semibold'>{userData?.firstName + " " + userData?.lastName}</p>
+                                <p className='text-sm opacity-50'>{userData?.email}</p>
+                              </div>
+                            </div>
+                          :  
+                          null                 
+                          }
+                        <ul>
+                          <li>
+                            <NavLink onClick={() => setMobileMenu(false)} to={'/advertise'} className={'py-4 px-4'}>Advertise</NavLink>
+                          </li>
+                          <li className='border-y border-BorderColor border-opacity-50'>
+                            <NavLink onClick={() => setMobileMenu(false)} to={'/businesses'} className={'py-4 px-4'}>Business</NavLink>
+                          </li>
+                          {!authToken ?<li>
+                            <NavLink onClick={() => setMobileMenu(false)} to={'/login'} className={'py-4 px-4'}>Login</NavLink>
+                          </li> : <button type='button' onClick={() => {setMobileMenu(false) , logout() } } className={'py-4 px-4 text-red-400'}>Log Out</button> }
+                        </ul>
+                      </div>
                     </div>
                 </div>
                 <button onClick={() => setMobileMenu(false)} className={`fixed-mobile-overlay-section fixed z-[99999] top-0  h-full w-full bg-black bg-opacity-20 ${mobileMenu ? 'left-0' : '-left-full'}`}>
