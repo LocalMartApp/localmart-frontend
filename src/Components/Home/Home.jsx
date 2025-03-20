@@ -63,7 +63,7 @@ const Home = () => {
   const [citySelect ,  setCitySelect] = useState(null)
   const [cityOptions , setCityOptions] = useState([]);
   const [userCity, setUserCity] = useState(null);
-
+  const [localmartCategories , setLocalmartCategories] = useState([])
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -86,6 +86,8 @@ const Home = () => {
 
 
   useEffect(() => {
+
+    getAllCategories()
     getCities()
 
     const fetchLocation = async () => {
@@ -162,8 +164,10 @@ const Home = () => {
     }, 2000);
 
     // getUserLocation();
+    
 
     return () => {clearInterval(interval) , clearTimeout(debounceTimeout.current)};
+    
 
   }, [query]);
 
@@ -220,11 +224,30 @@ const Home = () => {
   };
 
 
+  const handleCategorySuggestionClick = async (data) => {
+    setFilter("categoryId", data);
+    navigate("/search");
+  };
+
+
+
 useEffect(() => {
   if (userCity) {
     getCities();
   }
+  
 }, [userCity]);
+
+
+
+const getAllCategories = async () => {
+  await axios.get(config.api + `business-category`)
+  .then((response) => {
+      // console.log(response)
+      setLocalmartCategories(response?.data?.data)
+      // console.log('response' , response)
+ })
+}
 
 
   const openLoaderModal = () => {
@@ -401,7 +424,7 @@ useEffect(() => {
                               <div className="icon-section">
                                 <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
                               </div>
-                              <div className="country-selection col-span-5">
+                              <div className="country-selection col-span-5 relative z-[99999]">
                                 <Select options={cityOptions} 
                                   placeholder='Choose Location'
                                   styles={{
@@ -446,7 +469,7 @@ useEffect(() => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] overflow-hidden overflow-y-auto border-t border-BorderColor left-0 z-[9999999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'} ${headerBar ? 'border-[2px] border-t-[1px] border-BorderColor' : ''}`}>
+                                <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] overflow-hidden overflow-y-auto border-t border-BorderColor left-0 z-[9999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'} ${headerBar ? 'border-[2px] border-t-[1px] border-BorderColor' : ''}`}>
                                     <div className="inner-searched-results-section px-4 py-4 flex flex-col gap-y-4">
                                       {searchSuggest && suggestions.length > 0 ? suggestions.map((items , index) => {
                                         return (
@@ -570,7 +593,19 @@ useEffect(() => {
                       </div>
                       <div className="bottom-all-categories-section">
                           <div className="grid grid-cols-6 gap-x-90p gap-y-60p home-categories-grid-section">
-                            {allCategories.map((items , index) => {
+                            {localmartCategories && localmartCategories.length > 0 ?  localmartCategories.slice(0 , 12).map((items , index) => {
+                              return (
+                                <button type='button'  onClick={() => handleCategorySuggestionClick(items?._id)} key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-3">
+                                    <div className="top-image-blk bg-white w-100p h-100p flex items-center justify-center p-5 rounded-[15px]">
+                                        <img src={items?.icon} className='duration-500 group-hover:scale-125' alt="" />
+                                    </div>
+                                    <div className="bottom-text-blk">
+                                        <p className='text-white text-center text-medium'>{items?.name}</p>
+                                    </div>
+                                </button>
+                              )
+                            }) : 
+                            allCategories.map((items , index) => {
                               return (
                                 <button type='button' key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-3">
                                     <div className="top-image-blk bg-white w-100p h-100p flex items-center justify-center p-5 rounded-[15px]">

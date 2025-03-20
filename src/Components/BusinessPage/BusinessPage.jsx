@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useState , useEffect} from 'react';
 import PropTypes from 'prop-types';
 import './BusinessPage.scss';
 
@@ -30,6 +30,10 @@ import HaierLogo from '../../assets/images/haier-logo.svg';
 import LGlogo from '../../assets/images/lg-logo.svg';
 import HaveelsLogo from '../../assets/images/haveels.svg'
 import { useNavigate } from 'react-router-dom';
+import useSearchStore from '../../Store/useSearchStore';
+import axios from 'axios';
+import { config } from '../../env-services';
+import BrowseAllCategories from '../Home/BrowseAllCategories';
 
 
 
@@ -37,6 +41,35 @@ const BusinessPage = () => {
 
   const navigate = useNavigate()
 
+   const { setFilter  } = useSearchStore();
+
+    const [localmartCategories , setLocalmartCategories] = useState([]);
+    const [allCategoryOpen , setAllCategoryOpen] = useState(false)
+
+
+      useEffect(() => {
+        getAllCategories()
+      }), []
+
+
+
+      const getAllCategories = async () => {
+        await axios.get(config.api + `business-category`)
+        .then((response) => {
+            // console.log(response)
+            setLocalmartCategories(response?.data?.data)
+            // console.log('response' , response)
+       })
+      }
+      
+      const openBrowseCategory = () => setAllCategoryOpen(true)
+      const closeBrowseCategory = () =>  setAllCategoryOpen(false)
+
+      const handleCategorySuggestionClick = async (data) => {
+        setFilter("categoryId", data);
+        navigate("/search");
+      };
+    
 
     const allCategories = [
       {
@@ -217,7 +250,7 @@ const BusinessPage = () => {
                           <h2 className='text-30 text-white font-medium'>Explore Wide Range Categories</h2>
                       </div>
                       <div className="explore-all-cates-button">
-                          <button type="button" className='explore-cities-button-prev shadow-customized bg-white px-5 py-2 rounded-full flex items-center gap-10p border-LightBlack border-opacity-40 border'>
+                          <button type="button" onClick={openBrowseCategory} className='explore-cities-button-prev shadow-customized bg-white px-5 py-2 rounded-full flex items-center gap-10p border-LightBlack border-opacity-40 border'>
                             <i className="ri-menu-3-line text-Primary text-2xl"></i>
                             <p className='text-Primary text-lg font-medium'>Browse All</p>
                           </button>
@@ -225,24 +258,39 @@ const BusinessPage = () => {
                   </div>
                   <div className="bottom-all-categories-section">
                       <div className="grid grid-cols-6 gap-x-90p gap-y-60p business-page-categories-sec">
-                        {allCategories.map((items , index) => {
-                          return (
-                            <button type='button' key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-3">
-                                <div className="top-image-blk bg-white w-100p h-100p flex items-center justify-center p-5 rounded-[15px]">
-                                    <img src={items.icon} className='duration-500 group-hover:scale-125' alt="" />
-                                </div>
-                                <div className="bottom-text-blk">
-                                    <p className='text-white text-center text-medium'>{items.title}</p>
-                                </div>
-                            </button>
-                          )
-                        })}
+                      {localmartCategories && localmartCategories.length > 0 ?  localmartCategories.slice(0 , 12).map((items , index) => {
+                              return (
+                                <button type='button'  onClick={() => handleCategorySuggestionClick(items?._id)} key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-3">
+                                    <div className="top-image-blk bg-white w-100p h-100p flex items-center justify-center p-5 rounded-[15px]">
+                                        <img src={items?.icon} className='duration-500 group-hover:scale-125' alt="" />
+                                    </div>
+                                    <div className="bottom-text-blk">
+                                        <p className='text-white text-center text-medium'>{items?.name}</p>
+                                    </div>
+                                </button>
+                              )
+                            }) : 
+                            allCategories.map((items , index) => {
+                              return (
+                                <button type='button' key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-3">
+                                    <div className="top-image-blk bg-white w-100p h-100p flex items-center justify-center p-5 rounded-[15px]">
+                                        <img src={items.icon} className='duration-500 group-hover:scale-125' alt="" />
+                                    </div>
+                                    <div className="bottom-text-blk">
+                                        <p className='text-white text-center text-medium'>{items.title}</p>
+                                    </div>
+                                </button>
+                              )
+                            })}
                       </div>
                   </div>
               </div>
             </div>
           </div>
         </section>
+         <div className="browse-all-categories-fixed-section">
+              <BrowseAllCategories isCategoryOpen={allCategoryOpen} closeCategory={closeBrowseCategory} />
+        </div>
         <section className="business-section-4 py-16">
           <div className="inner-business-section-4">
               <BusinessPopServSlider title='Popular Services'/>
