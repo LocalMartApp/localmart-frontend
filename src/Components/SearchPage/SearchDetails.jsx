@@ -25,9 +25,14 @@ import FacebookShare from "../../assets/images/facebook-share.svg";
 import InstagramShare from "../../assets/images/instagram-share.svg";
 import WhatsappShare from "../../assets/images/whatsapp-share.svg";
 import TelegramShare from "../../assets/images/telegram-share.svg";
+import { useAuth } from "../../utils/AuthContext";
 
 const SearchDetails = () => {
+
+
   const { id } = useParams();
+  const {authToken} = useAuth()
+
   // console.log("id", id);
 
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -37,7 +42,9 @@ const SearchDetails = () => {
   const [allBusinesses, setAllBusinesses] = useState([]);
   const [singleBusiness, setSingleBusiness] = useState({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [rating, setRating] = useState();
+  const [userRating, setUserRating] = useState();
+  const [reviewComments , setReviewComments] = useState(false);
+  const [loading , setLoading] = useState(false)
 
   useEffect(() => {
     getBusinessData();
@@ -68,6 +75,7 @@ const SearchDetails = () => {
     }
   };
 
+  // console.log(singleBusiness)
   
   const customStyles = {
     content: {
@@ -187,36 +195,79 @@ const SearchDetails = () => {
     },
   ];
 
-  // const handleAddingBusiness = async (data) => {
 
-  //   setModalIsOpen(true)
-  //   try {
-  //     await axios.post(`${config.api}business`, formData, {
-  //       headers: {
-  //         Authorization: `Bearer ${userToken}`, 
-  //       },
-  //     }).then((response) => {
-  //       console.log(response)
-  //      if(response?.data?.status == 'success') {
-  //       toast.success('Business Created Successfully');
-  //       setModalIsOpen(false)
-  //       const busId = response?.data?.data?._id
-  //       navigate('/business/add-photos', { state: { busId } })
-  //      }else {
-  //       toast.error('Error in Creating business');
-  //       setModalIsOpen(false)
-  //      }
+  const handleAddReview = async() => {
+    const obj = {
+      businessId: id,
+      rating: userRating,
+      comment: reviewComments
+    }
+    setLoading(true)
+    try {
+      await axios.post(`${config.api}reviews` , obj , {
+        headers: {
+          "Authorization": "Bearer " +  authToken ,
+          "content-type": "application/json"
+        }
+      })
+      .then((response) => {
+        if(response) {
+            console.log(response)
+            setLoading(false)
+            setRatingModal(false)
+            getBusinessData()
+            toast.success('Review Added Successfully');
+        }
+      })
+      .catch((err) => {
+        setLoading(false)
+        setRatingModal(false)
+        toast.error(err?.message);
+        toast.error(err?.response?.data?.message);
+        console.log(err , 'error')
+      });
+    } catch (error) {
+      setLoading(false)
+      setRatingModal(false)
+      console.log(error)
+    }
+  }
 
-  //     }).catch((err) => {
-  //       console.log(err)
-  //       setModalIsOpen(false)
-  //     })
-  //     console.log("Response:", response.data);
-  //   } catch (error) {
-  //     setModalIsOpen(false)
-  //   }
 
-  // }
+  const handleAddFavorite = async() => {
+    const obj = {
+      businessId: id,
+    }
+    setLoading(true)
+    try {
+      await axios.post(`${config.api}favorites` , obj , {
+        headers: {
+          "Authorization": "Bearer " +  authToken ,
+          "content-type": "application/json"
+        }
+      })
+      .then((response) => {
+        if(response) {
+            console.log(response)
+            setLoading(false)
+            setRatingModal(false)
+            getBusinessData()
+            toast.success('Added to favorites');
+        }
+      })
+      .catch((err) => {
+        setLoading(false)
+        setRatingModal(false)
+        toast.error(err?.message);
+        toast.error(err?.response?.data?.message);
+        console.log(err , 'error')
+      });
+    } catch (error) {
+      setLoading(false)
+      setRatingModal(false)
+      console.log(error)
+    }
+  }
 
 
   return (
@@ -239,24 +290,27 @@ const SearchDetails = () => {
             <Rating
               style={{ maxWidth: 150 }}
               items={5}
-              value={rating}
-              onChange={setRating}
+              value={userRating}
+              onChange={setUserRating}
             />
           </div>
           <div className="form-inputsec mt-6">
             <div className="label-section mb-1">
               <p className='text-BusinessFormLabel'>Add Your Comments</p>
             </div>
-            <textarea as="textarea" name="aboutBusiness" placeholder='Enter comments about this place'
+            <textarea as="textarea" name="aboutBusiness" placeholder='Enter comments about this place' onKeyUp={(e) => setReviewComments(e.target.value)}
                 className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black   border-opacity-100  bg-opacity-10 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black`} 
             />                                
           </div>
           <div className="grid grid-cols-12 gap-5 mt-5">
             <div className="left-cancel-button col-span-6">
-              <button type="button"  className="py-3 rounded-xl text-center w-full bg-gray-200 text-Black font-semibold">Cancel</button>
+              <button type="button"  className="py-3 rounded-xl text-center w-full bg-gray-200 text-Black font-semibold" onClick={() => setRatingModal(false)}>Cancel</button>
             </div>
             <div className="right-add-review-button col-span-6">
-              <button type="button" className="py-3 rounded-xl text-center w-full bg-Primary text-white font-semibold">Submit Review</button>
+            {loading ?   
+              <button type="button" disabled={true} className="py-3 rounded-xl text-center w-full bg-Primary bg-opacity-50 text-white font-semibold">Submitting....</button> :
+              <button type="button" className="py-3 rounded-xl text-center w-full bg-Primary text-white font-semibold" onClick={handleAddReview}>Submit Review</button>
+              }
             </div>
           </div>
         </div>
@@ -380,17 +434,18 @@ const SearchDetails = () => {
             <div className="right-title-rating-favorite-section">
               <div className="rating-section-searched flex items-center gap-x-6 flex-wrap gap-y-3">
                 <div className="click-rate-text flex items-center gap-x-2">
-                  <p>Click to Rate</p>
+                  <p>{authToken ? 'Click to Rate' : 'Login To Rate This Place'}</p>
                   <Rating
                     style={{ maxWidth: 130 }}
                     items={5}
-                    value={rating}
+                    value={userRating}
                     onChange={() => setRatingModal(true)}
+                    isDisabled={!authToken}
                   />
                 </div>
-                <button type="button" className="click-rate-text flex items-center gap-x-2">
+                <button type="button" className="click-rate-text flex items-center gap-x-2" disabled={!authToken}>
                   <i className="ri-heart-3-line text-xl text-red-500"></i>
-                  <p>Add to favorites</p>
+                  <p>{authToken ? 'Add to favorites' : 'Login to Access Favorites'}</p>
                 </button>
               </div>
             </div>
@@ -603,7 +658,7 @@ const SearchDetails = () => {
                         <Rating
                           style={{ maxWidth: 130 }}
                           items={5}
-                          value={rating}
+                          value={userRating}
                           onChange={() => setRatingModal(true)}
                         />
                       </div>

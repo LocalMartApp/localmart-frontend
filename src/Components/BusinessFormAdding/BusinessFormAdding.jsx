@@ -36,7 +36,7 @@ const BusinessFormAdding = () => {
 
 
 
-  // console.log(receivedMail , receivedToken)
+  
   
 
   const [businessDoc , setBusinessDoc] = useState();
