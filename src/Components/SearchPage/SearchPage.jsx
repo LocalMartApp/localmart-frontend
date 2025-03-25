@@ -33,12 +33,12 @@ const SearchPage = () => {
   const [priceSlect , setPriceSelect] = useState('Price');
 
   const [favorite , setFavorite] = useState(false);
-useEffect(() => {
-  fetchSearchResults();  
-}, [filters])
+  useEffect(() => {
+    fetchSearchResults();  
+  }, [filters])
 
   const handleNavigate = (item) => {
-    navigate(`/search/complete-details/${item._id}` , { state: { item }});
+    navigate(`/search/complete-details/${item._id}`);
   };
 
 

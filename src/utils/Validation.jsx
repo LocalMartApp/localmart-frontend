@@ -58,6 +58,7 @@ export const businessFormAddValidation = yup.object().shape({
     userName: yup.string().required('Enter User Name'),
     businessName: yup.string().required('Please enter business name'),
     businessTitle: yup.string().notRequired(),
+    aboutBusiness: yup.string().notRequired(),
     mobileNumber: yup.number().notRequired(),
     email: yup.string().email('Please Enter Valid Email').notRequired(''),
     socialMedia: yup.string().url().notRequired(),
@@ -148,10 +149,10 @@ export const addAdvertValidation = yup.object().shape({
     lastName: yup.string().required('Please Enter Last Name'),
     mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
     alternateMobile: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
-    advertTitle: yup.string().required('Please Enter Advertisement Title'),
-    advertLink: yup.string().url().required('Please Enter Advertisement Link (URL)'),
-    subject: yup.string().required('Please Enter Subject'),
-    message: yup.string().required('Please Enter Message'),
+    // advertTitle: yup.string().required('Please Enter Advertisement Title'),
+    // advertLink: yup.string().url().required('Please Enter Advertisement Link (URL)'),
+    // subject: yup.string().required('Please Enter Subject'),
+    // message: yup.string().required('Please Enter Message'),
 })
 
 

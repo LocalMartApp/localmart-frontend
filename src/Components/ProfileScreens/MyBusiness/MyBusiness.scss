@@ -11,3 +11,14 @@
         }
     }
 }
+
+ .business-contact-details-right .inner-business-contact-details-right {
+    .opens-share-place-section  {
+        button {
+            transform: scale(1) !important;
+            &:active {
+                transform:  scale(1) !important;
+            }
+        }
+    }
+}

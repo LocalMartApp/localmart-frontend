@@ -1,5 +1,5 @@
-import React , {useState}from "react";
-import { NavLink, useLocation } from 'react-router-dom';
+import React , {useState , useEffect}from "react";
+import { NavLink, useLocation, useParams } from 'react-router-dom';
 import { Rating } from '@smastrom/react-rating';
 import '@smastrom/react-rating/style.css';
 import SingleSearchImage1 from '../../../assets/images/restaurant-pics-search-1.jpg';
@@ -9,13 +9,26 @@ import BusinessOwner from '../../../assets/images/business-owner-pic.jpg';
 import GmailIcon from '../../../assets/images/gmail-icon.svg';
 import VegIcon from '../../../assets/images/veg-icon.svg';
 import NonVegIcon from '../../../assets/images/non-veg-icon.svg';
+import './MyBusiness.scss'
 
+import Modal from "react-modal";
+import Loader from "../../../utils/Loader/Loader";
+import toast from "react-hot-toast";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay , Navigation , Pagination} from 'swiper/modules';
-
+import EmptyImage from '../../../assets/images/empty-image-bg.jpg';
 
 import "swiper/css";
 import "swiper/css/effect-coverflow";
+
+
+// Sharing-images
+import FacebookShare from '../../../assets/images/facebook-share.svg';
+import InstagramShare from '../../../assets/images/instagram-share.svg';
+import WhatsappShare from '../../../assets/images/whatsapp-share.svg';
+import TelegramShare from '../../../assets/images/telegram-share.svg';
+import axios from "axios";
+import { config } from "../../../env-services";
 
 
 
@@ -24,15 +37,73 @@ const MyBusinessDetail = () => {
 
 
 
+  const {id} = useParams();
+  
+    // console.log(id , "receivd if")
+
 
   const location = useLocation();
 
   const receivedData = location.state?.items || '';
 
   const [rating  , setRating] = useState();
+  const [shareModalOpen , setShareModalOpen] = useState(false);
 
 
-  console.log("receivedData" , receivedData)
+    const [userToken , setUserToken] = useState('');
+    const [allBusinesses , setAllBusinesses] = useState([]);
+    const [singleBusiness , setSingleBusiness] = useState('');
+    const [modalIsOpen ,  setModalIsOpen] = useState(false);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        await getUserDetails();
+      };
+      fetchData();
+    }, []);
+  
+        
+      const getUserDetails = async () => {
+        const response = localStorage.getItem("authToken");
+        if (!response) return;
+  
+        const userParse = JSON.parse(response);
+        setUserToken(userParse);
+        getBusinessData(userParse)
+      };
+  
+
+
+  // console.log("singleBusiness" , singleBusiness)
+
+  const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      width: '600px',
+      borderRadius: 18,
+      paddingLeft: 40
+    },
+};
+
+  const customStyles2 = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      width: "600px",
+      borderRadius: 18,
+      paddingLeft: 20,
+    },
+  };
+
 
   const amenities = [
     {
@@ -50,30 +121,58 @@ const MyBusinessDetail = () => {
   ]
 
 
+
+  
+  const getBusinessData = async(token) => {
+    setModalIsOpen(true)
+    if (!token) return; 
+    try {
+      await axios.get(`${config.api}business/${id}` , {
+        headers: {
+            "Authorization": "Bearer " +  token ,
+            "content-type": "application/json"
+        }
+    })
+    .then(response => {
+      console.log(response)
+      setModalIsOpen(false)
+      setSingleBusiness(response?.data?.data)
+    })
+    .catch((err) => {
+      setModalIsOpen(false)
+      console.log(err)
+    })
+    }catch (error) {
+      setModalIsOpen(false)
+      console.log(error)
+    }
+  }
+
+
   const businessPhotos = [
     {
-      image: receivedData?.mediaFiles[0]?.fileUrl
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
     },
     {
-      image: receivedData?.mediaFiles[1]?.fileUrl
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
     },
     {
-      image: receivedData?.mediaFiles[0]?.fileUrl
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
     },
     {
-      image: receivedData?.mediaFiles[1]?.fileUrl
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
     },
     {
-      image: receivedData?.mediaFiles[0]?.fileUrl
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
     },
     {
-      image: receivedData?.mediaFiles[1]?.fileUrl
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
     },
     {
-      image: receivedData?.mediaFiles[0]?.fileUrl
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
     },
     {
-      image: receivedData?.mediaFiles[1]?.fileUrl
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
     },
 
   ]
@@ -99,32 +198,12 @@ const MyBusinessDetail = () => {
       veg: true,
       pirce: '₹200.00'
     },
-    {
-      title: 'Butter Chicken',
-      veg: false,
-      pirce: '₹450.00'
-    },
-    {
-      title: 'Chicken Biryani',
-      veg: false,
-      pirce: '350.00'
-    },
-    {
-      title: 'Schezwan Fried Rice',
-      veg: false,
-      pirce: '₹460.00'
-    },
-    {
-      title: 'Paneer Biryani',
-      veg: true,
-      pirce: '₹200.00'
-    },
   ]
 
 
 
-  const long = receivedData?.location?.coordinates[0] ;
-  const lat = receivedData?.location?.coordinates[1]
+  const long = singleBusiness?.location?.coordinates[0];
+  const lat = singleBusiness?.location?.coordinates[1]
 
 
   const openGoogleMaps = () => {
@@ -133,16 +212,77 @@ const MyBusinessDetail = () => {
   }
       
 
+  const productLink = ``;
+  const handleCopyToClipboard = () => {
+    setShareModalOpen(false)
+    navigator.clipboard.writeText(productLink).then(() => {
+      toast.success("Link copied!");
+    });
+  };
+  
+
   return (
     <div className='main-search-info-section'>
+      <Modal
+          isOpen={shareModalOpen}
+          style={customStyles2}
+          contentLabel="Example Modal"
+      >
+        <div className="share-modal-inner">
+          <div className="top-share-modal-closer flex items-center justify-between mb-6">
+            <h2 className="text-xl font-medium text-Black">Share this place</h2>
+            <button type="button" onClick={() => setShareModalOpen(false)}><i className="bi bi-x-lg text-2xl"></i></button>
+          </div>
+          <div className="inner-content-share">
+            <div className="share-copy-link-bar flex items-center justify-between gap-4 bg-LightGrayBg rounded-xl px-5 py-3">
+              <div className="left-copy-link-bar">
+                  <h2 className="text-Secondary text-xl font-semibold mb-2">Copy Link</h2>
+                  <p className="text-sm opacity-50 font-light">https://admin-stage.localmart.app/business</p>
+              </div>
+              <div className="right-copy-link-button">
+                <button type="button" onClick={handleCopyToClipboard} className="w-10 h-10 rounded-full  bg-white flex items-center justify-center"><i className="ri-link text-2xl text-Secondary"></i></button>
+              </div>
+            </div>
+            <div className="bottom-social-options flex items-center justify-center gap-10 mt-8">
+              <div className="single-social-option">
+                <button type="button" className="w-10 h-10">
+                  <img src={FacebookShare} className="w-full h-full" alt="" />
+                </button>
+              </div>
+              <div className="single-social-option">
+                <button type="button" className="w-10 h-10">
+                  <img src={WhatsappShare} className="w-full h-full" alt="" />
+                </button>
+              </div>
+              <div className="single-social-option">
+                <button type="button" className="w-10 h-10">
+                  <img src={TelegramShare} className="w-full h-full" alt="" />
+                </button>
+              </div>
+              <div className="single-social-option">
+                <button type="button" className="w-10 h-10">
+                  <img src={InstagramShare} className="w-full h-full" alt="" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+          isOpen={modalIsOpen}
+          style={customStyles}
+          contentLabel="Example Modal"
+      >
+          <Loader/>
+      </Modal>
         <section className="search-info-page-section-1 pt-10 pb-6">
           <div className="inner-search-info-section-1 breadcrumb-section-search">
             <div className="container">
               <div className="breadcrum-inner-section">
                 <ul className='flex items-center gap-x-2'>
-                  <li><NavLink className={`text-Black `} to={'/'}>{receivedData?.cityId?.name}</NavLink></li>
+                  <li><NavLink className={`text-Black `} to={'/'}>{singleBusiness?.city?.name}</NavLink></li>
                   <li><i className="ri-arrow-right-s-line"></i></li>
-                  <li><p className={`text-Black `}>{receivedData?.name}</p></li>
+                  <li><p className={`text-Black `}>{singleBusiness?.name}</p></li>
                 </ul>
               </div>
             </div>
@@ -150,6 +290,7 @@ const MyBusinessDetail = () => {
         </section>
         <div className="business-status-displayer-band mb-8">
           <div className="container">
+            {singleBusiness?.status == 'in_review' ? 
             <div className="inner-business-displayer-band bg-orange-100 bg-opacity-50 px-6 py-3 rounded-xl">
               <div className="displayer-card-status flex items-center gap-4">
                 <div className="left-logo-section">
@@ -160,7 +301,31 @@ const MyBusinessDetail = () => {
                   <p className="opacity-60">Your business has been sent to our reviewer. Please be patient while the review is in progress. We will notify you once it is published</p>
                 </div>
               </div>
-            </div>
+            </div> :
+            singleBusiness?.status == 'published' ? 
+            <div className="inner-business-displayer-band bg-green-100 bg-opacity-50 px-6 py-3 rounded-xl">
+              <div className="displayer-card-status flex items-center gap-4">
+                <div className="left-logo-section">
+                  <i class="bi bi-check-circle text-4xl text-green-500"></i>
+                </div>
+                <div className="right-text-status">
+                  <h4 className="text-2xl font-medium text-green-500">Business Published </h4>
+                  <p className="opacity-60">Your business has been published successfully. Now you can search this place through our localsearch</p>
+                </div>
+              </div>
+            </div> : 
+            <div className="inner-business-displayer-band bg-red-100 bg-opacity-50 px-6 py-3 rounded-xl">
+              <div className="displayer-card-status flex items-center gap-4">
+                <div className="left-logo-section">
+                  <i class="bi bi-ban text-4xl text-red-500"></i>
+                </div>
+                <div className="right-text-status">
+                  <h4 className="text-2xl font-medium text-red-500">Business Rejected </h4>
+                  <p className="opacity-60">Your business has been Rejected by our Reviewer , Please contact us for more help</p>
+                </div>
+              </div>
+            </div> 
+            }
           </div>
         </div>
         <section className="search-info-page-section-2">
@@ -168,11 +333,11 @@ const MyBusinessDetail = () => {
               <div className="container">
                   <div className="top-searched-detail-rating-favorite-sec flex flex-wrap gap-y-6 items-center justify-between gap-x-5">
                     <div className="left-title-rating-search ">
-                      <h4 className='text-2xl font-medium text-Black'>{receivedData?.name}</h4>
+                      <h4 className='text-2xl font-medium text-Black'>{singleBusiness?.name}</h4>
                       <div className="location-rating-seperate-search flex items-center gap-x-5 mt-3 flex-wrap gap-y-3">
                         <button type='button' className="business-recommended-section flex items-center gap-10p opacity-60">
                           <i className="ri-map-pin-line text-Black"></i>
-                          <p className='text-sm text-LightText'>{receivedData?.stateId?.name} - {receivedData?.cityId?.name}</p>
+                          <p className='text-sm text-LightText'>{singleBusiness?.state?.name} - {singleBusiness?.city?.name}</p>
                         </button>
                         <div className="seperator-div h-5 w-[1px] bg-Black"></div>
                         <div className="rating-review-search-text flex items-center gap-x-2">
@@ -195,11 +360,11 @@ const MyBusinessDetail = () => {
                     </div>
                   </div>
                 <div className="photos-section-searched my-5 ">
-                  <div className=" grid-cols-12 gap-5 hidden">
+                  {/* <div className=" grid-cols-12 gap-5 hidden">
                     <div className="col-span-6">
                       <div className="big-image-section-searched searched-image-sections h-full max-h-[360px]">
                         <img
-                          src={receivedData?.mediaFiles[0]?.fileUrl}
+                          src={singleBusiness?.mediaFiles[0]?.fileUrl}
                           className="h-full w-full rounded-xl object-cover"
                           alt=""
                         />
@@ -208,7 +373,7 @@ const MyBusinessDetail = () => {
                     <div className="col-span-4">
                       <div className="med-image-section-searched searched-image-sections h-full max-h-[360px]">
                         <img
-                          src={receivedData?.mediaFiles[1]?.fileUrl}
+                          src={singleBusiness?.mediaFiles[1]?.fileUrl}
                           className="h-full w-full object-cover rounded-xl"
                           alt=""
                         />
@@ -217,20 +382,20 @@ const MyBusinessDetail = () => {
                     <div className="col-span-2 h-full max-h-[360px] flex flex-col justify-between">
                       <div className="med-image-section-searched searched-image-sections h-[48%] ">
                         <img
-                          src={receivedData?.mediaFiles[0]?.fileUrl}
+                          src={singleBusiness?.mediaFiles[0]?.fileUrl}
                           className="h-full w-full object-cover  rounded-xl"
                           alt=""
                         />
                       </div>
                       <div className="med-image-section-searched searched-image-sections h-[48%] ">
                         <img
-                          src={receivedData?.mediaFiles[1]?.fileUrl}
+                          src={singleBusiness?.mediaFiles[1]?.fileUrl}
                           className="h-full w-full object-cover  rounded-xl"
                           alt=""
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="searched-business-photos rounded-xl overflow-hidden relative">
                     <Swiper 
                         className="mySwiper"
@@ -272,59 +437,6 @@ const MyBusinessDetail = () => {
                       <i className="bi bi-chevron-right text-2xl"></i>
                     </button>
                   </div>
-
-                  <div className="business-profile-section-searched flex items-center justify-between gap-10 mt-12 ">
-                    <div className="left-searched-business-profile  items-center gap-2 hidden">
-                      <div className="left-image-business-pro">
-                        <img
-                          src={BusinessOwner}
-                          className="max-w-[60px] max-h-[60px] rounded-full"
-                          alt=""
-                        />
-                      </div>
-                      <div className="right-text-business-profile">
-                        <h4 className="text-lg font-semibold text-Black">
-                          SM. Srinivas Kiran
-                        </h4>
-                        <p className="text-sm font-medium text-Black opacity-50">
-                          Manager at sri Megha restaurant
-                        </p>
-                      </div>
-                    </div>
-                    <div className="bottom-business-card-number-det  items-center gap-x-6 hidden">
-                      <div className="send-enquiry-btn">
-                        <button
-                          type="button"
-                          className="font-medium text-white bg-Primary rounded-full py-2 px-7"
-                        >
-                          Send Enquiry
-                        </button>
-                      </div>
-                      <div className="number-business-btn">
-                        <button
-                          type="button"
-                          className="font-medium text-white bg-Green rounded-full py-2 px-7"
-                        >
-                          Show Number
-                        </button>
-                      </div>
-                      <div className="directions-button-search">
-                        <button className="h-9 w-9 rounded-full bg-Secondary flex items-center justify-center">
-                          <i className="ri-direction-fill text-white text-lg duration-300 "></i>
-                        </button>
-                      </div>
-                      <div className="directions-button-search">
-                        <button className="h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center">
-                          <i className="ri-share-fill text-Secondary text-lg duration-300 "></i>
-                        </button>
-                      </div>
-                      <div className="directions-button-search">
-                        <button className="h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center">
-                          <img src={GmailIcon} className="w-5 h-20" alt="" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                   <div className="about-business-section pb-12">
                     <div className="inner-about-business-grid-section">
@@ -333,12 +445,12 @@ const MyBusinessDetail = () => {
                           <div className="inner-about-rating-section flex flex-col gap-y-10">
                             <div className="top-about-para-section-searched">
                               <h4 className='text-20 font-medium text-Black mb-1'>About This Place</h4>
-                              <p className='text-Black opacity-70'>Beautiful stylish and spacious 2-Bedroom, with 1 king and 1 queen size bed, and 1 free parking spot plus visitor parking. Located in one of the best areas of Downtown Toronto, just a few minutes walk from the CN tower, Rogers Stadium, Scotiabank Arena and the lakeshore. The apartment is surrounded by trendy restaurants, shops and venues. Close to public transit and main street </p>
+                              <p className={` opacity-70 ${singleBusiness?.about ? 'text-Black' : 'text-red-400'}`}>{singleBusiness?.about ? singleBusiness?.about : 'Not Provided'}</p>
                             </div>
                             <div className="amenities-section-searched">
                                 <h4 className='text-20 font-medium text-Black mb-3'>Amenities</h4>
                                 <div className="amenities-mapped-section flex items-center gap-x-30p flex-wrap gap-y-4">
-                                  {receivedData?.amenities && receivedData?.amenities.length ? receivedData?.amenities.map((items , index) => {
+                                  {singleBusiness?.amenities && singleBusiness?.amenities.length ? singleBusiness?.amenities.map((items , index) => {
                                   return (
                                     <div className="single-amenities-searched" key={index}>
                                       <div className="inner-single-amenities flex items-center gap-x-3">
@@ -351,7 +463,7 @@ const MyBusinessDetail = () => {
                                   }) : null}
                                 </div>
                             </div>
-                            <div className="food-items-section-searched">
+                            <div className="food-items-section-searched hidden">
                                 <div className="food-items-slider">
                                   <div className="food-items-section flex justify-between gap-10 items-center mb-3">
                                       <div className="food-items-heading">
@@ -401,7 +513,7 @@ const MyBusinessDetail = () => {
                                           })}
                                       </Swiper>
                                   </div>
-                                  <div className="food-items-bottom-slider-section grid grid-cols-3 gap-4">
+                                  <div className="food-items-bottom-slider-section  grid grid-cols-3 gap-4">
                                       {foodItems.map((items , index) => {
                                           return (
                                               <div className="single-food-item-searched bg-AddressCard rounded-lg p-3" key={index}>
@@ -421,27 +533,25 @@ const MyBusinessDetail = () => {
                             <div className="rating-section-searched">
                               <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
                                   <div className="rating-searched-heading">
-                                    <h4 className='text-20 font-medium text-Black'>Ratings</h4>
-                                    <p className='text-sm text-Black opacity-50'>Total 305 People Rated this place</p>
+                                    <h4 className='text-20 font-medium text-Black'>All Reviews & Ratings <span className="font-light opacity-60">(43)</span></h4>
                                   </div>
                               </div>
-                              <div className="rating-searched-bottom-slider-section flex items-center flex-wrap gap-10">
+                              <div className="rating-searched-bottom-slider-section grid grid-cols-12 gap-5">
                                 {foodItems.map((items , index) => {
                                     return (
-                                      <div className="single-rating-profile flex items-center gap-x-2" key={index}>
-                                        <div className="left-image-rating-pro">
-                                          <img src={BusinessOwner} className='max-w-[50px] max-h-[50px] rounded-full' alt="" />
-                                        </div>
-                                        <div className="right-text-rating-profile">
-                                          <h4 className='font-medium text-Black'>SM. Srinivas Kiran</h4>
+                                      <div className="single-rating-profile col-span-6 border-Black border-opacity-20 border rounded-2xl p-5" key={index}>
+                                        <div className="right-text-rating-profile mb-2">
                                           <div className="five-stars-section flex items-center gap-x-1">
-                                            <i className='ri-star-fill text-StarGold'></i>
-                                            <i className='ri-star-fill text-StarGold'></i>
-                                            <i className='ri-star-fill text-StarGold'></i>
-                                            <i className='ri-star-fill text-StarGold'></i>
-                                            <i className='ri-star-fill text-StarGold'></i>
+                                            <i className='ri-star-fill text-lg text-StarGold'></i>
+                                            <i className='ri-star-fill text-lg text-StarGold'></i>
+                                            <i className='ri-star-fill text-lg text-StarGold'></i>
+                                            <i className='ri-star-fill text-lg text-StarGold'></i>
+                                            <i className='ri-star-fill text-lg text-StarGold'></i>
                                           </div>
+                                          <h4 className='font-medium text-Black text-xl'>SM. Srinivas Kiran</h4>
                                         </div>
+                                        <p className="text-Black font-light opacity-60">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer</p>
+                                        <p className="text-sm font-medium mt-2 opacity-50">Posted on : 25 Mar 2025</p>
                                       </div>
                                     )
                                 })}
@@ -457,12 +567,12 @@ const MyBusinessDetail = () => {
                                 </div>
                                 <button type='button' className="number-info-section flex items-center gap-x-3 text-left">
                                   <i className='ri-phone-fill text-Secondary'></i>
-                                  <p className='font-medium text-Secondary'>{receivedData?.mobileNumber}</p>
+                                  <p className='font-medium text-Secondary'>{singleBusiness?.mobileNumber}</p>
                                 </button>
                               </div>
                               <div className="address-info-section py-5 border-b border-BorderColor border-opacity-50">
                                 <h4 className='text-lg font-medium text-Black mb-2'>Address</h4>
-                                <p className='text-Black opacity-40'>{receivedData?.completeAddress}</p>
+                                <p className='text-Black opacity-40'>{singleBusiness?.completeAddress}</p>
                                 <div className="directions-copy-address-btns flex items-center gap-x-5 justify-between mt-4">
                                   <button  type='button' onClick={openGoogleMaps} className="direcions-btn flex items-center gap-x-3 text-left">
                                     <i className='ri-corner-up-right-line text-lg text-Secondary'></i>
@@ -477,9 +587,9 @@ const MyBusinessDetail = () => {
                               <div className="opens-share-place-section flex flex-col gap-y-4 py-5 ">
                                   <div className="opens-outer-sec flex items-center gap-x-3 text-left">
                                     <i className='ri-timer-line text-lg text-Secondary'></i>
-                                    <p className='font-medium text-Black'><span className='text-Green'>{receivedData?.workingHours}</span></p>
+                                    <p className='font-medium text-Black'><span className='text-Green'>{singleBusiness?.workingHours}</span></p>
                                   </div>
-                                  <button type='button' className="share-place-btn flex items-center gap-x-3 text-left">
+                                  <button type='button' onClick={() => setShareModalOpen(true)} className="share-place-btn flex items-center gap-x-3 text-left">
                                     <i className='ri-share-fill text-lg text-Secondary'></i>
                                     <p className='font-medium text-Secondary'>Share this place</p>
                                   </button>
@@ -490,6 +600,9 @@ const MyBusinessDetail = () => {
                                   <Rating style={{ maxWidth: 130 }} items={5} value={rating} onChange={setRating}/>
                                 </div>
                               </div>
+                          </div>
+                          <div className="share-section-popup">
+                            
                           </div>
                         </div>
                       </div>

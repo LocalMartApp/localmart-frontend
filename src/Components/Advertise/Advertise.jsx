@@ -38,10 +38,10 @@ const Advertise = () => {
     email: "",
     mobileNumber: "",
     alternateMobile: "",
-    advertTitle: "",
-    advertLink: "",
-    subject: "",
-    message: "",
+    // advertTitle: "",
+    // advertLink: "",
+    // subject: "",
+    // message: "",
   };
 
   const handleFileChange = async (e) => {
@@ -268,149 +268,13 @@ const Advertise = () => {
                                 </div>
                               </div>
                             </div>
-                            <div className="single-form-section-business business-basic-details  rounded-[15px] bg-white">
-                              <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                                <h4 className="text-lg font-medium text-Secondary">
-                                  Link & Information
-                                </h4>
-                              </div>
-                              <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5 items-end">
-                                <div className="form-inputsec relative col-span-6">
-                                  <div className="label-section mb-1">
-                                    <p className="text-BusinessFormLabel">
-                                      Advertisement Title*
-                                    </p>
-                                  </div>
-                                  <Field
-                                    type="text"
-                                    name="advertTitle"
-                                    placeholder="Enter Advertisement Title*"
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
-                                      errors.advertTitle && touched.advertTitle
-                                        ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
-                                        : "text-Black border-LoginFormBorder placeholder:text-Black"
-                                    }`}
-                                  />
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                  <div className="label-section mb-1">
-                                    <p className="text-BusinessFormLabel">
-                                      Advertisement Link*
-                                    </p>
-                                  </div>
-                                  <Field
-                                    type="text"
-                                    name="advertLink"
-                                    placeholder="Enter Advertisement Title*"
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
-                                      errors.advertLink && touched.advertLink
-                                        ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
-                                        : "text-Black border-LoginFormBorder placeholder:text-Black"
-                                    }`}
-                                  />
-                                </div>
-                                <div className="form-inputsec relative col-span-12">
-                                  <div className="label-section mb-1">
-                                    <p className="text-BusinessFormLabel">
-                                      Subject*
-                                    </p>
-                                  </div>
-                                  <Field
-                                    type="text"
-                                    name="subject"
-                                    placeholder="Enter Complete Subject*"
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
-                                      errors.subject && touched.subject
-                                        ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
-                                        : "text-Black border-LoginFormBorder placeholder:text-Black"
-                                    }`}
-                                  />
-                                </div>
-                                <div className="form-inputsec relative col-span-12">
-                                  <div className="label-section mb-1">
-                                    <p className="text-BusinessFormLabel">
-                                      {" "}
-                                      Message*
-                                    </p>
-                                  </div>
-                                  <Field
-                                    as="textarea"
-                                    name="message"
-                                    placeholder="Enter Message*"
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${
-                                      errors.message && touched.message
-                                        ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
-                                        : "text-Black border-LoginFormBorder placeholder:text-Black"
-                                    }`}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
-                              <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                                <h4 className="text-lg font-medium text-Secondary">
-                                  Advertisement Picture
-                                </h4>
-                              </div>
-                              <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
-                                <div className="form-inputsec relative col-span-12">
-                                  {advertImage && (
-                                    <div
-                                      className={`top-images-sec-uploaded-business-doc mb-5 `}
-                                    >
-                                      <div className="single-image-business-photo rounded-lg overflow-hidden relative">
-                                        <img
-                                          src={advertImgPrev}
-                                          className="object-cover w-full h-56"
-                                          alt=""
-                                        />
-                                        <button
-                                          type="button"
-                                          onClick={removeFile}
-                                          className="py-[6px] px-6 bg-white rounded-full flex items-center justify-center absolute top-3 right-3 shadow-2xl"
-                                        >
-                                          <i className="ri-close-large-fill text-red-500 mr-2"></i>
-                                          Remove
-                                        </button>
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  <div className="label-section mb-1">
-                                    <p className="text-BusinessFormLabel">
-                                      Advertisement Banner Photo*
-                                    </p>
-                                  </div>
-                                  <div className="file-upload-outer-section-custom bg-ProfileScreensBg rounded-10p overflow-hidden relative h-[130px]">
-                                    <input
-                                      type="file"
-                                      name=""
-                                      id=""
-                                      onChange={(e) => handleFileChange(e)}
-                                      className="h-full w-full opacity-0 relative z-10 cursor-pointer"
-                                    />
-                                    <div className="inner-file-upload-butifier absolute top-1/2 left-1/2 w-full flex justify-center flex-col items-center px-5 gap-x-5">
-                                      <img
-                                        src={FileUploadIcon}
-                                        className="w-10 h-10 mb-4"
-                                        alt=""
-                                      />
-                                      <p className="text-Black">
-                                        Click to Upload photo of your
-                                        Advertisement
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
                             <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
                               <button
                                 type="button"
                                 onClick={handleSubmit}
                                 className="w-full py-4 px-4 rounded-xl text-white font-semibold text-lg h-full bg-Primary disabled:bg-opacity-35 "
                               >
-                                Submit Advertisement{" "}
+                                Submit Advertisement
                               </button>
                             </div>
                           </div>
