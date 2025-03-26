@@ -1,7 +1,10 @@
 import axios from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { config } from "../env-services";
+// import { config } from "../env-services";
+// import { useAuth } from "../utils/AuthContext";
+
+// const {authToken} = useAuth()
 
 const useSearchStore = create(
   persist(
@@ -45,7 +48,10 @@ const useSearchStore = create(
             method: "get",
             maxBodyLength: Infinity,
             url: `https://stage-api.localmart.app:8443/search/businesses?${params}`,
-            headers: {},
+            headers: {
+              // "Authorization": "Bearer " +  authToken ? authToken : '' ,
+              "content-type": "application/json"
+            }
           };
 
           axios

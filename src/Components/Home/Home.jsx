@@ -36,9 +36,11 @@ import { config } from '../../env-services';
 import Lottie from 'lottie-react';
 import SearchLoader from '../../assets/images/animated-logos/search-loader.json'
 import useSearchStore from '../../Store/useSearchStore';
+import { GoogleMap , LoadScript , Marker , useJsApiLoader , StandaloneSearchBox } from '@react-google-maps/api';
 
 
 
+const GOOGLE_MAPS_API_KEY = "AIzaSyCfHCytpE0Oq4tvXmCWaOl05iyH_OfLGuM";
 
 const Home = () => {
 
@@ -67,7 +69,7 @@ const Home = () => {
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-
+  const [areaSuggestions , setAreaSuggestions] = useState('')
 
   
   const debounceTimeout = useRef(null);
@@ -82,6 +84,18 @@ const Home = () => {
   ];
 
 
+
+    const inputRef = useRef(null)
+  
+  
+    const { isLoaded } = useJsApiLoader({
+      id: 'google-map-script',
+      googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+      libraries: ['places']
+    })
+
+
+    console.log(areaSuggestions , "area")
 
 
 
@@ -112,7 +126,7 @@ const Home = () => {
 
                   // Find the city in cityOptions
                   const matchedCity = cityOptions.find(
-                    (city) => city.label.toLowerCase() === userCity.toLowerCase()
+                    (city) => city.label.toLowerCase() === userCity?.toLowerCase()
                   );
 
                   // Only set if user hasn't changed it manually
@@ -387,6 +401,28 @@ const getAllCategories = async () => {
     },
   };
 
+  const handleAreaSearchChange = () => {
+    const places = inputRef.current.getPlaces();
+    if (places.length > 0) {
+      const suggestions = places.map((place) => {
+        let sublocality = "";
+        let locality = "";
+
+        place.address_components.forEach((component) => {
+          if (component.types.includes("sublocality_level_1")) {
+            sublocality = component.long_name;
+          } else if (component.types.includes("locality")) {
+            locality = component.long_name;
+          }
+        });
+
+        return `${sublocality}, ${locality}`;
+      });
+
+      setAreaSuggestions(suggestions);
+      console.log("Area Suggestions:", suggestions);
+    }
+  };
 
 
   return (
@@ -450,6 +486,18 @@ const getAllCategories = async () => {
                                 />
                               </div>
                             </div>
+                            {/* <div className={`location-setting-section relative w-full bg-white overflow-hidden rounded-full h-70p ${headerBar ? 'shadow-xl' : ''}`}>
+                              <div className="icon-section home-local-search-icon-sec absolute left-8 top-1/2">
+                                <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
+                              </div>
+                              <div className="input-area-search-section h-full w-full">
+                                {isLoaded? 
+                                  <StandaloneSearchBox className="" onLoad={(ref) => (inputRef.current = ref)} onPlacesChanged={handleAreaSearchChange}>
+                                    <input type="text" placeholder="Search for an area..." className="input-box w-full h-70p pr-6 pl-12 py-2" />
+                                  </StandaloneSearchBox> : null  
+                                }
+                              </div>
+                            </div> */}
                           </div>
                           <div className={`col-span-7 ${headerBar ? 'shadow-xl' : ''}`}>
                             <div className={`big-search-section duration-500 bg-white p-[6px] h-70p relative ${searchSuggest ? 'rounded-t-30p rounded-b-0' : 'rounded-40p'}`}>
@@ -475,7 +523,7 @@ const getAllCategories = async () => {
                                         return (
                                           <button type="button" onClick={() => handleSuggestionClick(items)} className='text-left flex items-center gap-x-4 w-full bg-LightBlue px-4 py-3 rounded-lg' key={index}>
                                             <div className="left-goto-icon w-10 h-10 flex items-center justify-center bg-white rounded-full">
-                                              <i class="bi bi-arrow-up-right"></i>
+                                              <i className="bi bi-arrow-up-right"></i>
                                             </div>
                                             <div className="right-text-below-text text-left">
                                               <p className='text-lg font-semibold'>{items?.suggestion}</p>

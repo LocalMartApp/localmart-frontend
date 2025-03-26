@@ -231,7 +231,7 @@ const Header = () => {
                     <div className="inner-fixed-mobile-menu-section px-4 py-6">
                       <div className="top-backsection-mobile-menu mb-5">
                         <button type="button" onClick={() => setMobileMenu(false)} className="w-8 h-8 rounded-full flex items-center justify-center">
-                          <i class="bi bi-arrow-left text-2xl"></i>
+                          <i className="bi bi-arrow-left text-2xl"></i>
                         </button>
                       </div>
                       <div className="innermobile-header-menu">

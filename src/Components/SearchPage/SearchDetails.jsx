@@ -26,6 +26,7 @@ import InstagramShare from "../../assets/images/instagram-share.svg";
 import WhatsappShare from "../../assets/images/whatsapp-share.svg";
 import TelegramShare from "../../assets/images/telegram-share.svg";
 import { useAuth } from "../../utils/AuthContext";
+import EmptyImage from '../../assets/images/empty-image-bg.jpg';
 
 const SearchDetails = () => {
 
@@ -56,9 +57,9 @@ const SearchDetails = () => {
       await axios
         .get(`${config.api}business/${id}`, {
           headers: {
-            // "Authorization": "Bearer " +  token ,
-            "content-type": "application/json",
-          },
+            ...(authToken && { Authorization: `Bearer ${authToken}` }),
+            "content-type": "application/json"
+          }
         })
         .then((response) => {
           console.log(response);
@@ -168,32 +169,32 @@ const SearchDetails = () => {
   };
 
 
-  const businessPhotos = [
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : '',
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : '',
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl  : '',
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl  : '',
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl  : '',
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl  : '',
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl  : '',
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl  : '',
-    },
-  ];
+  // const businessPhotos = [
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl  : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl  : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl  : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl  : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl  : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl  : EmptyImage,
+  //   },
+  // ];
 
 
   const handleAddReview = async() => {
@@ -238,7 +239,7 @@ const SearchDetails = () => {
     const obj = {
       businessId: id,
     }
-    setLoading(true)
+    setModalIsOpen(true)
     try {
       await axios.post(`${config.api}favorites` , obj , {
         headers: {
@@ -247,27 +248,40 @@ const SearchDetails = () => {
         }
       })
       .then((response) => {
-        if(response) {
+        if(response?.data?.success == true) {
             console.log(response)
-            setLoading(false)
-            setRatingModal(false)
+            setModalIsOpen(false)
             getBusinessData()
             toast.success('Added to favorites');
         }
       })
       .catch((err) => {
-        setLoading(false)
-        setRatingModal(false)
+        setModalIsOpen(false)
         toast.error(err?.message);
         toast.error(err?.response?.data?.message);
         console.log(err , 'error')
       });
     } catch (error) {
-      setLoading(false)
       setRatingModal(false)
       console.log(error)
     }
   }
+
+
+  const emptyImageLoop = [
+    {
+      image: EmptyImage
+    },
+    {
+      image: EmptyImage
+    },
+    {
+      image: EmptyImage
+    },
+    {
+      image: EmptyImage
+    },
+  ]
 
 
   return (
@@ -443,10 +457,16 @@ const SearchDetails = () => {
                     isDisabled={!authToken}
                   />
                 </div>
-                <button type="button" className="click-rate-text flex items-center gap-x-2" disabled={!authToken}>
-                  <i className="ri-heart-3-line text-xl text-red-500"></i>
-                  <p>{authToken ? 'Add to favorites' : 'Login to Access Favorites'}</p>
-                </button>
+                {singleBusiness?.isFavorite ? 
+                    <button type="button" className="click-rate-text flex items-center gap-x-2" disabled={!authToken}>
+                      <i className="ri-heart-3-fill text-xl text-red-500"></i>
+                      <p>{authToken ? 'Remove From favourite' : 'Login to Access Favorites'}</p>
+                    </button> :
+                    <button type="button" className="click-rate-text flex items-center gap-x-2" onClick={handleAddFavorite} disabled={!authToken}>
+                    <i className="ri-heart-3-line text-xl text-red-500"></i>
+                    <p>{authToken ? 'Add to favorites' : 'Login to Access Favorites'}</p>
+                  </button>
+                }
               </div>
             </div>
           </div>
@@ -455,6 +475,7 @@ const SearchDetails = () => {
             <Swiper
               className="mySwiper"
               grabCursor={true}
+              draggable={false}
               centeredSlides={true}
               pagination={true}
               slidesPerView={1}
@@ -474,7 +495,20 @@ const SearchDetails = () => {
               }}
               modules={[Autoplay, Navigation, Pagination]}
             >
-              {businessPhotos.map((items, index) => {
+              {singleBusiness?.mediaFiles && singleBusiness?.mediaFiles.length > 0 ?  singleBusiness?.mediaFiles.map((items, index) => {
+                return (
+                  <SwiperSlide key={index}>
+                    <div className="big-image-section-searched searched-image-sections h-[500px]">
+                      <img
+                        src={items?.fileUrl}
+                        className="h-[500px] object-cover flex"
+                        alt=""
+                      />
+                    </div>
+                  </SwiperSlide>
+                )
+              }) : 
+              emptyImageLoop.map((items , index) => {
                 return (
                   <SwiperSlide key={index}>
                     <div className="big-image-section-searched searched-image-sections h-[500px]">
@@ -485,8 +519,9 @@ const SearchDetails = () => {
                       />
                     </div>
                   </SwiperSlide>
-                );
-              })}
+                )
+              })
+              }
             </Swiper>
             <button
               type="button"
@@ -553,33 +588,23 @@ const SearchDetails = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="rating-searched-bottom-slider-section flex items-center flex-wrap gap-10">
+                      <div className="rating-searched-bottom-slider-section grid grid-cols-12 gap-5">
                         {foodItems.map((items, index) => {
                           return (
-                            <div
-                              className="single-rating-profile flex items-center gap-x-2"
-                              key={index}
-                            >
-                              <div className="left-image-rating-pro">
-                                <img
-                                  src={BusinessOwner}
-                                  className="max-w-[50px] max-h-[50px] rounded-full"
-                                  alt=""
-                                />
-                              </div>
-                              <div className="right-text-rating-profile">
-                                <h4 className="font-medium text-Black">
-                                  SM. Srinivas Kiran
-                                </h4>
+                            <div className="single-rating-profile col-span-6 border-Black border-opacity-20 border rounded-2xl p-5" key={index}>
+                              <div className="right-text-rating-profile mb-2">
                                 <div className="five-stars-section flex items-center gap-x-1">
-                                  <i className="ri-star-fill text-StarGold"></i>
-                                  <i className="ri-star-fill text-StarGold"></i>
-                                  <i className="ri-star-fill text-StarGold"></i>
-                                  <i className="ri-star-fill text-StarGold"></i>
-                                  <i className="ri-star-fill text-StarGold"></i>
+                                  <i className='ri-star-fill text-lg text-StarGold'></i>
+                                  <i className='ri-star-fill text-lg text-StarGold'></i>
+                                  <i className='ri-star-fill text-lg text-StarGold'></i>
+                                  <i className='ri-star-fill text-lg text-StarGold'></i>
+                                  <i className='ri-star-fill text-lg text-StarGold'></i>
                                 </div>
+                                <h4 className='font-medium text-Black text-xl'>SM. Srinivas Kiran</h4>
                               </div>
-                            </div>
+                              <p className="text-Black font-light opacity-60">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer</p>
+                              <p className="text-sm font-medium mt-2 opacity-50">Posted on : 25 Mar 2025</p>
+                          </div>
                           );
                         })}
                       </div>

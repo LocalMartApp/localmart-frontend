@@ -257,7 +257,7 @@ const MyProfile = () => {
                   <input type="file" onChange={(e) => handleFileChange(e) }  name="" id="" className='opacity-0 h-full w-full relative z-10 cursor-pointer'/>
                   <img src={preview ? preview : userData?.profilePicture ? userData?.profilePicture : ProfileDummyImg} className='rounded-full absolute top-0 left-0 w-full' alt="" />
                 <div className="button-upload-icon w-10 h-10 flex items-center justify-center bg-white shadow-lg rounded-full absolute bottom-0 right-5">
-                  <i class="ri-upload-cloud-2-fill text-xl text-Primary"></i>
+                  <i className="ri-upload-cloud-2-fill text-xl text-Primary"></i>
                 </div>
               </div>
               <div className="bottom-details-section bg-ProfileScreensBg rounded-lg p-5 mt-8">
@@ -330,7 +330,7 @@ const MyProfile = () => {
                           </div>
                         </div>
                         <button type='button' onClick={() => setProfilePicModal(true)} className="right-phone-number-prof-section flex items-center gap-x-[15px]">
-                          <i class="ri-upload-cloud-2-fill text-Secondary"></i>
+                          <i className="ri-upload-cloud-2-fill text-Secondary"></i>
                           <p className='text-Secondary font-medium'>Update Profile image</p>
                         </button>
                       </div>

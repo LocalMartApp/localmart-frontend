@@ -149,33 +149,33 @@ const MyBusinessDetail = () => {
   }
 
 
-  const businessPhotos = [
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
-    },
-    {
-      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
-    },
+  // const businessPhotos = [
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage
+  //   },
 
-  ]
+  // ]
 
   const foodItems = [
     {
@@ -220,6 +220,21 @@ const MyBusinessDetail = () => {
     });
   };
   
+
+    const emptyImageLoop = [
+      {
+        image: EmptyImage
+      },
+      {
+        image: EmptyImage
+      },
+      {
+        image: EmptyImage
+      },
+      {
+        image: EmptyImage
+      },
+    ]
 
   return (
     <div className='main-search-info-section'>
@@ -294,7 +309,7 @@ const MyBusinessDetail = () => {
             <div className="inner-business-displayer-band bg-orange-100 bg-opacity-50 px-6 py-3 rounded-xl">
               <div className="displayer-card-status flex items-center gap-4">
                 <div className="left-logo-section">
-                  <i class="bi bi-clock-history text-4xl text-orange-500"></i>
+                  <i className="bi bi-clock-history text-4xl text-orange-500"></i>
                 </div>
                 <div className="right-text-status">
                   <h4 className="text-2xl font-medium text-orange-500">Business is In-Review</h4>
@@ -306,7 +321,7 @@ const MyBusinessDetail = () => {
             <div className="inner-business-displayer-band bg-green-100 bg-opacity-50 px-6 py-3 rounded-xl">
               <div className="displayer-card-status flex items-center gap-4">
                 <div className="left-logo-section">
-                  <i class="bi bi-check-circle text-4xl text-green-500"></i>
+                  <i className="bi bi-check-circle text-4xl text-green-500"></i>
                 </div>
                 <div className="right-text-status">
                   <h4 className="text-2xl font-medium text-green-500">Business Published </h4>
@@ -317,7 +332,7 @@ const MyBusinessDetail = () => {
             <div className="inner-business-displayer-band bg-red-100 bg-opacity-50 px-6 py-3 rounded-xl">
               <div className="displayer-card-status flex items-center gap-4">
                 <div className="left-logo-section">
-                  <i class="bi bi-ban text-4xl text-red-500"></i>
+                  <i className="bi bi-ban text-4xl text-red-500"></i>
                 </div>
                 <div className="right-text-status">
                   <h4 className="text-2xl font-medium text-red-500">Business Rejected </h4>
@@ -419,15 +434,33 @@ const MyBusinessDetail = () => {
                         }}
                         modules={[ Autoplay , Navigation , Pagination]}
                     >
-                      {businessPhotos.map((items , index) => {
-                        return (
-                        <SwiperSlide key={index}>
-                            <div className="big-image-section-searched searched-image-sections h-[500px]">
-                              <img src={items.image} className="h-[500px] object-cover flex" alt="" />
-                            </div>
-                        </SwiperSlide>
-                        )
-                      })}
+                                    {singleBusiness?.mediaFiles && singleBusiness?.mediaFiles.length > 0 ?  singleBusiness?.mediaFiles.map((items, index) => {
+                                      return (
+                                        <SwiperSlide key={index}>
+                                          <div className="big-image-section-searched searched-image-sections h-[500px]">
+                                            <img
+                                              src={items?.fileUrl}
+                                              className="h-[500px] object-cover flex"
+                                              alt=""
+                                            />
+                                          </div>
+                                        </SwiperSlide>
+                                      )
+                                    }) : 
+                                    emptyImageLoop.map((items , index) => {
+                                      return (
+                                        <SwiperSlide key={index}>
+                                          <div className="big-image-section-searched searched-image-sections h-[500px]">
+                                            <img
+                                              src={items.image}
+                                              className="h-[500px] object-cover flex"
+                                              alt=""
+                                            />
+                                          </div>
+                                        </SwiperSlide>
+                                      )
+                                    })
+                                    }
 
                     </Swiper>
                     <button type="button" className='left-side-business-photo-slide-btn similar-business-media-slide-btns w-10 h-10 bg-white shadow-2xl z-[999] rounded-full flex items-center justify-center absolute left-4 top-1/2'>
