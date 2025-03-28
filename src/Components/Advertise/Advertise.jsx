@@ -96,11 +96,11 @@ const Advertise = () => {
     formData.append("email", values.email);
     formData.append("mobileNumber", values.mobileNumber);
     formData.append("alternateMobileNumber", values.alternateMobile);
-    formData.append("advertisementTitle", values.advertTitle);
-    formData.append("advertisementLink", values.advertLink);
-    formData.append("subject", values.subject);
-    formData.append("message", values.message);
-    formData.append("file", advertImage);
+    // formData.append("advertisementTitle", values.advertTitle);
+    // formData.append("advertisementLink", values.advertLink);
+    // formData.append("subject", values.subject);
+    // formData.append("message", values.message);
+    // formData.append("file", advertImage);
 
     console.log("formData", formData);
     setModalIsOpen(true);

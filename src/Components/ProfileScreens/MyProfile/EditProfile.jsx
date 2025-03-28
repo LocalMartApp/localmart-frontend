@@ -8,12 +8,25 @@ import toast from "react-hot-toast";
 import { Formik, Form, Field } from "formik";
 import { profileEditValidation } from "../../../utils/Validation";
 import Select from 'react-select';
+import { useAuth } from "../../../utils/AuthContext";
 
 
 
-const EditProfile = () => {
+const EditProfile = ({profileData , setEditProfile}) => {
 
-    const navigate = useNavigate()
+
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return "";
+    const [day, month, year] = dateString.split("-");
+    return `${year}-${month}-${day}`; // Convert to YYYY-MM-DD
+  };
+
+
+  console.log(profileData)
+
+    const navigate = useNavigate();
+    const { authToken , getProfileData} = useAuth();
+
 
 
   const [userToken, setUserToken] = useState("");
@@ -26,6 +39,12 @@ const EditProfile = () => {
     getUserDetails();
     getStates()
   }, []);
+
+  useEffect(() => {
+    getCities(profileData?.state?._id)
+    getPincodes(profileData?.city?._id)
+  }, []);
+  
 
   const getUserDetails = async () => {
     const response = localStorage.getItem("authToken");
@@ -50,13 +69,16 @@ const EditProfile = () => {
   };
 
   const profileEditValues = {
-    firstName: "",
-    lastName: "",
-    birthDate: "",
-    state: "",
-    city: "",
-    pincode: "",
+    firstName: profileData?.firstName || '',
+    lastName: profileData?.lastName || '',
+    birthDate: formatDateForInput(profileData?.dateOfBirth) || '',
+    state: profileData?.state?._id || '' , 
+    city: profileData?.city?._id || '',
+    pincode: profileData?.pincode?._id || '',
   };
+
+
+  // console.log(profileEditValues , userData)
 
   const getStates = async () => {
     await axios
@@ -142,7 +164,50 @@ const EditProfile = () => {
 //     }
 //   ]
 
-  const handleUpdateProfile = async () => {};
+  const handleUpdateProfile = async (data) => {
+
+    const obj = {
+      firstName : data?.firstName,
+      lastName : data?.lastName,
+      dateOfBirth : data?.birthDate,
+      countryId : profileData?.country?._id,
+      stateId : data?.state,
+      cityId : data?.city,
+      pincodeId : data?.pincode,
+    }
+
+    // console.log(obj)
+    setModalIsOpen(true)
+    
+    try {
+      await axios.put(`${config.api}auth/update-details` , obj , {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then((response) => {
+        // console.log(response)
+        if(response?.data?.success == true) {
+            setModalIsOpen(false)
+            toast.success('Profile Updated Successfully');
+            setEditProfile(false)
+            getProfileData(authToken)
+        }else {
+            setModalIsOpen(false)
+            toast.error('Error Updating Profile');
+        }
+      })
+      .catch((err) => {
+        setModalIsOpen(false)
+        toast.error(err?.message);
+        toast.error(err?.response?.data?.message);
+        // console.log(err , 'error')
+      });
+    } catch (error) {
+      setModalIsOpen(false)
+      console.log(error)
+    }
+  };
 
   return (
     <div className="edit-profile-main-section">
@@ -159,16 +224,14 @@ const EditProfile = () => {
             <button
               type="button"
               className="goback-button-sec flex items-center gap-x-4 mb-5"
-              onClick={() => navigate(-1)}
+              onClick={() => setEditProfile(false)}
             >
               <div className="backarrow-sec w-8 h-8 rounded-full bg-white flex items-center justify-center">
                 <i className="ri-arrow-left-line text-xl"></i>
               </div>
               <h4 className="font-medium ">Back to Profile</h4>
             </button>
-            <div className="top-business-form-heading mb-10">
-              <h2 className="font-medium text-Black text-2xl">Edit Profile</h2>
-            </div>
+            
             <div className="bottom-form-section-business-add">
               <div className="inner-business-form-section">
                 <div className="single-form-section-business">
@@ -183,7 +246,7 @@ const EditProfile = () => {
                           <div className="single-form-section-business business-basic-details  rounded-[15px] bg-white">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
                               <h4 className="text-lg font-medium text-Secondary">
-                                Profile Deatils
+                                Update Profile Details
                               </h4>
                             </div>
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
@@ -224,6 +287,24 @@ const EditProfile = () => {
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
                                   <p className="text-BusinessFormLabel">
+                                    Birth Date*
+                                  </p>
+                                </div>
+                                <Field
+                                  type="date"
+                                  name="birthDate"
+                                  placeholder="Enter Birthdate*"
+                                  className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                    errors.birthDate && touched.birthDate
+                                      ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                      : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                  }`}
+                                />
+                              </div>
+
+                              <div className="form-inputsec relative col-span-6">
+                                <div className="label-section mb-1">
+                                  <p className="text-BusinessFormLabel">
                                     Select Sate*
                                   </p>
                                 </div>
@@ -250,12 +331,8 @@ const EditProfile = () => {
                                       boxShadow: state.isFocused ? "none" : "none",
                                     }),
                                   }}
-                                  value={states.find(
-                                    (option) => option.value === values.state
-                                  )}
-                                  onChange={(option) => {
-                                    setFieldValue( "state", option ? option.value : "" ),  getCities(option.value);
-                                  }}
+                                  value={states.find((option) => option.value === values.state)}
+                                  onChange={(option) => { setFieldValue( "state", option ? option.value : "" ) ,  getCities(option.value)}}
                                 />
                               </div>
                               <div className="form-inputsec relative col-span-6">
