@@ -18,7 +18,7 @@ import { config } from '../../env-services';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../../utils/Loader/Loader';
 import toast from 'react-hot-toast';
-
+import PricingImg from '../../assets/images/pricing-business-add.svg'
 
 
 const animatedComponents = makeAnimated();
@@ -899,6 +899,22 @@ const BusinessFormAdding = () => {
                                 </div>
                               </div> : null
                               }
+                            </div>
+
+                          </div>
+                          <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
+                            <div className="inner-pricing-section flex items-center gap-6 relative">
+                              <div className="left-image-pricing">
+                                <img src={PricingImg} className='w-64' alt="" />
+                              </div>
+                              <div className="right-content-pricing py-6">
+                                <h2 className='text-2xl font-medium text-Black'>50% OFF – Business Listing Subscription!</h2>
+                                <p className='font-light opacity-80 pb-3 pt-1'>Boost your brand’s online presence and attract more customers with our premium business listing. <br /> Get discovered easily, enhance credibility, and drive more leads—all at an unbeatable price.</p>
+                                <h3 className='text-Secondary font-semibold text-4xl'><span className='line-through text-Black font-medium opacity-40 mr-4'>₹5000</span>₹2499</h3>
+                              </div>
+                              <div className="abs-check absolute top-4 right-4">
+                                <i class="bi bi-check-circle-fill text-3xl text-[#0DB9AA]"></i>
+                              </div>
                             </div>
                           </div>
                           <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">

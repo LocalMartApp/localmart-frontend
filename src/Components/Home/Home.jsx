@@ -69,7 +69,13 @@ const Home = () => {
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [areaSuggestions , setAreaSuggestions] = useState('')
+  const [mapSuggestions , setMapSuggestions] = useState([]);
+  const [areaSuggestions , setAreaSuggestions] = useState('');
+  const [mapSelectedCity , setMapSelectedCity] = useState('')
+
+
+  const [inputValue, setInputValue] = useState("");
+  const autocompleteService = useRef(null);
 
   
   const debounceTimeout = useRef(null);
@@ -254,6 +260,14 @@ useEffect(() => {
 
 
 
+useEffect(() => {
+  if (isLoaded && !autocompleteService.current) {
+    autocompleteService.current = new window.google.maps.places.AutocompleteService();
+  }
+}, [isLoaded]);
+
+
+
 const getAllCategories = async () => {
   await axios.get(config.api + `business-category`)
   .then((response) => {
@@ -425,6 +439,70 @@ const getAllCategories = async () => {
   };
 
 
+
+    const handleInputChange = (e) => {
+      const value = e.target.value;
+      setInputValue(value);
+
+      if (value.length > 2 && autocompleteService.current) {
+        autocompleteService.current.getPlacePredictions(
+          {
+            input: value,
+            types: ["geocode"], 
+            componentRestrictions: { country: "IN" },
+          },
+          (predictions, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+              setMapSuggestions(predictions);
+            } else {
+              setMapSuggestions([]);
+            }
+          }
+        );
+      } else {
+        setMapSuggestions([]);
+      }
+    };
+
+    const handleSelect = (place) => {
+      const placeService = new window.google.maps.places.PlacesService(document.createElement("div"));
+    
+      placeService.getDetails({ placeId: place.place_id }, (details, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          let area = "";
+          let city = "";
+    
+          details.address_components.forEach((component) => {
+            if (component.types.includes("sublocality_level_1")) {
+              area = component.long_name; 
+            }
+            if (component.types.includes("locality")) {
+              city = component.long_name; 
+            }
+          });
+    
+          setInputValue(`${area}, ${city}`); 
+          setMapSelectedCity(city); 
+          setMapSuggestions([]); 
+        }
+      });
+    };
+    
+    const extractAreaCity = (fullAddress) => {
+      const parts = fullAddress.split(","); 
+      if (parts.length >= 2) {
+        return { 
+          area: parts[0].trim(), 
+          city: parts[1].trim() 
+        };
+      }
+      return { area: fullAddress, city: "" }; 
+    };
+    
+
+    console.log(mapSelectedCity)
+
+
   return (
     <div className="Home relative">
       <Modal
@@ -455,8 +533,8 @@ const getAllCategories = async () => {
                     <div className="search-grid-section-home-main">
                       <div className="search-grid-container-main">
                         <div className="grid grid-cols-10 justify-center gap-x-6 top-search-section-grid-parent">
-                          <div className="col-span-3">
-                            <div className={`location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
+                          <div className="col-span-3 relative">
+                            {/* <div className={`location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
                               <div className="icon-section">
                                 <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
                               </div>
@@ -485,7 +563,7 @@ const getAllCategories = async () => {
                                   onChange={(option) => setCitySelect(option)}
                                 />
                               </div>
-                            </div>
+                            </div> */}
                             {/* <div className={`location-setting-section relative w-full bg-white overflow-hidden rounded-full h-70p ${headerBar ? 'shadow-xl' : ''}`}>
                               <div className="icon-section home-local-search-icon-sec absolute left-8 top-1/2">
                                 <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
@@ -498,6 +576,31 @@ const getAllCategories = async () => {
                                 }
                               </div>
                             </div> */}
+                            <div className={`location-setting-section grid overflow-hidden relative items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
+                              <div className="icon-section absolute top-1/2 left-8 z-10">
+                                <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
+                              </div>
+                              <div className="country-selection col-span-6 relative h-full">
+                                <input type="text" className='h-full w-full pl-10 outline-none' value={inputValue} onChange={handleInputChange} placeholder='Enter your locality' name="" id="" />
+                              </div>
+                            </div>
+                            {mapSuggestions.length > 0 && (
+                            <div className="bottom-suggestions-list mt-5 bg-white rounded-3xl p-4 absolute shadow-xl h-[200px] overflow-y-auto">
+                                <ul className="suggestions-list">
+                                  {mapSuggestions.map((place , index) => {
+                                    return (
+                                      <li
+                                      key={place.place_id}
+                                      onClick={() => handleSelect(place)}
+                                      className="p-2 hover:bg-gray-100 cursor-pointer rounded-lg text-sm"
+                                    >
+                                      {place.description}
+                                    </li>
+                                    )
+                                  })}
+                                </ul>
+                            </div>
+                            )}
                           </div>
                           <div className={`col-span-7 ${headerBar ? 'shadow-xl' : ''}`}>
                             <div className={`big-search-section duration-500 bg-white p-[6px] h-70p relative ${searchSuggest ? 'rounded-t-30p rounded-b-0' : 'rounded-40p'}`}>

@@ -57,6 +57,12 @@ button {
     }
 }
 
+.location-setting-section {
+    .icon-section {
+        transform: translate(-50% , -50%);
+    }
+}
+
 .main-login-modal-section {
     background: rgba(0, 0, 0, 0.519);
     backdrop-filter: blur(12px);
