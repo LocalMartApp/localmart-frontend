@@ -193,7 +193,7 @@ const Home = () => {
 
 
   const getCities = async() => {
-    await axios.get(config.api + `locations/states/678daa989c4467c6aa4eeb89/cities`)
+    await axios.get(config.api + `locations/states/67ea880c34693d5cc5891593/cities`)
     .then((response) => {
       if (response?.data?.data) {
         const formattedCities = response.data.data.map(item => ({
@@ -534,8 +534,8 @@ const getAllCategories = async () => {
                       <div className="search-grid-container-main">
                         <div className="grid grid-cols-10 justify-center gap-x-6 top-search-section-grid-parent">
                           <div className="col-span-3 relative">
-                            {/* <div className={`location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
-                              <div className="icon-section">
+                            <div className={`location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
+                              <div className="">
                                 <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
                               </div>
                               <div className="country-selection col-span-5 relative z-[99999]">
@@ -563,7 +563,7 @@ const getAllCategories = async () => {
                                   onChange={(option) => setCitySelect(option)}
                                 />
                               </div>
-                            </div> */}
+                            </div>
                             {/* <div className={`location-setting-section relative w-full bg-white overflow-hidden rounded-full h-70p ${headerBar ? 'shadow-xl' : ''}`}>
                               <div className="icon-section home-local-search-icon-sec absolute left-8 top-1/2">
                                 <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
@@ -576,14 +576,14 @@ const getAllCategories = async () => {
                                 }
                               </div>
                             </div> */}
-                            <div className={`location-setting-section grid overflow-hidden relative items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
+                            {/* <div className={`location-setting-section grid overflow-hidden relative items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
                               <div className="icon-section absolute top-1/2 left-8 z-10">
                                 <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
                               </div>
                               <div className="country-selection col-span-6 relative h-full">
                                 <input type="text" className='h-full w-full pl-10 outline-none' value={inputValue} onChange={handleInputChange} placeholder='Enter your locality' name="" id="" />
                               </div>
-                            </div>
+                            </div> */}
                             {mapSuggestions.length > 0 && (
                             <div className="bottom-suggestions-list mt-5 bg-white rounded-3xl p-4 absolute shadow-xl h-[200px] overflow-y-auto">
                                 <ul className="suggestions-list">
