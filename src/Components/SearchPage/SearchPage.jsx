@@ -108,7 +108,7 @@ const SearchPage = () => {
             </div>
           </div>
         </section>
-        <section className="search-page-section-2">
+        <section className="search-page-section-2 hidden">
           <div className="inner-search-page-section-2">
             <div className="container">
               <div className="sorting-buttons-grid-section grid grid-cols-12 gap-x-8">
@@ -264,7 +264,7 @@ const SearchPage = () => {
                                       <div className="inner-rating-favorite-sec flex items-center gap-x-20p">
                                         <div className="rating-section-right-side-business bg-LightGrayBg rounded-[5px] px-10p py-1 flex items-center gap-2">
                                           <i className="ri-star-fill text-StarGold"></i>
-                                          <p className='text-Black font-medium'>{items.rating}</p>
+                                          <p className='text-Black font-medium'>{items.averageRating}</p>
                                         </div>
                                         <div className="right-side-favorite-btn-search">
                                           <button type="button" onClick={() => setFavorite(!favorite)}><i className={`${favorite ? 'ri-heart-3-fill text-red-500' : 'ri-heart-3-line text-Black text-opacity-70'} text-2xl`}></i></button>

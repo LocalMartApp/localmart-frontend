@@ -284,6 +284,14 @@ const SearchDetails = () => {
   ]
 
 
+  const formatDate = (isoString) => {
+    return new Date(isoString)
+      .toLocaleDateString("en-GB")
+      .replace(/\//g, "-");
+};
+
+
+
   return (
     <div className="main-search-info-section">
     <Modal
@@ -441,7 +449,7 @@ const SearchDetails = () => {
                 <div className="seperator-div h-5 w-[1px] bg-Black"></div>
                 <div className="rating-review-search-text flex items-center gap-x-2">
                   <i className="ri-star-fill text-StarGold"></i>
-                  <p>1407+ Ratings</p>
+                  <p>{singleBusiness?.averageRating} Ratings</p>
                 </div>
               </div>
             </div>
@@ -589,24 +597,24 @@ const SearchDetails = () => {
                         </div>
                       </div>
                       <div className="rating-searched-bottom-slider-section grid grid-cols-12 gap-5">
-                        {foodItems.map((items, index) => {
-                          return (
-                            <div className="single-rating-profile col-span-6 border-Black border-opacity-20 border rounded-2xl p-5" key={index}>
+                        {singleBusiness?.reviews && singleBusiness?.reviews?.length > 0 ?  singleBusiness?.reviews?.map((items , index) => {
+                            return (
+                              <div className="single-rating-profile col-span-6 border-Black border-opacity-20 border rounded-2xl p-5" key={index}>
                               <div className="right-text-rating-profile mb-2">
                                 <div className="five-stars-section flex items-center gap-x-1">
-                                  <i className='ri-star-fill text-lg text-StarGold'></i>
-                                  <i className='ri-star-fill text-lg text-StarGold'></i>
-                                  <i className='ri-star-fill text-lg text-StarGold'></i>
-                                  <i className='ri-star-fill text-lg text-StarGold'></i>
-                                  <i className='ri-star-fill text-lg text-StarGold'></i>
+                                  {[...Array(items.rating)].map((rates , rateIndex) => {
+                                    return (
+                                      <i className='ri-star-fill text-lg text-StarGold' key={rateIndex}></i>
+                                    )
+                                  })}
                                 </div>
-                                <h4 className='font-medium text-Black text-xl'>SM. Srinivas Kiran</h4>
+                                <h4 className='font-medium text-Black text-xl'>{items?.userName}</h4>
                               </div>
-                              <p className="text-Black font-light opacity-60">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer</p>
-                              <p className="text-sm font-medium mt-2 opacity-50">Posted on : 25 Mar 2025</p>
+                              <p className="text-Black font-light opacity-60">{items?.comment ? items?.comment : 'Comments not added by user'}</p>
+                              <p className="text-sm font-medium mt-2 opacity-50">Posted on : {formatDate(items?.createdAt)}</p>
                           </div>
-                          );
-                        })}
+                            )
+                        }) : null}
                       </div>
                     </div>
                   </div>
