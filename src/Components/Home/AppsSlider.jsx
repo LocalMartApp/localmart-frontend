@@ -27,7 +27,7 @@ const AppsSlider = () => {
         },
         {
           icon: LocalClassifieds,
-          heading: 'Local Classifieds',
+          heading: 'Classifieds',
           title : 'Buy and Sell Products',
           link: '/',
         },
@@ -107,7 +107,7 @@ const AppsSlider = () => {
                                 </div>
                                 <div className="right-app-heading-title-sec">
                                     <h2 className='text-Black text-xl'>{items.heading}</h2>
-                                    <p className='text-LightText text-sm'>{items.title}</p>
+                                    {/* <p className='text-LightText text-sm'>{items.title}</p> */}
                                 </div>
                             </button>
                         </SwiperSlide>
@@ -125,7 +125,7 @@ const AppsSlider = () => {
                             </div>
                             <div className="right-app-heading-title-sec">
                                 <h2 className='text-Black text-xl'>{items.heading}</h2>
-                                <p className='text-LightText text-sm'>{items.title}</p>
+                                {/* <p className='text-LightText text-sm'>{items.title}</p> */}
                             </div>
                         </button>
                     )
