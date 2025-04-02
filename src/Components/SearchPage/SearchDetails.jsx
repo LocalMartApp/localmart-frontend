@@ -107,7 +107,7 @@ const SearchDetails = () => {
   };
 
 
-  const productLink = ``;
+  const productLink = `https://www.localmart.app/search/complete-details/${id}`;
   const handleCopyToClipboard = () => {
     setShareModalOpen(false);
     navigator.clipboard.writeText(productLink).then(() => {
@@ -169,32 +169,6 @@ const SearchDetails = () => {
   };
 
 
-  // const businessPhotos = [
-  //   {
-  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl  : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl  : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl  : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl  : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl  : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl  : EmptyImage,
-  //   },
-  // ];
 
 
   const handleAddReview = async() => {
@@ -292,6 +266,33 @@ const SearchDetails = () => {
 
 
 
+const shareLink = (platform) => {
+  const url = `https://www.localmart.app/search/complete-details/${id}`;
+  const encodedUrl = encodeURIComponent(url);
+
+  let shareUrl = "";
+
+  switch (platform) {
+    case "whatsapp":
+      shareUrl = `https://wa.me/?text=${encodedUrl}`;
+      break;
+    case "telegram":
+      shareUrl = `https://t.me/share/url?url=${encodedUrl}`;
+      break;
+    case "instagram":
+      shareUrl = `https://www.instagram.com/?url=${encodedUrl}`;
+      break;
+    case "facebook":
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+      break;
+    default:
+      alert("Invalid platform");
+      return;
+  }
+
+  window.open(shareUrl, "_blank");
+};
+
   return (
     <div className="main-search-info-section">
     <Modal
@@ -357,7 +358,7 @@ const SearchDetails = () => {
                 Copy Link
               </h2>
               <p className="text-sm opacity-50 font-light">
-                https://admin-stage.localmart.app/business
+                https://www.localmart.app/search/complete-details/{id}
               </p>
             </div>
             <div className="right-copy-link-button">
@@ -372,22 +373,22 @@ const SearchDetails = () => {
           </div>
           <div className="bottom-social-options flex items-center justify-center gap-10 mt-8">
             <div className="single-social-option">
-              <button type="button" className="w-10 h-10">
+              <button type="button" className="w-10 h-10" onClick={() => shareLink('facebook')}>
                 <img src={FacebookShare} className="w-full h-full" alt="" />
               </button>
             </div>
             <div className="single-social-option">
-              <button type="button" className="w-10 h-10">
+              <button type="button" className="w-10 h-10" onClick={() => shareLink('whatsapp')}>
                 <img src={WhatsappShare} className="w-full h-full" alt="" />
               </button>
             </div>
             <div className="single-social-option">
-              <button type="button" className="w-10 h-10">
+              <button type="button" className="w-10 h-10" onClick={() => shareLink('telegram')}>
                 <img src={TelegramShare} className="w-full h-full" alt="" />
               </button>
             </div>
             <div className="single-social-option">
-              <button type="button" className="w-10 h-10">
+              <button type="button" className="w-10 h-10" onClick={() => shareLink('instagram')}>
                 <img src={InstagramShare} className="w-full h-full" alt="" />
               </button>
             </div>
@@ -677,6 +678,7 @@ const SearchDetails = () => {
                       </div>
                       <button
                         type="button"
+                        onClick={() => setShareModalOpen(true)}
                         className="share-place-btn w-fit flex items-center gap-x-3 text-left"
                       >
                         <i className="ri-share-fill text-lg text-Secondary"></i>
