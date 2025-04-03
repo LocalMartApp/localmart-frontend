@@ -258,7 +258,7 @@ const useSearchStore = create(
   )
 }
 
-export default Drafts
+// export default Drafts
 
 
 
@@ -347,7 +347,106 @@ const SearchDetails = () => {
 
   useEffect(() => {
     getBusinessData();
+
+    
+    // const fetchLocation = async () => {
+    //   if (navigator.geolocation) {
+    //     navigator.geolocation.getCurrentPosition(
+    //       async (position) => {
+    //         const { latitude, longitude } = position.coords;
+    //         const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`;
+
+    //         try {
+    //           const response = await fetch(url);
+    //           const data = await response.json();
+
+    //           if (data.status === "OK") {
+    //             const addressComponents = data.results[0]?.address_components || [];
+    //             const cityComponent = addressComponents.find((component) =>
+    //               component.types.includes("locality")
+    //             );
+
+    //             if (cityComponent) {
+    //               const userCity = cityComponent.long_name;
+
+    //               // Find the city in cityOptions
+    //               const matchedCity = cityOptions.find(
+    //                 (city) => city.label.toLowerCase() === userCity?.toLowerCase()
+    //               );
+
+    //               // Only set if user hasn't changed it manually
+    //               if (matchedCity) {
+    //                 setCitySelect(matchedCity);
+    //                 setUserCity(matchedCity)
+    //               }
+    //             }
+    //           }
+    //         } catch (error) {
+    //           console.error("Error fetching location:", error);
+    //         }
+    //       },
+    //       (error) => {
+    //         console.error("Error getting location:", error);
+    //       },
+    //       { enableHighAccuracy: true }
+    //     );
+    //   } else {
+    //     console.error("Geolocation is not supported by this browser.");
+    //   }
+    // };
+
+
+    // fetchLocation();
+
   }, []);
+
+  
+  const getCityFromCoordinates = async (lat, lon) => {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      const city =
+        data.address?.city ||
+        data.address?.town ||
+        data.address?.village ||
+        data.address?.state;
+      return city;
+    } catch (error) {
+      console.error("Error fetching city from coordinates:", error);
+      return null;
+    }
+  };
+
+  const handleSearchNav = () => {
+    openLoaderModal();
+    setTimeout(() => {
+      navigate('/search')
+    } , 2000)
+  }
+
+  const handleAreaSearchChange = () => {
+    const places = inputRef.current.getPlaces();
+    if (places.length > 0) {
+      const suggestions = places.map((place) => {
+        let sublocality = "";
+        let locality = "";
+
+        place.address_components.forEach((component) => {
+          if (component.types.includes("sublocality_level_1")) {
+            sublocality = component.long_name;
+          } else if (component.types.includes("locality")) {
+            locality = component.long_name;
+          }
+        });
+
+        return `${sublocality}, ${locality}`;
+      });
+
+      setAreaSuggestions(suggestions);
+      console.log("Area Suggestions:", suggestions);
+    }
+  };
 
   const getUserDetails = async () => {
     const response = localStorage.getItem("authToken");

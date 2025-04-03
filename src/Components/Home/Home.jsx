@@ -80,9 +80,6 @@ const Home = () => {
   
   const debounceTimeout = useRef(null);
 
-
-  console.log('mapSelectedCity' , mapSelectedCity)
-  
   
 
   const placeholders = [
@@ -104,63 +101,23 @@ const Home = () => {
     })
 
 
-    console.log(areaSuggestions , "area")
-
-
-
   useEffect(() => {
 
     getAllCategories()
     getCities()
 
-    const fetchLocation = async () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords;
-            const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`;
 
-            try {
-              const response = await fetch(url);
-              const data = await response.json();
-
-              if (data.status === "OK") {
-                const addressComponents = data.results[0]?.address_components || [];
-                const cityComponent = addressComponents.find((component) =>
-                  component.types.includes("locality")
-                );
-
-                if (cityComponent) {
-                  const userCity = cityComponent.long_name;
-
-                  // Find the city in cityOptions
-                  const matchedCity = cityOptions.find(
-                    (city) => city.label.toLowerCase() === userCity?.toLowerCase()
-                  );
-
-                  // Only set if user hasn't changed it manually
-                  if (matchedCity) {
-                    setCitySelect(matchedCity);
-                    setUserCity(matchedCity)
-                  }
-                }
-              }
-            } catch (error) {
-              console.error("Error fetching location:", error);
-            }
-          },
-          (error) => {
-            console.error("Error getting location:", error);
-          },
-          { enableHighAccuracy: true }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-      }
-    };
-
-
-    fetchLocation();
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchLocationDetails(latitude, longitude);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    }
 
 
 
@@ -186,11 +143,7 @@ const Home = () => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % placeholders.length);
     }, 2000);
 
-    // getUserLocation();
-    
-
     return () => {clearInterval(interval) , clearTimeout(debounceTimeout.current)};
-    
 
   }, [query]);
 
@@ -204,8 +157,6 @@ const Home = () => {
           label: item.name,
         }));
         setCityOptions(formattedCities);
-
-        // Check if user's city exists in the list
         const matchedCity = formattedCities.find(city => city.label.toLowerCase() === userCity?.toLowerCase());
         if (matchedCity) {
           setCitySelect(matchedCity);
@@ -225,11 +176,9 @@ const Home = () => {
         console.log(err)
       })
     } catch (error) {
-      // console.error("Error fetching search suggestions:", error);
     }
   };
 
-  // console.log("citySelect" , citySelect)
 
   const handleSuggestionClick = async (data) => {
     let filterKey = "searchKey"; 
@@ -274,9 +223,7 @@ useEffect(() => {
 const getAllCategories = async () => {
   await axios.get(config.api + `business-category`)
   .then((response) => {
-      // console.log(response)
       setLocalmartCategories(response?.data?.data)
-      // console.log('response' , response)
  })
 }
 
@@ -290,29 +237,7 @@ const getAllCategories = async () => {
   }
 
 
-  const getCityFromCoordinates = async (lat, lon) => {
-    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      const city =
-        data.address?.city ||
-        data.address?.town ||
-        data.address?.village ||
-        data.address?.state;
-      return city;
-    } catch (error) {
-      console.error("Error fetching city from coordinates:", error);
-      return null;
-    }
-  };
 
-  const handleSearchNav = () => {
-    openLoaderModal();
-    setTimeout(() => {
-      navigate('/search')
-    } , 2000)
-  }
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -397,13 +322,6 @@ const getAllCategories = async () => {
       title: 'Pet Shops'
     },
   ]
-
-
-  
-
-
-
-
   
   const customStyles = {
     content: {
@@ -418,29 +336,34 @@ const getAllCategories = async () => {
     },
   };
 
-  const handleAreaSearchChange = () => {
-    const places = inputRef.current.getPlaces();
-    if (places.length > 0) {
-      const suggestions = places.map((place) => {
-        let sublocality = "";
-        let locality = "";
 
-        place.address_components.forEach((component) => {
-          if (component.types.includes("sublocality_level_1")) {
-            sublocality = component.long_name;
-          } else if (component.types.includes("locality")) {
-            locality = component.long_name;
-          }
-        });
 
-        return `${sublocality}, ${locality}`;
+
+  const fetchLocationDetails = async (lat, lng) => {
+    
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`
+    );
+    const data = await response.json();
+
+    console.log(data)
+
+    if (data.status === "OK") {
+      let city = "";
+      let area = "";
+      data.results[0].address_components.forEach((component) => {
+        if (component.types.includes("sublocality_level_1")) {
+          area = component.long_name;
+        }
+        if (component.types.includes("locality")) {
+          city = component.long_name;
+        }
       });
 
-      setAreaSuggestions(suggestions);
-      console.log("Area Suggestions:", suggestions);
+      setInputValue(`${area}, ${city}`);
+      setMapSelectedCity(city);
     }
   };
-
 
 
     const handleInputChange = (e) => {
@@ -503,7 +426,6 @@ const getAllCategories = async () => {
     };
     
 
-    console.log(mapSelectedCity)
 
 
   return (
