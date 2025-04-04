@@ -134,7 +134,7 @@ const ProfileSideBar = () => {
                   return (
                       <SwiperSlide key={index}>
                         <li className="single-navigator-sidebar" key={index}>
-                          <NavLink className='py-2 px-4 duration-300 hover:text-Primary text-Black' to={items.link}>{items.title}</NavLink>
+                          <NavLink className='py-2 px-4 duration-300 hover:text-Primary text-Black' to={items.link}  onClick={items.onclick}>{items.title}</NavLink>
                         </li>
                       </SwiperSlide>
                   )

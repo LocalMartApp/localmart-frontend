@@ -119,6 +119,39 @@ bun{
     bottom: 20px !important;
     right: 20px !important;
   }
+
+  .inner-loader-anime p {
+    font-size: 18px !important;
+  }
+  .ReactModal__Content {
+    width: auto !important;
+    padding-left: 20px !important;
+  }
+  .loader-part svg {
+    width: 50px;
+    height: 50px;
+}
+.left-profilescreens-heading h4 {
+  font-size: 18px;
+}
+.right-list-business-text p {
+  font-size: 16px;
+}
+.right-add-business-button i {
+  display: none;
+}
+button {
+  text-align: left !important;
+}
+.bottom-form-submitter button , .pop-serv-right-sliding-buttons button , .explore-cities-home-section-1 button , .pop-serv-bottom-slider button {
+  text-align: center !important;
+}
+.rating-searched-bottom-slider-section {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.left-cancel-button  button , .right-add-review-button button {
+  text-align: center !important;
+}
 }
 
 
@@ -128,3 +161,6 @@ bun{
     transform: scale(0.8) translate(-10% , -20%) !important; 
   }
 }
+
+
+

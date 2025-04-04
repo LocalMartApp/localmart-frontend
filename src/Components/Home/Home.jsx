@@ -360,8 +360,8 @@ const getAllCategories = async () => {
         }
       });
 
-      setInputValue(`${area}, ${city}`);
-      setMapSelectedCity(city);
+      // setInputValue(`${area}, ${city}`);
+      // setMapSelectedCity(city);
     }
   };
 
@@ -453,7 +453,7 @@ const getAllCategories = async () => {
           <section className="home-section-1 relative">
             <div className="inner-home-section-1 bg-BlockBlack">
               <div className="container">
-                <div className={`top-main-search-section-home duration-500 z-[9999] ${headerBar ? 'fixed top-0 w-full bg-BlockBlack left-0 py-6 px-[15px]' : ' pb-16'}`}>
+                <div className={`top-main-search-section-home duration-500 z-[9999] pb-16`}>
                     <div className="inner-search-relative-section-home relative">
                     <div className="search-grid-section-home-main">
                       <div className="search-grid-container-main">
@@ -606,14 +606,26 @@ const getAllCategories = async () => {
                             </div>
                             <div className="bottom-all-categories-section">
                                 <div className="grid grid-cols-4 gap-x-10p gap-y-60p home-categories-grid-section">
-                                  {allCategories.map((items , index) => {
+                                  {localmartCategories && localmartCategories.length > 0 ?  localmartCategories.slice(0 , 12).map((items , index) => {
                                     return (
-                                      <button type='button' key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-2">
+                                      <button type='button' onClick={() => handleCategorySuggestionClick(items?._id)} key={index}  className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-2">
                                           <div className="top-image-blk  w-40p h-40p flex items-center justify-center">
-                                              <img src={items.icon} className='duration-500 w-full group-hover:scale-125' alt="" />
+                                              <img src={items?.icon} className='duration-500 w-full group-hover:scale-125' alt="" />
                                           </div>
                                           <div className="bottom-text-blk">
-                                              <p className='text-white text-center text-xs'>{items.title}</p>
+                                              <p className='text-white text-center text-[10px]'>{items?.name}</p>
+                                          </div>
+                                      </button>
+                                    )
+                                  }) : 
+                                  allCategories.map((items , index) => {
+                                    return (
+                                      <button type='button' key={index}  className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-2">
+                                          <div className="top-image-blk  w-40p h-40p flex items-center justify-center">
+                                              <img src={items?.icon} className='duration-500 w-full group-hover:scale-125' alt="" />
+                                          </div>
+                                          <div className="bottom-text-blk">
+                                              <p className='text-white text-center text-[10px]'>{items?.title}</p>
                                           </div>
                                       </button>
                                     )

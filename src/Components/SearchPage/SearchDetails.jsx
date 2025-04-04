@@ -332,7 +332,7 @@ const shareLink = (platform) => {
             <div className="right-add-review-button col-span-6">
             {loading ?   
               <button type="button" disabled={true} className="py-3 rounded-xl text-center w-full bg-Primary bg-opacity-50 text-white font-semibold">Submitting....</button> :
-              <button type="button" className="py-3 rounded-xl text-center w-full bg-Primary text-white font-semibold" onClick={handleAddReview}>Submit Review</button>
+              <button type="button" className="py-3 rounded-xl text-center w-full bg-Primary text-white font-semibold" onClick={handleAddReview}>Submit</button>
               }
             </div>
           </div>

@@ -190,7 +190,7 @@ const SearchPage = () => {
           </div>
         </section>
         <section className="search-page-section-3">
-          <div className="inner-search-page-section-3 py-10">
+          <div className="inner-search-page-section-3 pb-10">
             <div className="container">
               <div className="search-page-grid-section-main">
                 <div className="grid grid-cols-12 gap-30p">
@@ -294,7 +294,7 @@ const SearchPage = () => {
                     {!loading && results && results.length > 0 ? results.map((items , index) => {
                         return (
                           <div className="single-searched-cards">
-                             <button type='button' className="text-left single-mybusiness-card shadow-lg rounded-[15px]  overflow-hidden bg-white w-full relative" key={index}>
+                             <button type='button' onClick={() => handleNavigate(items)} className="text-left single-mybusiness-card shadow-lg rounded-[15px]  overflow-hidden bg-white w-full relative" key={index}>
                                 <div className="top-image-mybusiness-section max-h-[220px] h-full overflow-hidden group">
                                     <img src={items?.mediaFiles[0]?.fileUrl ? items?.mediaFiles[0]?.fileUrl : Emptymedia } className='w-full h-full group-hover:scale-110 duration-300 object-cover' alt="" />
                                 </div>
@@ -340,7 +340,7 @@ const SearchPage = () => {
                       }) : null}
                     </div>
                   </div>
-                  <div className="col-span-12">
+                  <div className="col-span-12 hidden">
                     <div className="right-top-picks-slider sticky top-5">
                         <SearchTopPicksSlider/>
                     </div>
