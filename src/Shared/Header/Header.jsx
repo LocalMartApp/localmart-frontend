@@ -161,7 +161,7 @@ const Header = () => {
                 </div>
                 <div className={`header-buttons-sections col-span-3`}>
                   <div className="flex items-center gap-8 justify-end">
-                    {location.pathname == "/" && (
+                    {authToken &&  (
                     <div className="notification-header-button rounded-full relative">
                       <button type='button' className=' bg-none w-10 h-10 flex items-center justify-center' onClick={() => setNotificationToggle(!notificationToggle)}>
                         <i className="bi bi-bell text-xl text-Primary"></i>

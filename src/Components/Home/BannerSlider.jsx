@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Home.scss';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow , Pagination , Autoplay } from 'swiper/modules';
@@ -10,10 +10,29 @@ import "swiper/css/effect-coverflow";
 import sliderImage1 from '../../assets/images/slider-image-1.jpg';
 import sliderImage2 from '../../assets/images/slider-image-2.jpg';
 import sliderImage3 from '../../assets/images/slider-image-3.jpg';
+import axios from 'axios';
+import { config } from '../../env-services';
 
 
 
 const BannerSlider = () => {
+
+  const [adverts , setAdverts] = useState([])
+
+
+  useEffect(() => {
+    getAllAdverts()
+}, [])
+
+const getAllAdverts = async () => {
+    await axios.get(config.api + `admin/advertisements`)
+    .then((response) => {
+        // console.log(response)
+        setAdverts(response?.data?.data)
+        // console.log('response' , response)
+   })
+}
+
 
 
       const slides = [

@@ -28,6 +28,7 @@ import MyBusinessDetail from './Components/ProfileScreens/MyBusiness/MyBusinessD
 import EditProfile from './Components/ProfileScreens/MyProfile/EditProfile'
 import Advertise from './Components/Advertise/Advertise'
 import ChangePassword from './Components/ProfileScreens/ChangePassword/ChangePassword'
+import UnderConstruction from './Components/UnderConstruction/UnderConstruction'
 
 
 
@@ -47,7 +48,7 @@ const Layout = () => {
           <Route exact={true} Component={Advertise} path='/advertise' />
           <Route exact={true} Component={SearchPage} path='/search' />
           <Route exact={true} Component={SearchDetails} path='/search/complete-details/:id'/>
-
+          <Route exact={true} Component={UnderConstruction} path='/coming-soon'/>
 
           {/* Ploicies Pages */}
           <Route exact={true} Component={CancellationPolicy} path='/cancellation-policy'/>
@@ -100,8 +101,8 @@ function App() {
   return (
     <>
      <Router>
-      <ScrollToTop/>
       <Layout/>
+      <ScrollToTop/>
       <Toaster 
           position="top-center"
           reverseOrder={false}
