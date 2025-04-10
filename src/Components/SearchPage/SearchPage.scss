@@ -13,6 +13,41 @@
 }
 
 
+.similar-business-media-slide-btns {
+    transform: translate(-0% , -50%) scale(1) !important;
+}
+
+
+.similar-business-media-slide-btns:active {
+    transform: translate(-0% , -50%) scale(1) !important;
+}
+.business-contact-details-right .inner-business-contact-details-right {
+    .opens-share-place-section  {
+        button {
+            transform: scale(1) !important;
+            &:active {
+                transform:  scale(1) !important;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 1170.99px) {
+    .main-search-info-section {
+        .business-contact-details-right {
+            grid-column: span 12 / span 12 !important;
+            order: 1;
+        }
+        .about-para-rating-items-section {
+            grid-column: span 12 / span 12 !important;
+            order: 2;
+        }
+        .search-details-main-section-grid {
+            gap: 30px 0px;
+        }
+    }
+}
+
 
 
 @media only screen and (max-width: 991.90px) {

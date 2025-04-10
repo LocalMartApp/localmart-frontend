@@ -100,7 +100,7 @@ const MyBusiness = () => {
                             {allBusinesses && allBusinesses.length > 0 ?  
                               allBusinesses.map((items , index) => {  
                                 return (
-                                <button type='button' onClick={() => navigate(`/busniess/complete-details/${items?._id}`, { state: { items }})} key={index} className="text-left single-mybusiness-card shadow-lg rounded-[15px] group border-BorderColor overflow-hidden h-full border relative">
+                                <button type='button' onClick={() => navigate(`/busniess/complete-details/${items?._id}`, { state: { items }})} key={index} className="text-left single-mybusiness-card shadow-lg rounded-[15px] group border-BorderColor overflow-hidden h-full min-h-[360px] border relative">
                                   <div className="top-image-mybusiness-section max-h-[180px] h-full overflow-hidden">
                                     <img src={items?.mediaFiles[0] ? items?.mediaFiles[0]?.fileUrl : BusinessImage } className='w-full h-full group-hover:scale-110 duration-300 object-cover' alt="" />
                                   </div>
@@ -155,11 +155,7 @@ const MyBusiness = () => {
                 </div>
             </div>
           </div>
-        </div>
-
-        
-
-
+      </div>
     </div>
   );
 }

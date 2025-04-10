@@ -1,1 +1,17 @@
 .MyFavourites {}
+
+@media only screen and (max-width: 991.90px) {
+    .favorite-details-main-cards-section {
+        .iiner-fav-flexer {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+}
+
+@media only screen and (max-width: 574.90px) {
+    .favorite-details-main-cards-section {
+        .iiner-fav-flexer {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+    }
+}

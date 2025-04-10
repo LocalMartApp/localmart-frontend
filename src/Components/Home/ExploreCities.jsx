@@ -9,9 +9,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay , Navigation } from 'swiper/modules';
 
 import "swiper/css";
+import { useNavigate } from 'react-router-dom';
 
 
 const ExploreCities = () => {
+
+    const navigate = useNavigate()
+
 
     const popularServices = [
         {
@@ -53,7 +57,7 @@ const ExploreCities = () => {
             <div className="left-explore-serv-heading">
                 <h2 className='text-30 text-white font-medium'>Explore Top Cities</h2>
             </div>
-            <div className="explore-serv-right-sliding-buttons flex items-center gap-7">
+            <div className="explore-serv-right-sliding-buttons flex items-center gap-7" onClick={() => navigate('/coming-soon')}>
                 <button type="button" className='explore-cities-button-prev w-10 h-10 rounded-lg border-white border'><i className="ri-arrow-left-s-line text-white text-2xl"></i></button>
                 <button type="button" className='explore-cities-button-next w-10 h-10 rounded-lg bg-white'><i className="ri-arrow-right-s-line text-Black text-2xl"></i></button>
             </div>
@@ -118,7 +122,7 @@ const ExploreCities = () => {
                                     </div>
                                 </div>
                                 <div className="absolute-arrow-explore-section absolute right-2 top-2">
-                                    <button type='button' className='w-10 h-10 rounded-full bg-Primary'><i className="bi bi-arrow-right text-white text-xl"></i></button>
+                                    <button type='button'  onClick={() => navigate('/coming-soon')} className='w-10 h-10 rounded-full bg-Primary'><i className="bi bi-arrow-right text-white text-xl"></i></button>
                                 </div>
                             </div>
                         </SwiperSlide>

@@ -74,11 +74,11 @@ const Footer = () => {
                   <div className="footer-navigations-2 similar-footer-navigators">
                     <nav>
                       <ul className='flex flex-col gap-5'>
-                        <li className='text-Black font-medium'>Business 2 Business</li>
-                        <li className='text-Black font-medium'>Booking Services</li>
-                        <li className='text-Black font-medium'>Food Deliveries</li>
-                        <li className='text-Black font-medium'>Local Businesses</li>
-                        <li className='text-Black font-medium'>E-Commerce</li>
+                        <li className='text-Black font-medium'><NavLink to={'/businesses'}>Business 2 Business</NavLink></li>
+                        <li className='text-Black font-medium'><NavLink to={'/coming-soon'}>Booking Services</NavLink></li>
+                        <li className='text-Black font-medium'><NavLink to={'/coming-soon'}>Food Deliveries</NavLink></li>
+                        <li className='text-Black font-medium'><NavLink to={'/coming-soon'}>Local Businesses</NavLink></li>
+                        <li className='text-Black font-medium'><NavLink to={'/coming-soon'}>E-Commerce</NavLink></li>
                       </ul>
                     </nav>
                   </div>
@@ -87,11 +87,11 @@ const Footer = () => {
                   <div className="footer-navigations-3 similar-footer-navigators">
                     <nav>
                       <ul className='flex flex-col gap-5'>
-                        <li className='text-Black font-medium'>Advertise Here</li>
-                        <li className='text-Black font-medium'>Buy & Sell</li>
-                        <li className='text-Black font-medium'>Locate Stores</li>
-                        <li className='text-Black font-medium'>Explore Brands</li>
-                        <li className='text-Black font-medium'>Shopping</li>
+                        <li className='text-Black font-medium'><NavLink to={'/advertise'}>Advertise Here</NavLink> </li>
+                        <li className='text-Black font-medium'><NavLink to={'/coming-soon'}>Buy & Sell</NavLink> </li>
+                        <li className='text-Black font-medium'><NavLink to={'/coming-soon'}>Locate Stores</NavLink> </li>
+                        <li className='text-Black font-medium'><NavLink to={'/coming-soon'}>Explore Brands</NavLink> </li>
+                        <li className='text-Black font-medium'><NavLink to={'/coming-soon'}>Shopping</NavLink> </li>
                       </ul>
                     </nav>
                   </div>
@@ -100,11 +100,10 @@ const Footer = () => {
                   <div className="footer-navigations-4 similar-footer-navigators">
                     <nav>
                       <ul className='flex flex-col gap-5'>
-                        <li className='text-Black font-medium'>Privacy Policy</li>
-                        <li className='text-Black font-medium'>Cancellation Policy</li>
-                        <li className='text-Black font-medium'>Refund Policy</li>
-                        <li className='text-Black font-medium'>Terms & Conditions</li>
-                        <li className='text-Black font-medium'>Local Mart</li>
+                        <li className='text-Black font-medium'><NavLink to={'/terms-conditions'}>Terms & Conditions</NavLink></li>
+                        <li className='text-Black font-medium'><NavLink to={'/privacy-policy'}>Privacy Policy</NavLink></li>
+                        <li className='text-Black font-medium'><NavLink to={'/cancellation-policy'}>Cancellation Policy</NavLink></li>
+                        <li className='text-Black font-medium'><NavLink to={'/'}>Local Mart</NavLink></li>
                       </ul>
                     </nav>
                   </div>
@@ -114,17 +113,17 @@ const Footer = () => {
           </div>
           <div className="footer-cpoyright-part">
             <div className="container">
-                <div className="copyright-outer-sec flex gap-20 justify-between items-center">
+                <div className="copyright-outer-sec flex gap-20 justify-center items-center">
                   <div className="left-copyright-sec">
                     <p className='text-Black'>© Copyrights - Local Mart 2024</p>
                   </div>
-                  <div className="right-terms-footer-sec">
+                  {/* <div className="right-terms-footer-sec">
                     <ul className='flex items-center gap-8 terms-copyright-links'>
                       <li className='text-Black font-medium'><NavLink to={'/terms-conditions'}>Terms & Conditions</NavLink></li>
                       <li className='text-Black font-medium'><NavLink to={'/privacy-policy'}>Privacy Policy</NavLink></li>
                       <li className='text-Black font-medium'><NavLink to={'/cancellation-policy'}>Cancellation Policy</NavLink></li>
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import './Header.scss';
 import Logo from '../../assets/images/logo-svg.svg';
 import LanSvg from '../../assets/images/language-svg.svg'
 import MarqueeSlider from './MarqueeSlider';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import { useAuth } from '../../utils/AuthContext';
 
@@ -18,41 +18,43 @@ const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-
+  const { authToken, logout , userData } = useAuth();
 
   // console.log(location)
+
 
   const [language , setLanguage] = useState(false);
   const [languageSelector , setLanguageSelector] = useState('EN');
   const [categorySelect , setCategorySelect] = useState();
   const [citySelect ,  setCitySelect] = useState();
   const [notificationToggle , setNotificationToggle] = useState(false);
+  const [mobileMenu , setMobileMenu] = useState(false)
 
   const [userToken ,  setUserToken] = useState();
-  const [userData , setUserData] = useState("");
+  // const [userData , setUserData] = useState("");
 
 
-    useEffect(() => {
-      getUserDetails()
-    } , [])
+    // useEffect(() => {
+    //   getUserDetails()
+    // } , [])
     
 
 
-  const getUserDetails = async () => {
-    const response = localStorage.getItem("authToken");
-    if (!response) return;
+  // const getUserDetails = async () => {
+  //   const response = localStorage.getItem("authToken");
+  //   if (!response) return;
   
-    const userParse = JSON.parse(response);
-    setUserToken(userParse);
-    getPorfileData(userParse);
-  };
+  //   const userParse = JSON.parse(response);
+  //   setUserToken(userParse);
+  //   getPorfileData(userParse);
+  // };
 
 
   const handleLanguageSelect = () => {
     setLanguage(!language)
   }
 
-  const { authToken, logout } = useAuth();
+
 
 
 
@@ -64,18 +66,18 @@ const Header = () => {
 
 
   
-  const getPorfileData = async(token) => {
-    await axios.get(`${config.api}auth/user-details`, {
-      headers: {
-        Authorization: "Bearer " + token, 
-        "content-type": "application/json"
-      },
-    }).then((response) => {
-      setUserData(response?.data?.data)
-    }).catch((err) => {
-      // console.log(err)
-    })
-}
+//   const getPorfileData = async(token) => {
+//     await axios.get(`${config.api}auth/user-details`, {
+//       headers: {
+//         Authorization: "Bearer " + token, 
+//         "content-type": "application/json"
+//       },
+//     }).then((response) => {
+//       setUserData(response?.data?.data)
+//     }).catch((err) => {
+//       // console.log(err)
+//     })
+// }
 
 
 
@@ -159,7 +161,7 @@ const Header = () => {
                 </div>
                 <div className={`header-buttons-sections col-span-3`}>
                   <div className="flex items-center gap-8 justify-end">
-                    {location.pathname == "/" && (
+                    {authToken &&  (
                     <div className="notification-header-button rounded-full relative">
                       <button type='button' className=' bg-none w-10 h-10 flex items-center justify-center' onClick={() => setNotificationToggle(!notificationToggle)}>
                         <i className="bi bi-bell text-xl text-Primary"></i>
@@ -198,7 +200,7 @@ const Header = () => {
                       </div>
                     </div>
                     <div className="advertise-button-header">
-                      <button type="button" className='flex items-center gap-3'>
+                      <button type="button" className='flex items-center gap-3' onClick={() => navigate('/advertise')}>
                       <i className="ri-megaphone-line text-Black"></i>
                         <p className='text-Black text-lg font-medium'>Advertise</p>
                       </button>
@@ -221,10 +223,48 @@ const Header = () => {
                   </div>
                 </div>
                 <div className="header-mobile-menu-section text-center">
-                  <button type="button" className='duration-300'>
+                  <button type="button" className='duration-300' onClick={() => setMobileMenu(true)}>
                     <i className="text-3xl ri-menu-3-line "></i>
                   </button>
                 </div>
+                <div className={`fixed-mobile-menu-section fixed z-[999999] top-0 h-full w-9/12 bg-white duration-300 ${mobileMenu ? 'right-0' : '-right-full'}`}>
+                    <div className="inner-fixed-mobile-menu-section px-4 py-6">
+                      <div className="top-backsection-mobile-menu mb-5">
+                        <button type="button" onClick={() => setMobileMenu(false)} className="w-8 h-8 rounded-full flex items-center justify-center">
+                          <i className="bi bi-arrow-left text-2xl"></i>
+                        </button>
+                      </div>
+                      <div className="innermobile-header-menu">
+                        {authToken ? 
+                            <div className="profile-image-showing-button flex items-center bg-LightBlue flex-wrap gap-3 mb-4  border rounded-xl border-BorderColor border-opacity-55 px-3 py-3">
+                              <button type="button" onClick={() => {setMobileMenu(false) , navigate('/profile/my-profile')}}>
+                                <img src={userData?.profilePicture ? userData?.profilePicture : ProfileDummyImg} className='w-[60px] h-[60px] min-w-[60px] rounded-full'/>
+                              </button>
+                              <div className="right-email-section">
+                                <p className=' font-semibold'>{userData?.firstName + " " + userData?.lastName}</p>
+                                <p className='text-sm opacity-50'>{userData?.email}</p>
+                              </div>
+                            </div>
+                          :  
+                          null                 
+                          }
+                        <ul>
+                          <li>
+                            <NavLink onClick={() => setMobileMenu(false)} to={'/advertise'} className={'py-4 px-4'}>Advertise</NavLink>
+                          </li>
+                          <li className='border-y border-BorderColor border-opacity-50'>
+                            <NavLink onClick={() => setMobileMenu(false)} to={'/businesses'} className={'py-4 px-4'}>Business</NavLink>
+                          </li>
+                          {!authToken ?<li>
+                            <NavLink onClick={() => setMobileMenu(false)} to={'/login'} className={'py-4 px-4'}>Login</NavLink>
+                          </li> : <button type='button' onClick={() => {setMobileMenu(false) , logout() } } className={'py-4 px-4 text-red-400'}>Log Out</button> }
+                        </ul>
+                      </div>
+                    </div>
+                </div>
+                <button onClick={() => setMobileMenu(false)} className={`fixed-mobile-overlay-section fixed z-[99999] top-0  h-full w-full bg-black bg-opacity-20 ${mobileMenu ? 'left-0' : '-left-full'}`}>
+
+                </button>
               </div>
             </div>
           </div>

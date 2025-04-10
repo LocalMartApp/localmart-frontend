@@ -30,6 +30,10 @@
 .header-mobile-menu-section {
     display: none;
 }
+button.fixed-mobile-overlay-section {
+    transform: none !important;
+    backdrop-filter: blur(6px);
+}
 
 @media only screen and (max-width: 674.90px) {
     .header-mobile-menu-section {

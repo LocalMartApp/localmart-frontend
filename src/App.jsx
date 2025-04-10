@@ -15,7 +15,7 @@ import CompleteRegistration from './Components/Auth/UserRegister/CompleteRegistr
 import SearchPage from './Components/SearchPage/SearchPage'
 import SearchDetails from './Components/SearchPage/SearchDetails'
 import BusinessFormAdding from './Components/BusinessFormAdding/BusinessFormAdding'
-import { Toaster } from 'react-hot-toast';
+import { CheckmarkIcon, Toaster } from 'react-hot-toast';
 import BusinessUploadMedia from './Components/BusinessFormAdding/BusinessUploadMedia'
 import CancellationPolicy from './Components/PoliciesPages/CancellationPolicy'
 import TermsandConditions from './Components/PoliciesPages/TermsandConditions'
@@ -25,6 +25,10 @@ import React, { useState } from 'react'
 import { AuthProvider } from './utils/AuthContext'
 import ProtectedRoutes from './utils/ProtectedRoutes'
 import MyBusinessDetail from './Components/ProfileScreens/MyBusiness/MyBusinessDetail'
+import EditProfile from './Components/ProfileScreens/MyProfile/EditProfile'
+import Advertise from './Components/Advertise/Advertise'
+import ChangePassword from './Components/ProfileScreens/ChangePassword/ChangePassword'
+import UnderConstruction from './Components/UnderConstruction/UnderConstruction'
 
 
 
@@ -41,8 +45,10 @@ const Layout = () => {
           <Route exact={true} Component={UserLogin} path='/login' />
           <Route exact={true} Component={UserRegister} path='/register' />
           <Route exact={true} Component={CompleteRegistration} path='/register-details' />
+          <Route exact={true} Component={Advertise} path='/advertise' />
           <Route exact={true} Component={SearchPage} path='/search' />
           <Route exact={true} Component={SearchDetails} path='/search/complete-details/:id'/>
+          <Route exact={true} Component={UnderConstruction} path='/coming-soon'/>
 
           {/* Ploicies Pages */}
           <Route exact={true} Component={CancellationPolicy} path='/cancellation-policy'/>
@@ -51,6 +57,8 @@ const Layout = () => {
           {/* Protected Routes */}
           <Route Component={ProtectedRoutes}>
             <Route exact={true} Component={MyProfile} path='/profile/my-profile' />
+            <Route exact={true} Component={EditProfile} path='/profile/edit-profile' />
+            <Route exact={true} Component={ChangePassword} path='/profile/change-password' />
             <Route exact={true} Component={MyAddresses} path='/profile/my-addresses' />
             <Route exact={true} Component={MyBusiness} path='/profile/my-businesess' />
             <Route exact={true} Component={MyFavourites} path='/profile/my-favourites' />
@@ -93,8 +101,8 @@ function App() {
   return (
     <>
      <Router>
-      <ScrollToTop/>
       <Layout/>
+      <ScrollToTop/>
       <Toaster 
           position="top-center"
           reverseOrder={false}

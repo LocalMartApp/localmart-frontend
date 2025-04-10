@@ -18,9 +18,14 @@ import Hostel from '../../assets/images/recharge-logos/pg-hostel.svg';
 import Resort from '../../assets/images/recharge-logos/resorts.svg';
 import RentCar from '../../assets/images/recharge-logos/car-rent.svg';
 import RentBike from '../../assets/images/recharge-logos/rent-bike.svg';
+import { useNavigate } from 'react-router-dom';
 
 
 const RechargesBlocks = () => {
+
+
+    const navigate = useNavigate()
+
 
     const rechargeCards = [
         {
@@ -120,7 +125,7 @@ const RechargesBlocks = () => {
                             <p className='text-Black'>Pay your bills and recharges instantly with <span className='text-Primary'>LocalMart</span></p>
                         </div>
                         <div className="bills-right-explore">
-                            <button type="button" className='flex items-center gap-3'>
+                            <button type="button" className='flex items-center gap-3'  onClick={() => navigate('/coming-soon')}>
                             <p className='text-Secondary font-medium'>Explore More</p>
                             <i className="bi bi-arrow-right text-Secondary text-xl"></i>
                             </button>
@@ -130,7 +135,7 @@ const RechargesBlocks = () => {
                         <div className="grid grid-cols-8 gap-60p recharges-grid-section">
                             {rechargeCards.map((items , index) => {
                                 return (
-                                    <button type='button' className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-10p" key={index}>
+                                    <button type='button'  onClick={() => navigate('/coming-soon')} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-10p" key={index}>
                                         <div className="top-image-blk bg-white w-100p h-100p flex items-center justify-center p-5 rounded-[15px]">
                                             <img src={items.image} className='duration-500 group-hover:scale-125' alt="" />
                                         </div>
@@ -155,9 +160,9 @@ const RechargesBlocks = () => {
                             <p className='text-Black'>Instant ticket bookings for your best travel experience with <span className='text-Primary'>LocalMart</span></p>
                         </div>
                         <div className="bills-right-explore">
-                            <button type="button" className='flex items-center gap-3'>
-                            <p className='text-Secondary font-medium'>Explore More</p>
-                            <i className="bi bi-arrow-right text-Secondary text-xl"></i>
+                            <button type="button" className='flex items-center gap-3' onClick={() => navigate('/coming-soon')}>
+                                <p className='text-Secondary font-medium'>Explore More</p>
+                                <i className="bi bi-arrow-right text-Secondary text-xl"></i>
                             </button>
                         </div>
                     </div>
@@ -165,7 +170,7 @@ const RechargesBlocks = () => {
                         <div className="grid grid-cols-8 gap-60p recharges-grid-section">
                             {bookingCards.map((items , index) => {
                                 return (
-                                    <button type='button' className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-10p" key={index}>
+                                    <button onClick={() => navigate('/coming-soon')} type='button' className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-10p" key={index}>
                                         <div className="top-image-blk bg-white w-100p h-100p flex items-center justify-center p-5 rounded-[15px]">
                                             <img src={items.image} className='duration-500 group-hover:scale-125' alt="" />
                                         </div>

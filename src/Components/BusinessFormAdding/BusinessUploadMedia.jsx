@@ -259,8 +259,9 @@ const BusinessUploadMedia = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bottom-form-submitter col-span-5  overflow-hidden relative group mt-10">
-                    <button type='button' onClick={handleBusniessMediaUpload} disabled={businessPhotos.length === 0} className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Submit Business Listing</button>
+                <div className="bottom-form-submitter col-span-5  overflow-hidden relative group mt-10 grid grid-cols-2 gap-5">
+                    <button type="button" className='w-full py-5 px-4 rounded-xl text-Secondary font-semibold text-xl h-full bg-transparent disabled:bg-opacity-35 border-2 border-Secondary ' onClick={() => navigate('/profile/my-businesess')}>Skip for now</button>
+                    <button type='button' onClick={handleBusniessMediaUpload} disabled={businessPhotos.length === 0} className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary border-2 border-Primary disabled:opacity-35 '>Submit Business Listing</button>
                 </div>
             </div>
         </div>

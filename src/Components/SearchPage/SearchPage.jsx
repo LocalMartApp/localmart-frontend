@@ -33,12 +33,12 @@ const SearchPage = () => {
   const [priceSlect , setPriceSelect] = useState('Price');
 
   const [favorite , setFavorite] = useState(false);
-useEffect(() => {
-  fetchSearchResults();  
-}, [filters])
+  useEffect(() => {
+    fetchSearchResults();  
+  }, [filters])
 
   const handleNavigate = (item) => {
-    navigate(`/search/complete-details/${item._id}` , { state: { item }});
+    navigate(`/search/complete-details/${item._id}`);
   };
 
 
@@ -95,20 +95,20 @@ useEffect(() => {
             <div className="container">
               <div className="breadcrum-inner-section">
                 <ul className='flex items-center gap-x-2'>
-                  <li><NavLink className={`text-Black `}>Rajahmundry</NavLink></li>
+                  <li><NavLink className={`text-Black `} to={'/'}>Home</NavLink></li>
                   <li><i className="ri-arrow-right-s-line"></i></li>
-                  <li><p className={`text-Black `}>Restaurants in Mumbai</p></li>
-                  <li><i className="ri-arrow-right-s-line"></i></li>
-                  <li><p className={`text-Black `}>150+ Listings</p></li>
+                  <li><p className={`text-Black `}>Business Listings</p></li>
+                  {/* <li><i className="ri-arrow-right-s-line"></i></li>
+                  <li><p className={`text-Black `}>150+ Listings</p></li> */}
                 </ul>
-                <div className="bread-heading-section mt-4">
+                {/* <div className="bread-heading-section mt-4">
                   <h2 className='text-xl font-medium text-Black'>Best Restaurants In Rajahmundry from Localmart</h2>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
         </section>
-        <section className="search-page-section-2">
+        <section className="search-page-section-2 hidden">
           <div className="inner-search-page-section-2">
             <div className="container">
               <div className="sorting-buttons-grid-section grid grid-cols-12 gap-x-8">
@@ -190,7 +190,7 @@ useEffect(() => {
           </div>
         </section>
         <section className="search-page-section-3">
-          <div className="inner-search-page-section-3 py-10">
+          <div className="inner-search-page-section-3 pb-10">
             <div className="container">
               <div className="search-page-grid-section-main">
                 <div className="grid grid-cols-12 gap-30p">
@@ -264,7 +264,7 @@ useEffect(() => {
                                       <div className="inner-rating-favorite-sec flex items-center gap-x-20p">
                                         <div className="rating-section-right-side-business bg-LightGrayBg rounded-[5px] px-10p py-1 flex items-center gap-2">
                                           <i className="ri-star-fill text-StarGold"></i>
-                                          <p className='text-Black font-medium'>{items.rating}</p>
+                                          <p className='text-Black font-medium'>{items.averageRating}</p>
                                         </div>
                                         <div className="right-side-favorite-btn-search">
                                           <button type="button" onClick={() => setFavorite(!favorite)}><i className={`${favorite ? 'ri-heart-3-fill text-red-500' : 'ri-heart-3-line text-Black text-opacity-70'} text-2xl`}></i></button>
@@ -294,96 +294,53 @@ useEffect(() => {
                     {!loading && results && results.length > 0 ? results.map((items , index) => {
                         return (
                           <div className="single-searched-cards">
-                              <button onClick={() => handleNavigate(items)} className="single-business-sec-3-card w-full bg-white rounded-xl text-left  shadow-customized overflow-hidden group" key={index}>
-                                <div className="inner-verified-sellers-card-sec">
-                                  <div className="right-side-business-card-details relative ">
-                                    <div className="top-image-part-hotel-desc  gap-x-5">
-                                      <div className="left-image-section-bus-sec-3 overflow-hidden">
-                                          <img src={items?.mediaFiles[0]?.fileUrl ? items?.mediaFiles[0]?.fileUrl : Emptymedia} className='h-56 w-full group-hover:scale-125 duration-500 object-cover ' alt="" />
-                                      </div>
-                                      <div className="inner-seller-business-card-details flex flex-col gap-y-1 h-full ">
-                                        <div className="business-card-title">
-                                          <h4 className='text-2xl font-medium text-Black'>{items.title}</h4>
-                                        </div>
-                                        <div className="business-card-recommend-address-section flex flex-col gap-y-2">
-                                          <div className="business-recommended-section flex items-center gap-10p opacity-60">
+                             <button type='button' onClick={() => handleNavigate(items)} className="text-left single-mybusiness-card shadow-lg rounded-[15px]  overflow-hidden bg-white w-full relative" key={index}>
+                                <div className="top-image-mybusiness-section max-h-[220px] h-full overflow-hidden group">
+                                    <img src={items?.mediaFiles[0]?.fileUrl ? items?.mediaFiles[0]?.fileUrl : Emptymedia } className='w-full h-full group-hover:scale-110 duration-300 object-cover' alt="" />
+                                </div>
+                                <div className="inner-bottom-mybusiness-section px-5 pt-5 pb-4">
+                                    <h6 className='text-Black font-medium text-xl'>{items?.name}</h6>
+                                    <div className="business-card-recommend-address-section flex flex-col gap-y-1 mt-2">
+                                        <div className="business-recommended-section flex items-center gap-10p opacity-60">
                                             <i className="ri-thumb-up-fill text-LightText"></i>
                                             <p className='text-sm text-LightText'>Highly Recommended</p>
-                                          </div>
                                         </div>
-                                      </div>
-                                    </div>
-                                    <div className="inner-search-card-after-991 px-5 py-5">
-                                    <div className="absoulte-rating-favorite-sec absolute top-4 right-6 ">
-                                      <div className="inner-rating-favorite-sec flex items-center gap-x-20p">
-                                        <div className="rating-section-right-side-business absolute-rating-business bg-LightGrayBg rounded-[5px] px-10p py-1 flex items-center gap-2">
-                                          <i className="ri-star-fill text-StarGold"></i>
-                                          <p className='text-Black font-medium'>{items.rating}</p>
-                                        </div>
-                                        <div className="right-side-favorite-btn-search">
-                                          <button type="button" onClick={() => setFavorite(!favorite)}><i className={`${favorite ? 'ri-heart-3-fill text-red-500' : 'ri-heart-3-line text-Black text-opacity-70'} text-2xl`}></i></button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="top-search-place-bottom-after991 mt-4">
-                                      <div className="opens-at-location-combined flex items-center gap-x-4">
-                                          <button type='button' className="business-recommended-section flex items-center gap-10p  justify-center w-fit">
-                                              <i className="ri-time-line text-Black opacity-40"></i>
-                                              <p className='text-sm text-Green '>{items.opensAt}</p>
-                                          </button>
-                                        <button type='button' className="business-recommended-section flex items-center gap-10p opacity-60">
-                                          <i className="ri-map-pin-line text-Black"></i>
-                                          {/* <p className='text-sm text-LightText'>{items.location}</p> */}
+                                        <button type='button' className="business-recommended-section flex items-center gap-10p  justify-center w-fit">
+                                            <i className="ri-time-line text-Black opacity-40"></i>
+                                            <p className='text-sm text-Green '>{items?.workingHours}</p>
                                         </button>
-                                        <div className="rating-section-right-side-business rating-place-changed bg-LightGrayBg rounded-[5px] px-10p py-1 flex items-center gap-2">
-                                          <i className="ri-star-fill text-StarGold"></i>
-                                          <p className='text-Black font-medium'>{items.rating}</p>
+                                        <div className="business-recommended-section flex items-center gap-10p opacity-60">
+                                            <i className="ri-map-pin-line text-LightText"></i>
+                                            <p className='text-sm text-LightText'>{items?.stateId?.name + " - " + items?.cityId?.name}</p>
                                         </div>
-                                      </div>
-                                      <div className="people-rated-top-search-sec flex items-center gap-x-4">
-                                        <div className="people-rated-place">
-                                          <p className='text-Black font-medium'>{items.ratedPeople}</p>
-                                        </div>
-                                        {items.topSearch ? 
-                                          <div type='button' className="business-recommended-section flex items-center gap-2">
-                                            <i className="ri-search-line text-Secondary"></i>
-                                            <p className='text-sm text-Secondary'>Top Searched</p>
-                                          </div> : null}
-                                      </div>
                                     </div>
-                                    <div className="bottom-business-card-number-det flex items-center gap-x-6 w-full mt-5">
-                                      <div className="send-enquiry-btn">
-                                        <button type="button" className='font-medium text-white bg-Primary rounded-full py-2 px-7'>Send Enquiry</button>
-                                      </div>
-                                      <div className="number-business-btn">
-                                        <button type="button" className='font-medium text-white bg-Green rounded-full py-2 px-7'>Show Number</button>
-                                      </div>
-                                      <div className="directions-button-search">
-                                          <button className='h-9 w-9 rounded-full bg-Secondary flex items-center justify-center'>
-                                              <i className="ri-direction-fill text-white text-lg duration-300 "></i>
-                                          </button>
-                                      </div>
-                                      <div className="directions-button-search">
-                                          <button className='h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center'>
-                                              <i className="ri-share-fill text-Secondary text-lg duration-300 "></i>
-                                          </button>
-                                      </div>
-                                      <div className="directions-button-search">
-                                          <button className='h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center'>
-                                              <img src={GmailIcon} className='w-5 h-20' alt="" />
-                                          </button>
-                                      </div>
+                                    <div className="number-button mt-5 flex items-center gap-x-4">
+                                        <button type="button" className='flex items-center gap-2 duration-300 group bg-Primary rounded-full border-Primary border hover:bg-transparent h-9 px-5'>
+                                            <p className='text-white font-medium duration-300 group-hover:text-Primary'>Send Enquiry</p>
+                                        </button>
+                                        <button className='h-9 w-9 rounded-full bg-Green flex items-center justify-center'>
+                                            <i className="ri-phone-fill text-white text-lg duration-300 "></i>
+                                        </button>
+                                        <button className='h-9 w-9 rounded-full bg-Secondary flex items-center justify-center'>
+                                            <i className="ri-direction-fill text-white text-lg duration-300 "></i>
+                                        </button>
                                     </div>
-                                    </div>
-                                  </div>
                                 </div>
-                              </button>
+                                <div className="rating-section-favourite flex items-center gap-2 bg-white px-2 py-1 rounded-md absolute top-5 right-5">
+                                    <div className="star">
+                                        <i className="ri-star-fill text-[#FFA600]"></i>
+                                    </div>
+                                    <div className="rating-text">
+                                        <p className='text-Black font-medium'>4.1</p>
+                                    </div>
+                                </div>
+                            </button>
                           </div>
                         )
                       }) : null}
                     </div>
                   </div>
-                  <div className="col-span-12">
+                  <div className="col-span-12 hidden">
                     <div className="right-top-picks-slider sticky top-5">
                         <SearchTopPicksSlider/>
                     </div>

@@ -18,7 +18,7 @@ import { config } from '../../env-services';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../../utils/Loader/Loader';
 import toast from 'react-hot-toast';
-
+import PricingImg from '../../assets/images/pricing-business-add.svg'
 
 
 const animatedComponents = makeAnimated();
@@ -36,11 +36,11 @@ const BusinessFormAdding = () => {
 
 
 
-  // console.log(receivedMail , receivedToken)
+  
   
 
   const [businessDoc , setBusinessDoc] = useState();
-  const [multiAmentites , setMultiAmenities] = useState();
+  const [multiAmentites , setMultiAmenities] = useState([]);
   const [businessPhotos , setBusinessPhotos] = useState([]);
   const [foodItemsArray , setFoodItemsArray] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.8040 });
@@ -56,8 +56,13 @@ const BusinessFormAdding = () => {
   const [pincodes , setPincodes] = useState([]);
   const [socialMediaInput, setSocialMediaInput] = useState("");
   const [socialMediaLinks, setSocialMediaLinks] = useState([]);
+  const [error, setError] = useState("");
+  const [localityArea , setLocalityArea] = useState('');
+  const [localityCase2 , setLocalityCase2] = useState('')
 
-  const [userToken , setUserToken] = useState('')
+ const [userToken , setUserToken] = useState('');
+ const [customTagInput , setCustomTagInput] = useState('');
+ const [customTags , setCustomTags] = useState([]);
 
 
 
@@ -198,11 +203,30 @@ const BusinessFormAdding = () => {
 
   const handlePlacesChange = () => {
     const places = inputRef.current.getPlaces();
+    // console.log(places)
+
     if (places.length > 0) {
       const location = places[0].geometry.location;
       const lat = location.lat();
       const lng = location.lng();
 
+
+
+      // Extract area/locality
+    let sublocality = "";
+    let locality = "";
+
+    places[0].address_components.forEach((component) => {
+      if (component.types.includes("sublocality_level_1")) {
+        sublocality = component.long_name
+      } else if (component.types.includes("locality")) {
+        locality = component.long_name
+      }
+    });
+
+    setLocalityArea(`${sublocality} , ${locality}`)
+
+    console.log("sublocality- locality", sublocality,  locality )
       setMapCenter({ lat, lng });
       setSelectedLocation({ lat, lng });
       // console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
@@ -215,24 +239,46 @@ const BusinessFormAdding = () => {
 
 
 
-    // Add Link Function
-    const addSocialMediaLink = () => {
-        if (socialMediaInput.trim() !== "") {
-            setSocialMediaLinks([...socialMediaLinks, socialMediaInput]);
-            setSocialMediaInput("");
-        }
+    const isValidURL = (url) => {
+        const urlPattern = /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/[\w\d-./?%&=]*)?$/;
+        return urlPattern.test(url);
     };
 
-    // Remove Link Function
+    const addSocialMediaLink = () => {
+        if (!socialMediaInput.trim()) {
+            alert("Please enter a URL");
+            return;
+        }
+
+        if (!isValidURL(socialMediaInput)) {
+            alert("Please enter a valid URL");
+            return;
+        }
+
+        setSocialMediaLinks([...socialMediaLinks, socialMediaInput]);
+        setSocialMediaInput(""); 
+        setError(""); 
+    };
+
     const removeSocialMediaLink = (index) => {
         setSocialMediaLinks(socialMediaLinks.filter((_, i) => i !== index));
     };
 
 
+    const addCustomTags = () => {
+      setCustomTags([...customTags, customTagInput]);
+      setCustomTagInput(""); 
+    }
+
+    const removeBusinessTags = (index) => {
+      setCustomTags(customTags.filter((_, i) => i !== index));
+    };
+
   const businessAddValues = {
       userName: '',
       businessName: '',
       businessState: '',
+      aboutBusiness: '',
       businessCity: '',
       businessTitle: '',
       businessCategory: '',
@@ -290,24 +336,6 @@ const BusinessFormAdding = () => {
   }
 
 
-  const handleFileChange = async (e) => {
-    const selectedFiles = Array.from(e.target.files);
-  
-    const validFiles = selectedFiles.filter(file => {
-      if (file.size > 2 * 1024 * 1024) { 
-        alert(`File ${file.name} exceeds 2MB and will not be uploaded.`);
-        return false;
-      }
-      return file.type === 'image/jpeg' || file.type === 'image/png';
-    });
-  
-
-    const base64Photos = await Promise.all(
-      validFiles.map(file => fileToBase64(file))
-    );
-  
-    setBusinessPhotos((prevPhotos) => [...prevPhotos, ...base64Photos]);
-  };
 
 
 
@@ -333,14 +361,6 @@ const BusinessFormAdding = () => {
   };
 
 
-  const handleRemoveImage = (indexToRemove) => {
-    setBusinessPhotos((prevPhotos) =>
-      prevPhotos.filter((_, index) => index !== indexToRemove)
-    );
-  };
-
-
-
 
 
   const handleAddingBusiness = async (data) => {
@@ -349,9 +369,16 @@ const BusinessFormAdding = () => {
     formData.append("userName" , data.userName);
     formData.append("name" , data.businessName);
     formData.append("title" , data.businessTitle);
+    formData.append("about" , data.aboutBusiness);
+    formData.append("area" , localityArea ? localityArea : localityCase2);
     formData.append("mobileNumber" , data.mobileNumber);
     formData.append('email' , data.email);
-    formData.append('socialMediaLink' , data.socialMedia);
+    customTags.forEach((items) => {
+      formData.append('tags' , items);
+    })
+    socialMediaLinks.forEach((items) => {
+      formData.append('socialMediaLink' , items);
+    })
     formData.append("categoryId" , data.businessCategory);
     formData.append("yearlyTurnOver" , data.yearlyTurnOver);
     formData.append("noOfEmployees" , data.noOfEmployees);
@@ -359,7 +386,7 @@ const BusinessFormAdding = () => {
     formData.append("websiteAddress" , data.websiteAddress);
     formData.append("GSTNumber" , data.GSTNumber);
     multiAmentites.forEach((amenities) => {
-      console.log(amenities)
+      // console.log(amenities)
       formData.append("amenities", amenities.value);
     });
     formData.append("servicesOffer" , data.servicesOffer);
@@ -373,7 +400,7 @@ const BusinessFormAdding = () => {
     formData.append("latitude" , selectedLocation?.lat);
     formData.append("longitude", selectedLocation?.lng);
 
-    console.log("formData" , formData)
+    // console.log("formData" , formData)
     setModalIsOpen(true)
     try {
       await axios.post(`${config.api}business`, formData, {
@@ -399,7 +426,6 @@ const BusinessFormAdding = () => {
       console.log("Response:", response.data);
     } catch (error) {
       setModalIsOpen(false)
-      // console.error("Error:", error.response ? error.response.data : error.message);
     }
 
   }
@@ -436,9 +462,9 @@ const BusinessFormAdding = () => {
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-4">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>User Name*</p>
+                                  <p className='text-BusinessFormLabel'>User Name (optional)</p>
                                 </div>
-                                <Field type="text" name="userName" placeholder='Enter User Name*'
+                                <Field type="text" name="userName" placeholder='Enter User Name'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.userName && touched.userName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
@@ -452,10 +478,18 @@ const BusinessFormAdding = () => {
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Title(optional)</p>
+                                  <p className='text-BusinessFormLabel'>Business Title (optional)</p>
                                 </div>
                                 <Field type="text" name="businessTitle" placeholder='Enter Business Title (optional)'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
+                                />                                
+                              </div>
+                              <div className="form-inputsec relative col-span-12">
+                                <div className="label-section mb-1">
+                                  <p className='text-BusinessFormLabel'>About your business (Optional)</p>
+                                </div>
+                                <Field as="textarea" name="aboutBusiness" placeholder='Enter about your business'
+                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${errors.aboutBusiness && touched.aboutBusiness ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
                             </div>
@@ -467,42 +501,46 @@ const BusinessFormAdding = () => {
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Mobile Number*</p>
+                                  <p className='text-BusinessFormLabel'>Mobile Number (optional)</p>
                                 </div>
-                                <Field type="tel" name="mobileNumber" placeholder='Enter Mobile Number*' maxLength={10} onKeyPress={(e) => numbersOnly(e)}
+                                <Field type="tel" name="mobileNumber" placeholder='Enter Mobile Number' maxLength={10} onKeyPress={(e) => numbersOnly(e)}
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.mobileNumber && touched.mobileNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Email Address*</p>
+                                  <p className='text-BusinessFormLabel'>Email Address (optional)</p>
                                 </div>
-                                <Field type="email" name="email" placeholder='Enter Email Address*'
+                                <Field type="email" name="email" placeholder='Enter Email Address'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Social Media Links(optional)</p>
+                                  <p className='text-BusinessFormLabel'>Social Media Links (optional)</p>
                                 </div>
                                 <div className="social-media-adding-section relative">
-                                  <Field type="text" name="socialMedia" placeholder='Enter Social Media Link' onKeyUp={(e) => setSocialMediaInput(e.target.value)}
+                                  <Field type="text" name="socialMedia" placeholder='Enter Social Media Link' onKeyUp={(e) => setSocialMediaInput(e.target.value)} 
                                       className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${errors.socialMedia  ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                   />
-                                  {/* <button type="button" onClick={addSocialMediaLink}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-LightBlue text-Secondary'>Add Link</button> */}
+                                  <button type="button" onClick={addSocialMediaLink}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary border border-Black border-opacity-40'>Add Link</button>
                                 </div>                                      
                               </div>
-                              <div className="social-meida-links-displayer col-span-12 hidden">
-                                <div className="left-side-link-icon flex items-center justify-between">
-                                    <div className="text-link-icon-outer flex items-center gap-4">
-                                      <i className="ri-link text-lg text-Secondary"></i>
-                                      <div className="right-text">
-                                          <p className='text-Secondary font-medium'>https://www.sg-codes.netlify.app</p>
-                                      </div>
+                              {socialMediaLinks.map((items , index) => {
+                                return (
+                                  <div className="social-meida-links-displayer col-span-12">
+                                    <div className="left-side-link-icon flex items-center justify-between bg-LightGrayBg rounded-[5px] py-2 px-4">
+                                        <div className="text-link-icon-outer flex items-center gap-4">
+                                          <i className="ri-link text-lg text-Secondary"></i>
+                                          <div className="right-text">
+                                              <p className='text-Secondary font-medium'>{items}</p>
+                                          </div>
+                                        </div>
+                                        <div className="remove-link-btn"><button type="button" onClick={() => removeSocialMediaLink(index)} className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
                                     </div>
-                                    <div className="remove-link-btn"><button type="button" className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
-                                </div>
-                              </div>
+                                  </div>
+                                )
+                              })}
                             </div>
                           </div>
                           <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
@@ -512,7 +550,7 @@ const BusinessFormAdding = () => {
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Select Sate*</p>
+                                  <p className='text-BusinessFormLabel'>Select Sate (Optional)</p>
                                 </div>
                                 <Select options={states} 
                                   placeholder='Choose State'
@@ -526,7 +564,7 @@ const BusinessFormAdding = () => {
                                         paddingBottom: 4,
                                         borderWidth: 1,
                                         outlineWidth: 0,
-                                        borderColor: errors.businessState ? '#FF4E4E' : '#B3B3B3',
+                                        // borderColor: errors.businessState ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
                                         minWidth: '100%',
                                         height: 50,
@@ -542,7 +580,7 @@ const BusinessFormAdding = () => {
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Select City*</p>
+                                  <p className='text-BusinessFormLabel'>Select City (Optional)</p>
                                 </div>
                                 <Select options={cities} 
                                   placeholder='Choose City'
@@ -556,7 +594,7 @@ const BusinessFormAdding = () => {
                                         paddingBottom: 4,
                                         borderWidth: 1,
                                         outlineWidth: 0,
-                                        borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
+                                        // borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
                                         minWidth: '100%',
                                         height: 50,
@@ -571,9 +609,9 @@ const BusinessFormAdding = () => {
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Complete Address*</p>
+                                  <p className='text-BusinessFormLabel'>Complete Address (Optional)</p>
                                 </div>
-                                <Field as="textarea" name="completeAddress" placeholder='Enter Complete Address*'
+                                <Field as="textarea" name="completeAddress" placeholder='Enter Complete Address'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${errors.completeAddress && touched.completeAddress ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
@@ -587,7 +625,7 @@ const BusinessFormAdding = () => {
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Pincode*</p>
+                                  <p className='text-BusinessFormLabel'>Pincode (Optional)</p>
                                 </div>
                                 <Select options={pincodes} 
                                   placeholder='Choose Pincode'
@@ -601,7 +639,7 @@ const BusinessFormAdding = () => {
                                         paddingBottom: 4,
                                         borderWidth: 1,
                                         outlineWidth: 0,
-                                        borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
+                                        // borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
                                         minWidth: '100%',
                                         height: 50,
@@ -643,6 +681,12 @@ const BusinessFormAdding = () => {
                                         {selectedLocation && <Marker position={selectedLocation} />}
                                     </GoogleMap>
                                   </div>
+                                  <div className="area-field-section-inner mt-5">
+                                    <div className="top-label-section-area mb-1">
+                                      <p>Area or Locality</p>
+                                    </div>
+                                    <input type="text" value={localityArea ? localityArea : localityCase2} disabled placeholder="Search for a place..." className={`outline-none border border-Black border-opacity-30 focus:border-Secondary focus:bg-LightBlue duration-300 pl-6 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />
+                                  </div>
                                 </>
                               }
                             </div>
@@ -654,54 +698,23 @@ const BusinessFormAdding = () => {
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Category*</p>
+                                  <p className='text-BusinessFormLabel'>Yearly Turnover (Optional)</p>
                                 </div>
-                                <div className="poitions-relative relative z-[9999999]">
-                                <Select options={busCates} 
-                                  placeholder='Select Business Category'
-                                  name='businessCategory'
-                                  styles={{
-                                      control: (baseStyles, state) => ({
-                                        ...baseStyles,
-                                        borderRadius: 10,
-                                        paddingLeft: 8,
-                                        paddingTop: 4,
-                                        paddingBottom: 4,
-                                        borderWidth: 1,
-                                        outlineWidth: 0,
-                                        borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
-                                        fontSize: 16,
-                                        minWidth: '100%',
-                                        height: 50,
-                                        // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused ? 'none' : 'none',
-                                        
-                                      }),
-                                    }}
-                                  value={busCates.find(option => option.value === values.businessCategory)} 
-                                  onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
-                                />    
-                                </div>                             
-                              </div>
-                              <div className="form-inputsec relative col-span-6">
-                                <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Yearly Turnover*</p>
-                                </div>
-                                <Field type="text" name="yearlyTurnOver" placeholder='Enter Yearly Turnover*'
+                                <Field type="text" name="yearlyTurnOver" placeholder='Enter Yearly Turnover'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.yearlyTurnOver && touched.yearlyTurnOver ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Number of Employees**</p>
+                                  <p className='text-BusinessFormLabel'>Number of Employees (Optional)</p>
                                 </div>
-                                <Field type="number" name="noOfEmployees" placeholder='Enter Number of Employees*'
+                                <Field type="number" name="noOfEmployees" placeholder='Enter Number of Employees'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.noOfEmployees && touched.noOfEmployees ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Year of Establishment*</p>
+                                  <p className='text-BusinessFormLabel'>Year of Establishment (Optional)</p>
                                 </div>
                                 <Field type="text" name="yearOfEstablishment" placeholder='Enter Year of Establishment '
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.yearOfEstablishment && touched.yearOfEstablishment ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
@@ -725,7 +738,7 @@ const BusinessFormAdding = () => {
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Registration Documents*</p>
+                                  <p className='text-BusinessFormLabel'>Business Registration Documents (optional)</p>
                                 </div>
                                 <div className="file-upload-outer-section-custom bg-ProfileScreensBg rounded-10p overflow-hidden relative h-50p">
                                     <input type="file" name="" id="" onChange={(e) => handleBusinessDocFile(e)} className={`h-full w-full opacity-0 relative z-10 cursor-pointer ${businessDoc ? 'hidden' : 'block'}`}/>
@@ -741,9 +754,9 @@ const BusinessFormAdding = () => {
                                     }
                                 </div>                             
                               </div>
-                              <div className="form-inputsec relative col-span-6">
+                              <div className="form-inputsec relative col-span-12 z-[99999999]">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Amenities*</p>
+                                  <p className='text-BusinessFormLabel'>Amenities (Optional)</p>
                                 </div>
                                 <Select options={busAmenities} 
                                   placeholder='Select Amenities'
@@ -767,13 +780,13 @@ const BusinessFormAdding = () => {
                                         boxShadow: state.isFocused ? 'none' : 'none',
                                       }),
                                     }}
-                                  value={multiAmentites}
+                                  value={multiAmentites ? multiAmentites : null}
                                   onChange={(option) => setMultiAmenities(option)}
                                 />                               
                               </div>
-                              <div className="form-inputsec relative col-span-6">
+                              <div className="form-inputsec relative col-span-6 z-[9999999]">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Working Hours*</p>
+                                  <p className='text-BusinessFormLabel'>Working Hours (Optional)</p>
                                 </div>
                                 <Select options={workingHours} 
                                   placeholder='Select Working Hours'
@@ -787,7 +800,7 @@ const BusinessFormAdding = () => {
                                         paddingBottom: 4,
                                         borderWidth: 1,
                                         outlineWidth: 0,
-                                        borderColor: errors.workingHours ? '#FF4E4E' : '#B3B3B3',
+                                        // borderColor: errors.workingHours ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
                                         minWidth: '100%',
                                         minHeight: 50,
@@ -801,7 +814,7 @@ const BusinessFormAdding = () => {
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Services Offered*</p>
+                                  <p className='text-BusinessFormLabel'>Services Offered (Optional)</p>
                                 </div>
                                 <Select options={servicesOffered} 
                                   placeholder='Select Services Offered'
@@ -814,7 +827,7 @@ const BusinessFormAdding = () => {
                                         paddingBottom: 4,
                                         borderWidth: 1,
                                         outlineWidth: 0,
-                                        borderColor: errors.servicesOffer ? '#FF4E4E' : '#B3B3B3',
+                                        // borderColor: errors.servicesOffer ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
                                         minWidth: '100%',
                                         minHeight: 50,
@@ -826,112 +839,86 @@ const BusinessFormAdding = () => {
                                   onChange={(option) => setFieldValue('servicesOffer', option ? option.value : '')}
                                 />                               
                               </div>
-                            </div>
-                          </div>
-
-                          <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white hidden">
-                            <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                              <h4 className='text-lg font-medium text-Secondary'>Business Pics and media</h4>
-                            </div>
-                            <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
-                              <div className="form-inputsec relative col-span-12">
-                                <div className={`top-images-sec-uploaded-business-doc flex flex-wrap items-center gap-3 ${businessPhotos.length == 0 ? 'mb-0' : 'mb-5'}`}>
-                                  {businessPhotos.map((photo , index) => {
+                              <div className="form-inputsec relative col-span-6">
+                                <div className="label-section mb-1">
+                                  <p className='text-BusinessFormLabel'>Business Category (Optional)</p>
+                                </div>
+                                <div className="poitions-relative relative ">
+                                <Select options={busCates} 
+                                  placeholder='Select Business Category'
+                                  name='businessCategory'
+                                  styles={{
+                                      control: (baseStyles, state) => ({
+                                        ...baseStyles,
+                                        borderRadius: 10,
+                                        paddingLeft: 8,
+                                        paddingTop: 4,
+                                        paddingBottom: 4,
+                                        borderWidth: 1,
+                                        outlineWidth: 0,
+                                        // borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
+                                        fontSize: 16,
+                                        minWidth: '100%',
+                                        height: 50,
+                                        // borderColor: state.isFocused ? 'grey' : 'red',
+                                        boxShadow: state.isFocused ? 'none' : 'none',
+                                        
+                                      }),
+                                    }}
+                                  value={busCates.find(option => option.value === values.businessCategory)} 
+                                  onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
+                                />    
+                                </div>                             
+                              </div>
+                              <div className="form-inputsec relative col-span-6">
+                                <div className="label-section mb-1">
+                                  <p className='text-BusinessFormLabel'>Business Tags (optional)</p>
+                                </div>
+                                <div className="social-media-adding-section relative">
+                                  <Field type="text" name="businessTags" placeholder='Enter relevant business tags' onKeyUp={(e) => setCustomTagInput(e.target.value)} 
+                                      className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${errors.socialMedia  ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                  />
+                                  <button type="button" onClick={addCustomTags}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary border border-Black border-opacity-40'>Add</button>
+                                </div>                                      
+                              </div>
+                              {customTags.length > 0 ? 
+                              <div className="col-span-12">
+                                <div className="business-tags-section-grid-sec grid grid-cols-12 gap-4">
+                                  {customTags.map((items , index) => {
                                     return (
-                                      <div className="single-image-business-photo rounded-lg overflow-hidden relative" key={index}>
-                                        <img src={photo} className='object-cover w-32 h-32' alt="" />
-                                        <button type="button" onClick={() => handleRemoveImage(index)} className='w-6 h-6 bg-white rounded-full flex items-center justify-center absolute top-2 right-2'><i className="ri-close-large-fill text-red-500"></i></button>
+                                      <div className="social-meida-links-displayer col-span-3">
+                                        <div className="left-side-link-icon flex items-center justify-between bg-LightGrayBg bg-opacity-70 rounded-[8px] py-2 px-4">
+                                            <div className="right-text">
+                                                <p className='text-Secondary font-medium'>{items}</p>
+                                            </div>
+                                            <div className="remove-link-btn"><button type="button" onClick={() => removeBusinessTags(index)} className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
+                                        </div>
                                       </div>
                                     )
                                   })}
                                 </div>
-                                <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Photos and media*</p>
-                                </div>
-                                <div className="file-upload-outer-section-custom bg-ProfileScreensBg rounded-10p overflow-hidden relative h-[110px]">
-                                    <input type="file" name="" id="" multiple onChange={(e) => handleFileChange(e)} className="h-full w-full opacity-0 relative z-10 cursor-pointer"/>
-                                    <div className="inner-file-upload-butifier absolute top-1/2 left-1/2 w-full flex justify-center flex-col items-center px-5 gap-x-5">
-                                      <img src={FileUploadIcon} className='w-10 h-10' alt="" />
-                                      <p className='text-Black'>Click to Upload photos of your business</p>
-                                    </div>
-                                </div>                               
+                              </div> : null
+                              }
+                            </div>
+
+                          </div>
+                          <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
+                            <div className="inner-pricing-section flex items-center gap-6 relative">
+                              <div className="left-image-pricing">
+                                <img src={PricingImg} className='w-64' alt="" />
+                              </div>
+                              <div className="right-content-pricing py-6">
+                                <h2 className='text-2xl font-medium text-Black'>50% OFF – Business Listing Subscription!</h2>
+                                <p className='font-light opacity-80 pb-3 pt-1'>Boost your brand’s online presence and attract more customers with our premium business listing. <br /> Get discovered easily, enhance credibility, and drive more leads—all at an unbeatable price.</p>
+                                <h3 className='text-Secondary font-semibold text-4xl'><span className='line-through text-Black font-medium opacity-40 mr-4'>₹5000</span>₹2499</h3>
+                              </div>
+                              <div className="abs-check absolute top-4 right-4">
+                                <i class="bi bi-check-circle-fill text-3xl text-[#0DB9AA]"></i>
                               </div>
                             </div>
                           </div>
-
-
-                          <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white hidden">
-                            <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                              <h4 className='text-lg font-medium text-Secondary'>Items and info</h4>
-                            </div>
-                            <div className="inner-fields-grid-outer-main p-6 ">
-                                <div className="gray-bg-block-inner-fields-section bg-ProfileScreensBg grid grid-cols-12 gap-5 p-5 rounded-[15px]">
-                                  <div className="form-inputsec relative col-span-4">
-                                    <div className="label-section mb-1">
-                                      <p className='text-BusinessFormLabel'>Item Name*</p>
-                                    </div>
-                                    <Field type="text" name="itemName" placeholder='Enter Item Name' onChange={(e) => setFieldValue('itemName' , e.target.value)}
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.itemName && touched.itemName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                  </div>
-                                  <div className="form-inputsec relative col-span-4">
-                                    <div className="label-section mb-1">
-                                      <p className='text-BusinessFormLabel'>Item Type*</p>
-                                    </div>
-                                    <Select options={foodItemTypes} 
-                                        placeholder='Select Item Type'
-                                        styles={{
-                                            control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              borderRadius: 10,
-                                              paddingLeft: 8,
-                                              paddingTop: 4,
-                                              paddingBottom: 4,
-                                              borderWidth: 1,
-                                              outlineWidth: 0,
-                                              borderColor: '#B3B3B3',
-                                              fontSize: 16,
-                                              minWidth: '100%',
-                                              height: 50,
-                                              boxShadow: state.isFocused ? 'none' : 'none',
-                                            }),
-                                          }}
-                                          value={foodItemTypes.find(option => option.value === values.itemType)} 
-                                          onChange={(option) => setFieldValue('itemType', option ? option.value : '')}
-                                      />                                                           
-                                  </div>
-                                  <div className="form-inputsec relative col-span-4">
-                                    <div className="label-section mb-1">
-                                      <p className='text-BusinessFormLabel'>Item Price*</p>
-                                    </div>
-                                    <Field type="number" name="itemPrice" placeholder='Enter Item Price Per Person*' onChange={(e) => setFieldValue('itemPrice' , e.target.value)}
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
-                                    />                                
-                                  </div>
-                                  <div className="items-add-btn-sec col-span-2">
-                                    <button type="button" disabled={!values.itemName || !values.itemPrice || !values.itemType } className='py-3 px-6 rounded-lg bg-Secondary text-white font-semibold w-full disabled:bg-opacity-40' onClick={() => addFoodItem(values)}>Add Item</button>
-                                  </div>
-                                </div>
-                                <div className={`items-cards-looped-sec-business-form grid grid-cols-12 gap-4 ${foodItemsArray.length == 0 ? 'mt-0' : 'mt-5'}`}>
-                                    {foodItemsArray.map((items , index) => {
-                                      return (
-                                        <div className="single-food-item-searched bg-AddressCard rounded-[15px] p-5 relative col-span-3" key={index}>
-                                          <div className="top-veg-nonveg-part flex items-center gap-x-2">
-                                              <img src={items.itemType == 'Veg' ? VegIcon : NonVegIcon} className='w-[14px] h-[14px]' alt="" />
-                                              <p className='text-Black'>{items.itemName}</p>
-                                          </div>  
-                                          <div className="bottom-price-section mt-3">
-                                            <h4 className='text-Black font-medium'>₹{items.itemPrice} / <span className='text-sm opacity-50'>person</span></h4>
-                                          </div>
-                                          <button type="button" onClick={() => removeFoodItem(index)} className='w-6 h-6 bg-white rounded-full flex items-center justify-center absolute top-2 right-2'><i className="ri-close-large-fill text-red-500"></i></button>
-                                        </div>
-                                      )
-                                    })}
-                                </div>
-                            </div>
-                          </div>
                           <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
-                              <button type='button' onClick={handleSubmit} disabled={!businessDoc} className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Submit Business Listing</button>
+                              <button type='button' onClick={handleSubmit}  className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Submit Business Listing</button>
                           </div>
                         </div>
                       </Form>

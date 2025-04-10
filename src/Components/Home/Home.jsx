@@ -36,9 +36,11 @@ import { config } from '../../env-services';
 import Lottie from 'lottie-react';
 import SearchLoader from '../../assets/images/animated-logos/search-loader.json'
 import useSearchStore from '../../Store/useSearchStore';
+import { GoogleMap , LoadScript , Marker , useJsApiLoader , StandaloneSearchBox } from '@react-google-maps/api';
 
 
 
+const GOOGLE_MAPS_API_KEY = "AIzaSyCfHCytpE0Oq4tvXmCWaOl05iyH_OfLGuM";
 
 const Home = () => {
 
@@ -63,32 +65,66 @@ const Home = () => {
   const [citySelect ,  setCitySelect] = useState(null)
   const [cityOptions , setCityOptions] = useState([]);
   const [userCity, setUserCity] = useState(null);
-
+  const [localmartCategories , setLocalmartCategories] = useState([])
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const debounceTimeout = useRef(null);
+  const [mapSuggestions , setMapSuggestions] = useState([]);
+  const [areaSuggestions , setAreaSuggestions] = useState('');
+  const [mapSelectedCity , setMapSelectedCity] = useState('')
+
+
+  const [inputValue, setInputValue] = useState("");
+  const autocompleteService = useRef(null);
+
   
+  const debounceTimeout = useRef(null);
+
   
 
   const placeholders = [
     'Search for anything?',
     'Search for restaurants',
-    'Search for people',
+    'Search for businesses',
     'Search for products'
   ];
 
 
 
+    const inputRef = useRef(null)
+  
+  
+    const { isLoaded } = useJsApiLoader({
+      id: 'google-map-script',
+      googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+      libraries: ['places']
+    })
 
 
   useEffect(() => {
+
+    getAllCategories()
     getCities()
+
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchLocationDetails(latitude, longitude);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    }
+
+
+
     if (query.trim() === "") {
       setSuggestions([]);
       return;
     }
-
 
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
@@ -96,35 +132,16 @@ const Home = () => {
 
     debounceTimeout.current = setTimeout(() => {
       fetchSuggestions(query);
-    }, 300); // Adjust debounce time as needed
+    }, 300); 
 
 
-
-
-    setTimeout(() => {
-      openModal()
-    }, 2000)
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-        // console.log(response?.data?.address)
-        const cityName = response.data.address.city || response.data.address.town;
-        
-        setUserCity(cityName); // Save the city name
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-      }
-    );
+    // setTimeout(() => {
+    //   openModal()
+    // }, 2000)
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % placeholders.length);
     }, 2000);
-
-    // getUserLocation();
 
     return () => {clearInterval(interval) , clearTimeout(debounceTimeout.current)};
 
@@ -132,7 +149,7 @@ const Home = () => {
 
 
   const getCities = async() => {
-    await axios.get(config.api + `locations/states/678daa989c4467c6aa4eeb89/cities`)
+    await axios.get(config.api + `locations/states/67ea880c34693d5cc5891593/cities`)
     .then((response) => {
       if (response?.data?.data) {
         const formattedCities = response.data.data.map(item => ({
@@ -140,8 +157,6 @@ const Home = () => {
           label: item.name,
         }));
         setCityOptions(formattedCities);
-
-        // Check if user's city exists in the list
         const matchedCity = formattedCities.find(city => city.label.toLowerCase() === userCity?.toLowerCase());
         if (matchedCity) {
           setCitySelect(matchedCity);
@@ -153,7 +168,7 @@ const Home = () => {
   const fetchSuggestions = async (searchTerm) => {
     try {
       await axios.get(
-        `${config.api}search/suggestions?q=${searchTerm}`
+        `${config.api}search/suggestions?q=${searchTerm}&city_id=${mapSelectedCity.toLowerCase()}`
       ).then(resposne => {
         setSuggestions(resposne?.data?.data?.suggestions);
         setSearchSuggest(true);
@@ -161,7 +176,6 @@ const Home = () => {
         console.log(err)
       })
     } catch (error) {
-      // console.error("Error fetching search suggestions:", error);
     }
   };
 
@@ -182,11 +196,36 @@ const Home = () => {
   };
 
 
+  const handleCategorySuggestionClick = async (data) => {
+    setFilter("categoryId", data);
+    navigate("/search");
+  };
+
+
+
 useEffect(() => {
   if (userCity) {
     getCities();
   }
+  
 }, [userCity]);
+
+
+
+useEffect(() => {
+  if (isLoaded && !autocompleteService.current) {
+    autocompleteService.current = new window.google.maps.places.AutocompleteService();
+  }
+}, [isLoaded]);
+
+
+
+const getAllCategories = async () => {
+  await axios.get(config.api + `business-category`)
+  .then((response) => {
+      setLocalmartCategories(response?.data?.data)
+ })
+}
 
 
   const openLoaderModal = () => {
@@ -198,29 +237,7 @@ useEffect(() => {
   }
 
 
-  const getCityFromCoordinates = async (lat, lon) => {
-    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      const city =
-        data.address?.city ||
-        data.address?.town ||
-        data.address?.village ||
-        data.address?.state;
-      return city;
-    } catch (error) {
-      console.error("Error fetching city from coordinates:", error);
-      return null;
-    }
-  };
 
-  const handleSearchNav = () => {
-    openLoaderModal();
-    setTimeout(() => {
-      navigate('/search')
-    } , 2000)
-  }
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -305,10 +322,6 @@ useEffect(() => {
       title: 'Pet Shops'
     },
   ]
-
-
-
-
   
   const customStyles = {
     content: {
@@ -322,6 +335,106 @@ useEffect(() => {
       borderRadius: 20
     },
   };
+
+
+
+
+  const fetchLocationDetails = async (lat, lng) => {
+    
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`
+    );
+    const data = await response.json();
+
+    console.log(data)
+
+    if (data.status === "OK") {
+      let city = "";
+      let area = "";
+      data.results[0].address_components.forEach((component) => {
+        if (component.types.includes("sublocality_level_1")) {
+          area = component.long_name;
+        }
+        if (component.types.includes("locality")) {
+          city = component.long_name;
+        }
+      });
+
+      // setInputValue(`${area}, ${city}`);
+      // setMapSelectedCity(city);
+    }
+  };
+
+
+    const handleInputChange = (e) => {
+      const value = e.target.value;
+      setInputValue(value);
+
+      if (value.length > 2 && autocompleteService.current) {
+        autocompleteService.current.getPlacePredictions(
+          {
+            input: value,
+            types: ["geocode"], 
+            componentRestrictions: { country: "IN" },
+          },
+          (predictions, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+              setMapSuggestions(predictions);
+            } else {
+              setMapSuggestions([]);
+            }
+          }
+        );
+      } else {
+        setMapSuggestions([]);
+      }
+    };
+
+    const handleSelect = (place) => {
+      const placeService = new window.google.maps.places.PlacesService(document.createElement("div"));
+    
+      placeService.getDetails({ placeId: place.place_id }, (details, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          let area = "";
+          let city = "";
+    
+          details.address_components.forEach((component) => {
+            if (component.types.includes("sublocality_level_1")) {
+              area = component.long_name; 
+            }
+            if (component.types.includes("locality")) {
+              city = component.long_name; 
+            }
+          });
+
+          let formattedInput = "";
+          if (area && city) {
+            formattedInput = `${area}, ${city}`;
+          } else if (area) {
+            formattedInput = area;
+          } else if (city) {
+            formattedInput = city;
+          }
+          setInputValue(formattedInput);
+    
+          // setInputValue(`${area}, ${city}`); 
+          setMapSelectedCity(city); 
+          setMapSuggestions([]); 
+        }
+      });
+    };
+    
+    const extractAreaCity = (fullAddress) => {
+      const parts = fullAddress.split(","); 
+      if (parts.length >= 2) {
+        return { 
+          area: parts[0].trim(), 
+          city: parts[1].trim() 
+        };
+      }
+      return { area: fullAddress, city: "" }; 
+    };
+    
 
 
 
@@ -350,17 +463,17 @@ useEffect(() => {
           <section className="home-section-1 relative">
             <div className="inner-home-section-1 bg-BlockBlack">
               <div className="container">
-                <div className={`top-main-search-section-home duration-500 z-[9999] ${headerBar ? 'fixed top-0 w-full bg-BlockBlack left-0 py-6 px-[15px]' : ' pb-16'}`}>
+                <div className={`top-main-search-section-home duration-500 z-[9999] pb-16`}>
                     <div className="inner-search-relative-section-home relative">
                     <div className="search-grid-section-home-main">
                       <div className="search-grid-container-main">
                         <div className="grid grid-cols-10 justify-center gap-x-6 top-search-section-grid-parent">
-                          <div className="col-span-3">
-                            <div className={`location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
-                              <div className="icon-section">
+                          <div className="col-span-3 relative">
+                            {/* <div className={`location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
+                              <div className="">
                                 <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
                               </div>
-                              <div className="country-selection col-span-5">
+                              <div className="country-selection col-span-5 relative z-[99999]">
                                 <Select options={cityOptions} 
                                   placeholder='Choose Location'
                                   styles={{
@@ -385,7 +498,44 @@ useEffect(() => {
                                   onChange={(option) => setCitySelect(option)}
                                 />
                               </div>
+                            </div> */}
+                            {/* <div className={`location-setting-section relative w-full bg-white overflow-hidden rounded-full h-70p ${headerBar ? 'shadow-xl' : ''}`}>
+                              <div className="icon-section home-local-search-icon-sec absolute left-8 top-1/2">
+                                <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
+                              </div>
+                              <div className="input-area-search-section h-full w-full">
+                                {isLoaded? 
+                                  <StandaloneSearchBox className="" onLoad={(ref) => (inputRef.current = ref)} onPlacesChanged={handleAreaSearchChange}>
+                                    <input type="text" placeholder="Search for an area..." className="input-box w-full h-70p pr-6 pl-12 py-2" />
+                                  </StandaloneSearchBox> : null  
+                                }
+                              </div>
+                            </div> */}
+                            <div className={`location-setting-section grid overflow-hidden relative items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
+                              <div className="icon-section absolute top-1/2 left-8 z-10">
+                                <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
+                              </div>
+                              <div className="country-selection col-span-6 relative h-full">
+                                <input type="text" className='h-full w-full pl-10 outline-none' value={inputValue} onChange={handleInputChange} placeholder='Enter your locality' name="" id="" />
+                              </div>
                             </div>
+                            {mapSuggestions.length > 0 && (
+                            <div className="bottom-suggestions-list mt-5 bg-white rounded-3xl p-4 absolute shadow-xl h-[200px] overflow-y-auto">
+                                <ul className="suggestions-list">
+                                  {mapSuggestions.map((place , index) => {
+                                    return (
+                                      <li
+                                      key={place.place_id}
+                                      onClick={() => handleSelect(place)}
+                                      className="p-2 hover:bg-gray-100 cursor-pointer rounded-lg text-sm"
+                                    >
+                                      {place.description}
+                                    </li>
+                                    )
+                                  })}
+                                </ul>
+                            </div>
+                            )}
                           </div>
                           <div className={`col-span-7 ${headerBar ? 'shadow-xl' : ''}`}>
                             <div className={`big-search-section duration-500 bg-white p-[6px] h-70p relative ${searchSuggest ? 'rounded-t-30p rounded-b-0' : 'rounded-40p'}`}>
@@ -405,13 +555,13 @@ useEffect(() => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] overflow-hidden overflow-y-auto border-t border-BorderColor left-0 z-[9999999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'} ${headerBar ? 'border-[2px] border-t-[1px] border-BorderColor' : ''}`}>
+                                <div className={`absolute-searched-results-section bg-white rounded-b-30p absolute w-full h-[300px] overflow-hidden overflow-y-auto border-t border-BorderColor left-0 z-[9999] duration-500 ${searchSuggest ? 'opacity-100 visible translate-y-[5px]' : 'invisible opacity-0 translate-y-6'} ${headerBar ? 'border-[2px] border-t-[1px] border-BorderColor' : ''}`}>
                                     <div className="inner-searched-results-section px-4 py-4 flex flex-col gap-y-4">
                                       {searchSuggest && suggestions.length > 0 ? suggestions.map((items , index) => {
                                         return (
                                           <button type="button" onClick={() => handleSuggestionClick(items)} className='text-left flex items-center gap-x-4 w-full bg-LightBlue px-4 py-3 rounded-lg' key={index}>
                                             <div className="left-goto-icon w-10 h-10 flex items-center justify-center bg-white rounded-full">
-                                              <i class="bi bi-arrow-up-right"></i>
+                                              <i className="bi bi-arrow-up-right"></i>
                                             </div>
                                             <div className="right-text-below-text text-left">
                                               <p className='text-lg font-semibold'>{items?.suggestion}</p>
@@ -436,6 +586,20 @@ useEffect(() => {
                     </div>
                     </div>
                 </div>
+
+                <div className="top-slider-search-section">
+                  <div className="grid grid-cols-2 gap-x-16 items-center top-slider-grid-sec">
+                    <div className="left-home-section-1">
+                      <div className="heading-section-1 flex flex-col gap-5">
+                        <h1 className='text-white font-semibold text-50'>Find Everything <br /> You Need, Every Day!</h1>
+                        <p className='text-white text-xl'>Looking for deals, services, or a place to <br /> buy and sell? We’ve got you covered.</p>
+                      </div>
+                    </div>
+                    <div className="right-home-section-1">
+                      <BannerSlider/>
+                    </div>
+                  </div>
+                </div>
                 <section className="home-section-5-mobile-view ">
                   <div className="inner-home-section-5">
                     <div className="">
@@ -452,14 +616,26 @@ useEffect(() => {
                             </div>
                             <div className="bottom-all-categories-section">
                                 <div className="grid grid-cols-4 gap-x-10p gap-y-60p home-categories-grid-section">
-                                  {allCategories.map((items , index) => {
+                                  {localmartCategories && localmartCategories.length > 0 ?  localmartCategories.slice(0 , 12).map((items , index) => {
                                     return (
-                                      <button type='button' key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-2">
+                                      <button type='button' onClick={() => handleCategorySuggestionClick(items?._id)} key={index}  className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-2">
                                           <div className="top-image-blk  w-40p h-40p flex items-center justify-center">
-                                              <img src={items.icon} className='duration-500 w-full group-hover:scale-125' alt="" />
+                                              <img src={items?.icon} className='duration-500 w-full group-hover:scale-125' alt="" />
                                           </div>
                                           <div className="bottom-text-blk">
-                                              <p className='text-white text-center text-xs'>{items.title}</p>
+                                              <p className='text-white text-center text-[10px]'>{items?.name}</p>
+                                          </div>
+                                      </button>
+                                    )
+                                  }) : 
+                                  allCategories.map((items , index) => {
+                                    return (
+                                      <button type='button' key={index}  className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-2">
+                                          <div className="top-image-blk  w-40p h-40p flex items-center justify-center">
+                                              <img src={items?.icon} className='duration-500 w-full group-hover:scale-125' alt="" />
+                                          </div>
+                                          <div className="bottom-text-blk">
+                                              <p className='text-white text-center text-[10px]'>{items?.title}</p>
                                           </div>
                                       </button>
                                     )
@@ -470,94 +646,6 @@ useEffect(() => {
                     </div>
                   </div>
                 </section>
-                <div className="top-slider-search-section">
-                  <div className="grid grid-cols-2 gap-x-16 items-center top-slider-grid-sec">
-                    <div className="left-home-section-1">
-                      <div className="heading-section-1 flex flex-col gap-5">
-                        <h1 className='text-white font-semibold text-50'>Find Everything <br /> You Need, Every Day!</h1>
-                        <p className='text-white text-xl'>Looking for deals, services, or a place to <br /> buy and sell? We’ve got you covered.</p>
-                      </div>
-                      {/* <div className={`home-search-section-1 mt-14 `}>
-                        <div className="inner-seacrh-section grid grid-cols-12 bg-white rounded-full p-3 pl-5 justify-between">
-                            <div className="col-span-5">
-                                <div className="category-section flex items-center gap-2">
-                                  <div className="left-category-logo-search w-[10%]">
-                                    <i className="ri-map-pin-line text-Primary text-2xl"></i>
-                                  </div>
-                                  <div className="right-category-dropdown-section w-[80%]">
-                                      <div>
-                                          <Select options={cityOptions} 
-                                              placeholder='Choose Location'
-                                              styles={{
-                                                  control: (baseStyles, state) => ({
-                                                    ...baseStyles,
-                                                    borderRadius: 10,
-                                                    paddingLeft: 0,
-                                                    paddingTop: 4,
-                                                    paddingBottom: 4,
-                                                    borderWidth: 0,
-                                                    outlineWidth: 0,
-                                                    borderColor: '#fff',
-                                                    outlineColor: '#fff',
-                                                    fontSize: 14,
-                                                    // borderColor: state.isFocused ? 'grey' : 'red',
-                                                    boxShadow: state.isFocused ? 'none' : 'none',
-                                                  }),
-                                                }}
-                                              value={citySelect}
-                                              onChange={(option) => setCitySelect(option)}
-                                          />
-                                      </div>
-                                  </div>
-                                </div>
-                            </div>
-                            <div className="col-span-5">
-                                <div className="category-section flex items-center gap-2">
-                                  <div className="left-category-logo-search w-[10%]">
-                                    <i className="ri-file-list-3-line text-Primary text-2xl"></i>
-                                  </div>
-                                  <div className="right-category-dropdown-section w-[80%]">
-                                      <div>
-                                          <Select options={categoryOptions} 
-                                              placeholder='Choose Category'
-                                              styles={{
-                                                  control: (baseStyles, state) => ({
-                                                    ...baseStyles,
-                                                    borderRadius: 10,
-                                                    paddingLeft: 0,
-                                                    paddingTop: 4,
-                                                    paddingBottom: 4,
-                                                    borderWidth: 0,
-                                                    outlineWidth: 0,
-                                                    borderColor: '#fff',
-                                                    outlineColor: '#fff',
-                                                     fontSize: 14,
-                                                    boxShadow: state.isFocused ? 'none' : 'none',
-
-                                                  }),
-                                                }}
-                                              value={categorySelect}
-                                              onChange={(option) => setCategorySelect(option)}
-                                          />
-                                      </div>
-                                  </div>
-                                </div>
-                            </div>
-                            <div className="col-span-2">
-                                <div className="cate-loc-search-btn h-full w-full">
-                                  <button type="button"  onClick={handleSearchNav} className='bg-Primary duration-300 hover:scale-95 rounded-full h-full flex items-center w-full justify-center shadow-customized'>
-                                    <p className='text-white  font-medium'>Search</p>
-                                  </button>
-                                </div>
-                            </div>
-                        </div>
-                      </div> */}
-                    </div>
-                    <div className="right-home-section-1">
-                      <BannerSlider/>
-                    </div>
-                  </div>
-                </div>
               </div>
               <div className="bottom-apps-home-section-1 mt-16">
                   <AppsSlider/>
@@ -603,7 +691,19 @@ useEffect(() => {
                       </div>
                       <div className="bottom-all-categories-section">
                           <div className="grid grid-cols-6 gap-x-90p gap-y-60p home-categories-grid-section">
-                            {allCategories.map((items , index) => {
+                            {localmartCategories && localmartCategories.length > 0 ?  localmartCategories.slice(0 , 12).map((items , index) => {
+                              return (
+                                <button type='button'  onClick={() => handleCategorySuggestionClick(items?._id)} key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-3">
+                                    <div className="top-image-blk bg-white w-100p h-100p flex items-center justify-center p-5 rounded-[15px]">
+                                        <img src={items?.icon} className='duration-500 group-hover:scale-125' alt="" />
+                                    </div>
+                                    <div className="bottom-text-blk">
+                                        <p className='text-white text-center text-medium'>{items?.name}</p>
+                                    </div>
+                                </button>
+                              )
+                            }) : 
+                            allCategories.map((items , index) => {
                               return (
                                 <button type='button' key={index} className="single-recharge-component-home-sec-2 group flex flex-col justify-center items-center gap-3">
                                     <div className="top-image-blk bg-white w-100p h-100p flex items-center justify-center p-5 rounded-[15px]">
