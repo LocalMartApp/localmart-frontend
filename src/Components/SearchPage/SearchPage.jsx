@@ -291,6 +291,7 @@ const SearchPage = () => {
 
                     {/* Responsive Section */}
                     <div className="inner-left-searched-cards-sec-after-991-layout flex flex-col gap-y-30p">
+                    {loading && (<ShimmerSearch/>)}
                     {!loading && results && results.length > 0 ? results.map((items , index) => {
                         return (
                           <div className="single-searched-cards">
@@ -337,7 +338,16 @@ const SearchPage = () => {
                             </button>
                           </div>
                         )
-                      }) : null}
+                      }) : 
+                      <div className="no-bus-found">
+                      <div className="nodata-found-section flex justify-center flex-col items-center pt-10 pb-5 w-full">
+                        <Lottie animationData={EmptyLoader} style={{ width: 200}}/>
+                        <div className="no-data-found-text-btn mt-8 text-center" >
+                          <p className='text-center font-medium'>No Business found based on your search.</p>
+                          {/* <button type="button" onClick={() =>  setAddAddressToggle(true)} className="text-Secondary font-semibold text-xl mt-5">Add Address</button> */}
+                        </div>
+                      </div>
+                    </div>}
                     </div>
                   </div>
                   <div className="col-span-12 hidden">
