@@ -1174,7 +1174,7 @@ const SearchDetails = () => {
   );
 };
 
-export default SearchDetails;
+// export default SearchDetails;
 
 
 
