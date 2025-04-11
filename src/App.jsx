@@ -50,6 +50,7 @@ const Layout = () => {
           <Route exact={true} Component={SearchDetails} path='/search/complete-details/:id'/>
           <Route exact={true} Component={UnderConstruction} path='/coming-soon'/>
 
+
           {/* Ploicies Pages */}
           <Route exact={true} Component={CancellationPolicy} path='/cancellation-policy'/>
           <Route exact={true} Component={TermsandConditions} path='/terms-conditions'/>

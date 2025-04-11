@@ -144,6 +144,7 @@ const Home = () => {
     }, 2000);
 
     return () => {clearInterval(interval) , clearTimeout(debounceTimeout.current)};
+    
 
   }, [query]);
 
@@ -179,6 +180,7 @@ const Home = () => {
     }
   };
 
+  // console.log("citySelect" , citySelect)
 
   const handleSuggestionClick = async (data) => {
     let filterKey = "searchKey"; 
@@ -336,34 +338,29 @@ const getAllCategories = async () => {
     },
   };
 
+  const handleAreaSearchChange = () => {
+    const places = inputRef.current.getPlaces();
+    if (places.length > 0) {
+      const suggestions = places.map((place) => {
+        let sublocality = "";
+        let locality = "";
 
+        place.address_components.forEach((component) => {
+          if (component.types.includes("sublocality_level_1")) {
+            sublocality = component.long_name;
+          } else if (component.types.includes("locality")) {
+            locality = component.long_name;
+          }
+        });
 
-
-  const fetchLocationDetails = async (lat, lng) => {
-    
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`
-    );
-    const data = await response.json();
-
-    console.log(data)
-
-    if (data.status === "OK") {
-      let city = "";
-      let area = "";
-      data.results[0].address_components.forEach((component) => {
-        if (component.types.includes("sublocality_level_1")) {
-          area = component.long_name;
-        }
-        if (component.types.includes("locality")) {
-          city = component.long_name;
-        }
+        return `${sublocality}, ${locality}`;
       });
 
-      // setInputValue(`${area}, ${city}`);
-      // setMapSelectedCity(city);
+      setAreaSuggestions(suggestions);
+      console.log("Area Suggestions:", suggestions);
     }
   };
+
 
 
     const handleInputChange = (e) => {
@@ -406,18 +403,8 @@ const getAllCategories = async () => {
               city = component.long_name; 
             }
           });
-
-          let formattedInput = "";
-          if (area && city) {
-            formattedInput = `${area}, ${city}`;
-          } else if (area) {
-            formattedInput = area;
-          } else if (city) {
-            formattedInput = city;
-          }
-          setInputValue(formattedInput);
     
-          // setInputValue(`${area}, ${city}`); 
+          setInputValue(`${area}, ${city}`); 
           setMapSelectedCity(city); 
           setMapSuggestions([]); 
         }
@@ -435,6 +422,37 @@ const getAllCategories = async () => {
       return { area: fullAddress, city: "" }; 
     };
     
+
+    console.log(mapSelectedCity)
+
+
+
+  const fetchLocationDetails = async (lat, lng) => {
+    
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`
+    );
+    const data = await response.json();
+
+    console.log(data)
+
+    if (data.status === "OK") {
+      let city = "";
+      let area = "";
+      data.results[0].address_components.forEach((component) => {
+        if (component.types.includes("sublocality_level_1")) {
+          area = component.long_name;
+        }
+        if (component.types.includes("locality")) {
+          city = component.long_name;
+        }
+      });
+
+      // setInputValue(`${area}, ${city}`);
+      // setMapSelectedCity(city);
+    }
+  };
+
 
 
 
