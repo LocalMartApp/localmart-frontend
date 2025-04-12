@@ -1,1 +1,24 @@
 .UnderConstruction {}
+
+
+@media only screen and (max-width: 991px) {
+    .bottom-heading-section-construction {
+
+        p {
+            width: 80%;
+            
+        }
+    }
+}
+
+@media only screen and (max-width: 676px) {
+    .bottom-heading-section-construction {
+        h2 {
+            font-size: 24px;
+        }
+        p {
+            width: 100%;
+
+        }
+    }
+}
