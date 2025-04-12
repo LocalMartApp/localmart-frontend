@@ -27,8 +27,11 @@ const MyAddresses = () => {
   const [userToken ,  setUserToken] = useState();
   const [allAddress , setAllAddress] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteModal , setDeleteModal] = useState(false);
+  const [modalData , setModalData] = useState('')
   const [otherAddressType , setOtherAddressType] = useState();
   const [addressType , setAddressType] = useState('home');
+  const [deleteLoader , setDeleteLoader] = useState(false)
   const [stateOptions1 , setStateOptions1] = useState([]);
   const [cityOptions1 , setCityOptions1] = useState([]);
   const [pincodeOptions1 , setPincodeOptions1] = useState([]);
@@ -222,6 +225,33 @@ const MyAddresses = () => {
   }
 
 
+
+  const deleteAddress = async(id) => {
+    setDeleteLoader(true)
+    await axios.delete(`${config.api}address/${id}`,{
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    })
+
+    .then((response) => {
+      console.log(response)
+      if(response?.data?.success == true) {
+        getAddresses(userToken);
+        setModalIsOpen(false);
+        setDeleteModal(false);
+        setDeleteLoader(false)
+        toast.success('Address Deleted Successfully');
+      }
+    }).catch((err) => {
+      console.log(err);
+      setModalIsOpen(false);
+      setDeleteLoader(false)
+      toast.error('Error in Deleting Address');
+    })
+  }
+
+
   return (
     <div className="MyAddresses">
       <Modal
@@ -230,6 +260,36 @@ const MyAddresses = () => {
           contentLabel="Example Modal"
       >
         <Loader/>
+      </Modal>
+      <Modal
+            isOpen={deleteModal}
+            style={customStyles}
+            contentLabel="Delete Modal"
+        >
+          <div className="sure-delete-modal-success">
+            <div className="inner-delete-display">
+              <p className='text-xl font-medium text-Black'>Are you sure you want to delete this Address</p>
+                <div className="single-category-item bg-LightBlue rounded-10p p-[15px] relative my-6">
+                    <div className="inner-single-category-item flex flex-col gap-5">
+                        <div className="address-type-sec flex items-center gap-2 bg-white rounded-full w-fit px-[18px] py-[6px]">
+                          <div className="address-type-icon">
+                            <i className={`${modalData?.addressType == 'Home' ? 'ri-home-4-line' : modalData?.addressType == 'Work' ? 'ri-building-line' : 'ri-news-line'} text-[#696969]`}></i>
+                          </div>
+                          <div className="addresstype-text">
+                            <p className='text-[#494949] font-medium'>{modalData?.addressType}</p>
+                          </div>
+                        </div>
+                        <div className="addresstype-text">
+                            <p className='text-[#494949] font-medium'>{modalData?.description}</p>
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <div className="cancel-delete-buttons flex items-center justify-between">
+                <button type="button" onClick={() => setDeleteModal(false)} className='px-5 py-2 rounded-full text-xl bg-LightGrayBg '>Cancel</button>
+                <button type="button" disabled={deleteLoader} onClick={() => deleteAddress(modalData._id)} className='px-5 py-2 rounded-full text-xl bg-opacity-20 text-red-600 bg-red-400'>{deleteLoader ? 'Wait...' : 'Delete'}</button>
+            </div>
+          </div>
       </Modal>
       <div className="my-profile-inner-section bg-ProfileScreensBg">
         <div className="top-similar-header-section-profile-screens mb-30p">
@@ -414,11 +474,11 @@ const MyAddresses = () => {
                               </div>
                               <div className="address-delete-edit-section absolute top-5 right-5">
                                 <div className="address-delete-edit-inner-sec flex items-center gap-4">
-                                  <div className="address-edit-btn">
+                                  {/* <div className="address-edit-btn">
                                     <button type="button" onClick={() => setAddressItem(items)} className=''><i className="ri-edit-line text-Secondary text-lg"></i></button>
-                                  </div>
+                                  </div> */}
                                   <div className="address-delete-btn">
-                                    <button type="button" className=''><i className="bi bi-trash3 text-red-500 text-lg"></i></button>
+                                    <button type="button" className='' onClick={() => {setModalData(items) ; setDeleteModal(true)}}><i className="bi bi-trash3 text-red-500 text-lg"></i></button>
                                   </div>
                                 </div>
                               </div>

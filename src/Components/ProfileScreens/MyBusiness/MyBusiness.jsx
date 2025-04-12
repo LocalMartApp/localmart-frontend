@@ -92,10 +92,10 @@ const MyBusiness = () => {
                   </div>
                   <div className="col-span-9 right-business-content-section">
                       <div className="business-main-details-heading-part h-full">
-                        <div className="left-main-prof-det-head">
-                          <h4 className='text-Black font-medium text-lg'>Your Businesses</h4>
+                        <div className="left-main-prof-det-head mb-5">
+                          <h4 className='text-Black font-medium text-lg'>Your Businesses  <span className='font-light text-Secondary'>0{allBusinesses?.length}</span></h4>
                         </div>
-                        <div className="mybusiness-cards-section mt-6">
+                        <div className="mybusiness-cards-section mt-6 hidden">
                           <div className="mybusiness-cards-grid-section grid grid-cols-3 gap-5">
                             {allBusinesses && allBusinesses.length > 0 ?  
                               allBusinesses.map((items , index) => {  
@@ -148,6 +148,82 @@ const MyBusiness = () => {
                                     </div>
                                 </div>
                             </button>
+                          </div>
+                        </div>
+                        <div className="bottom-business-table-section overflow-hidden border-black border-opacity-20 rounded-xl px-5 py-2 border h-[490px] overflow-y-auto overflow-x-auto">
+                          <div className="inner-business-table-section bg-white rounded-xl overflow-hidden w-[870px]">
+                            <table cellPadding={15} >
+                              <thead className='sticky top-0'>
+                                <tr className=''>
+                                  <th className='text-left font-normal opacity-50'>Name</th>
+                                  <th className='text-left font-normal opacity-50'>City</th>
+                                  <th className='text-left font-normal opacity-50'>Status</th>
+                                  {/* <th className='text-left font-normal opacity-50'>Number</th>
+                                  <th className='text-left font-normal opacity-50'>UserName</th> */}
+                                  <th className='text-left font-normal opacity-50'>Category</th>
+
+                                </tr>
+                              </thead>
+                                <tbody>
+                                  {allBusinesses && allBusinesses.length > 0 ?  
+                                    allBusinesses.map((items , index) => {
+                                      return (
+                                        <tr className='hover:bg-Secondary hover:bg-opacity-5 cursor-pointer' onClick={() => navigate(`/busniess/complete-details/${items?._id}`, { state: { items }})} key={index} >
+                                          <td>
+                                            <div className="business-name-sec flex items-center gap-x-4">
+                                              <div className="left-bus-image ">
+                                                <img src={items?.mediaFiles[0] ? items?.mediaFiles[0]?.fileUrl : BusinessImage }className='w-10 h-10 rounded-full' alt="" />
+                                              </div>
+                                              <div className="right-business-name">
+                                                <p className='text-sm'>{items?.name} </p>
+                                                <p className='text-xs'>{items?.businessCode ? items?.businessCode : null}</p>
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div className="business-username-sec">
+                                              <p className='text-sm'>{items?.cityId?.name}</p>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div className="edit-delete-buttons flex items-center gap-x-5">
+                                              <p className={`text-sm font-medium ${items?.status == 'in_review' ? 'text-orange-500' : items?.status == 'published' ? 'text-green-500' : 'text-red-400'}`}>{items?.status == "in_review" ? 'In Review' : items?.status == 'published' ? 'Published' : 'Rejected'}</p>
+                                            </div>
+                                          </td>
+                                          {/* <td>
+                                            <div className="business-number-sec">
+                                            <p className={`text-sm ${items?.mobileNumber ? 'text-Black' : 'text-red-400'}`}>{items?.mobileNumber ? items?.mobileNumber : 'Not Provided'}</p>
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div className="business-username-sec">
+                                              <p className='text-sm'>{items?.userName}</p>
+                                            </div>
+                                          </td> */}
+                                          <td>
+                                            <div className="business-username-sec">
+                                              <p className='text-sm capitalize'>{items?.categoryId?.name}</p>
+                                            </div>
+                                          </td>
+                                         
+
+                                        </tr>
+                                      )
+                                    }) : 
+                                      <tr>
+                                        <td colSpan={6}>
+                                          <div className="nodata-found-section flex justify-center flex-col items-center py-5">
+                                            {/* <Lottie animationData={EmptyLoader} style={{ width: 300}}/> */}
+                                            <div className="no-data-found-text-btn mt-5">
+                                              <p className='text-center'>No Data Found</p>
+                                              <button type="button" onClick={() => navigate('/business/add-business')} className="text-Secondary font-semibold text-xl mt-5">Add Business</button>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    } 
+                                </tbody>
+                            </table>
                           </div>
                         </div>
                       </div>

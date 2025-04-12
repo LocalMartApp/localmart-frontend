@@ -22,7 +22,7 @@ const ProfileSideBar = () => {
     },
     {
       title: 'Notifications',
-      link: '/profile/notifications',
+      link: '/coming-soon',
       button: false,
     },
     {
@@ -42,17 +42,17 @@ const ProfileSideBar = () => {
     },
     {
       title: 'My Transactions',
-      link: '/profile/my-transactions',
+      link: '/coming-soon',
       button: false,
     },
     {
       title: 'Change Password',
-      link: '/profile/change-password',
+      link: '/coming-soon',
       button: false,
     },
     {
       title: 'Feedback',
-      link: '/feedback',
+      link: '/coming-soon',
       button: false,
     },
     // {
