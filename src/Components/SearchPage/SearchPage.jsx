@@ -13,6 +13,7 @@ import ShimmerSearch from '../../utils/SkeltonLoaders/ShimmerSearch';
 import Emptymedia from '../../assets/images/emptymedia-business.png';
 import Lottie from 'lottie-react';
 import EmptyLoader from '../../assets/images/animated-logos/emptyastro.json';
+import ReactPaginate from 'react-paginate';
 
 
 
@@ -20,10 +21,7 @@ const SearchPage = () => {
   
   const navigate = useNavigate();
 
-  const {filters, results , loading , error , fetchSearchResults} = useSearchStore();
-
-  console.log(results)
-  
+  const {filters, setFilter, results , loading , error , fetchSearchResults, totalPages} = useSearchStore();
 
   const [sortByBtn , setSortByBtn] = useState(false);
   const [topRatedBtn , setTopRatedBtn] = useState(false);
@@ -33,6 +31,7 @@ const SearchPage = () => {
   const [priceSlect , setPriceSelect] = useState('Price');
 
   const [favorite , setFavorite] = useState(false);
+
   useEffect(() => {
     fetchSearchResults();  
   }, [filters])
@@ -42,6 +41,10 @@ const SearchPage = () => {
   };
 
 
+  const handlePageClick = (data) => {
+    // alert(data)
+    setFilter("page", data?.selected || 1);
+  };
   const searchedContent = [
     {
       id: 1,
@@ -287,6 +290,22 @@ const SearchPage = () => {
                         </div>
                       </div>
                       }
+                      <ReactPaginate
+                        previousLabel={'← Previous'}
+                        nextLabel={'Next →'}
+                        breakLabel={'...'}
+                        pageCount={totalPages}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={handlePageClick}
+                        containerClassName={'pagination bottom-paginate-section w-fit ml-auto bg-white px-4 py-2 rounded-lg flex gap-2 justify-center my-6'}
+                        pageClassName={'paginated-clickers border rounded-md cursor-pointer'}
+                        activeClassName={'bg-Secondary text-white active-paginate'}
+                        previousClassName={'px-3 py-1 border rounded-md cursor-pointer'}
+                        nextClassName={'px-3 py-1 border rounded-md cursor-pointer'}
+                        breakClassName={'px-3 py-1'}
+                        activeLinkClassName='active-paginate'
+                      />
                     </div>
 
                     {/* Responsive Section */}

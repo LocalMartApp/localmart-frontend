@@ -9,8 +9,21 @@
     .inner-left-searched-cards-sec-after-991-layout {
         display: none;
     }
-
+    .paginated-clickers {
+        padding: 6px 15px;
+        background: #f0f0f0;
+    }
+    .paginated-clickers.active-paginate {
+        background: #1F90FF !important;
+    } 
+    .bottom-paginate-section {
+        margin-left:  auto !important;
+        padding: 8px 15px !important;
+        margin-top: 20px !important;
+    }
 }
+
+
 
 
 .similar-business-media-slide-btns {

@@ -14,10 +14,13 @@ const useSearchStore = create(
         city: "",
         categoryId: "",
         businessName: "",
+        page: 1
       },
       results: [],
       loading: false,
       error: "",
+      totalPages: 1,
+      
       setFilter: (key, value) =>
         set((state) => ({
           filters: {
@@ -58,7 +61,7 @@ const useSearchStore = create(
             .request(config)
             .then((response) => {
               console.log(JSON.stringify(response.data));
-              set({ results: response.data.data, loading: false });
+              set({ results: response.data.data, loading: false, totalPages: response?.data?.totalPages || 1 });
             })
             .catch((error) => {
               console.log(error);

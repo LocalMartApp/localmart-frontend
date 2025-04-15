@@ -169,8 +169,9 @@ const Home = () => {
   const fetchSuggestions = async (searchTerm) => {
     try {
       await axios.get(
-        `${config.api}search/suggestions?q=${searchTerm}&city_id=${mapSelectedCity.toLowerCase()}`
+        `${config.api}search/suggestions?q=${searchTerm}&city=${mapSelectedCity.toLowerCase()}`
       ).then(resposne => {
+        // console.log(resposne)
         setSuggestions(resposne?.data?.data?.suggestions);
         setSearchSuggest(true);
       }).catch((err) => {
@@ -183,22 +184,15 @@ const Home = () => {
   // console.log("citySelect" , citySelect)
 
   const handleSuggestionClick = async (data) => {
-    let filterKey = "searchKey"; 
-
-    if (data?.type === "category") {
-      filterKey = "categoryId";
-    } else if (data?.type === "business") {
-      filterKey = "businessId";
-    } else if (data?.type) {
-      filterKey = data?.type; 
-    }
-
-    setFilter(filterKey, data?.id);
+    setFilter("categoryId", data?.categoryId);
+    setFilter("businessId", "");
+    setFilter("city",  data?.cityName);
     navigate("/search");
   };
 
 
   const handleCategorySuggestionClick = async (data) => {
+    setFilter("businessId", "");
     setFilter("categoryId", data);
     navigate("/search");
   };
