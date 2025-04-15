@@ -397,8 +397,18 @@ const getAllCategories = async () => {
               city = component.long_name; 
             }
           });
+
+          
+      let formattedInput = "";
+      if (area && city) {
+        formattedInput = `${area}, ${city}`;
+      } else if (area) {
+        formattedInput = area;
+      } else if (city) {
+        formattedInput = city;
+      }
     
-          setInputValue(`${area}, ${city}`); 
+          setInputValue(formattedInput); 
           setMapSelectedCity(city); 
           setMapSuggestions([]); 
         }

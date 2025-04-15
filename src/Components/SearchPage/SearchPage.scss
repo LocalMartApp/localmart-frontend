@@ -10,8 +10,10 @@
         display: none;
     }
     .paginated-clickers {
-        padding: 6px 15px;
         background: #f0f0f0;
+        a {
+            padding: 6px 15px;
+        }
     }
     .paginated-clickers.active-paginate {
         background: #1F90FF !important;

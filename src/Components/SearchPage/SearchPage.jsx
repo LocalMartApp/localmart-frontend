@@ -367,6 +367,22 @@ const SearchPage = () => {
                         </div>
                       </div>
                     </div>}
+                    <ReactPaginate
+                        previousLabel={'← Previous'}
+                        nextLabel={'Next →'}
+                        breakLabel={'...'}
+                        pageCount={totalPages}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={handlePageClick}
+                        containerClassName={'pagination bottom-paginate-section w-fit ml-auto bg-white px-4 py-2 rounded-lg flex gap-2 justify-center my-6'}
+                        pageClassName={'paginated-clickers border rounded-md cursor-pointer'}
+                        activeClassName={'bg-Secondary text-white active-paginate'}
+                        previousClassName={'px-3 py-1 border rounded-md cursor-pointer'}
+                        nextClassName={'px-3 py-1 border rounded-md cursor-pointer'}
+                        breakClassName={'px-3 py-1'}
+                        activeLinkClassName='active-paginate'
+                      />
                     </div>
                   </div>
                   <div className="col-span-12 hidden">
