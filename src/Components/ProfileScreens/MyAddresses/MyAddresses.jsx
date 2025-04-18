@@ -190,12 +190,12 @@ const MyAddresses = () => {
           countryId :  "678da88c9c4467c6aa4eeb86",
           stateId :  state,
           cityId :  city,
-          pincodeId :  pincode,
+          pincode :  pincode,
           addressType :  otherAddressType ? '' :  addressType == 'home' ? 'Home' : addressType == 'work' ? 'Work' : addressType == 'hostel' ? 'Hostel' : 'Home',
           customAddressType : otherAddressType,
           description :  completeAddress
       }
-      // console.log(obj , "obj")
+      console.log(obj , "obj")
       setModalIsOpen(true)
       try {
           await axios.post(`${config.api}address` , obj , {
@@ -218,10 +218,10 @@ const MyAddresses = () => {
             setAddAddressToggle(false);
             toast.error(err?.response?.data?.message);
           });
-        } catch (error) {
-          setModalIsOpen(false);
-          setAddAddressToggle(false);
-        }
+      } catch (error) {
+        setModalIsOpen(false);
+        setAddAddressToggle(false);
+      }
   }
 
 
@@ -373,24 +373,9 @@ const MyAddresses = () => {
                               />
                           </div>
                           <div className="form-inputsec relative col-span-6">
-                            <Select options={pincodeOptions1} 
-                              placeholder='Select Pincode'
-                              styles={{
-                                  control: (baseStyles, state) => ({
-                                      ...baseStyles,
-                                      borderRadius: 10,
-                                      paddingLeft: 10,
-                                      paddingTop: 6,
-                                      paddingBottom: 6,
-                                      // borderColor: errors.pincode ? '#FF4E4E' : '#B3B3B3',
-                                  //   borderColor: state.isFocused ? 'grey' : 'red',
-                                  }),
-                                  }}
-                                  value={cityOptions1.find(option => option.value === pincode)}
-                                  onChange={(option) => {
-                                    setPincode(option?.value);
-                                  }}
-                              />
+                            <input type="number" name="pincodeId" placeholder='Enter Pincode*' onKeyUp={(e) => setPincode(e.target.value)}
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 h-full px-5 rounded-xl bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
+                            /> 
                           </div>
                           <div className="text-area-address-section col-span-6">
                               <div className="form-inputsec relative h-full">   
@@ -464,7 +449,7 @@ const MyAddresses = () => {
                                       <p className='text-Black font-medium'>{items.cityId?.name}</p>
                                     </div>
                                     <div className="address-pin">
-                                      <p className='text-Black'>{items.pincodeId?.code}</p>
+                                      <p className='text-Black'>{items?.pincode}</p>
                                     </div>
                                   </div>
                                   <div className="address-state-sec">

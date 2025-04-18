@@ -110,7 +110,7 @@ const AddAddress = () => {
             countryId :  "678da88c9c4467c6aa4eeb86",
             stateId :  data.stateId,
             cityId :  data.cityId,
-            pincodeId :  data.pincodeId,
+            pincode :  data.pincodeId,
             addressType :  addressType == 'home' ? 'Home' : addressType == 'work' ? 'Work' : addressType == 'hostel' ? 'Hostel' : 'Home',
             customAddressType : otherAddressType,
             description :  data.completeAddress
@@ -191,7 +191,7 @@ const AddAddress = () => {
                             />
                         </div>
                         <div className="form-inputsec relative col-span-6">
-                            <Select options={pincodeOptions1} 
+                            {/* <Select options={pincodeOptions1} 
                                 placeholder='Select Pincode'
                                 styles={{
                                     control: (baseStyles, state) => ({
@@ -206,7 +206,10 @@ const AddAddress = () => {
                                     }}
                                     value={pincodeOptions1.find(option => option.value === values.city)} 
                                     onChange={(option) => setFieldValue('pincodeId', option ? option.value : '')}
-                            />
+                            /> */}
+                             <Field type="number" name="pincodeId" placeholder='Enter Pincode*'
+                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 h-full px-5 rounded-xl bg-white w-full text-Black  ${errors.pincodeId && touched.pincodeId ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                />  
                         </div>
                         <div className="text-area-address-section col-span-12">
                             <div className="form-inputsec relative h-full">   
