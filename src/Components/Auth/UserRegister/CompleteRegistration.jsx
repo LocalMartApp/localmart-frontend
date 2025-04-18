@@ -189,11 +189,14 @@ const CompleteRegistration = () => {
             countryId :  "678da88c9c4467c6aa4eeb86",
             stateId :  data.state,
             cityId :  data.city,
-            pincodeId :  data.pincode,
+            pincode :  data.pincode,
             addressType :  addressType == 'home' ? 'Home' : addressType == 'work' ? 'Work' : addressType == 'hostel' ? 'Hostel' : 'Home',
             customAddressType : otherAddressType,
             description :  data.address
         }
+
+
+        // console.log("obj" , obj)
 
         setModalIsOpen(true)
 
@@ -207,7 +210,6 @@ const CompleteRegistration = () => {
             .then((response) => {
               if(response) {
                   toast.success('Account Registered Successfully');
-                //   console.log(response , 'userreg-res');
                   navigate('/login')
                   setModalIsOpen(false)
               }
@@ -215,11 +217,9 @@ const CompleteRegistration = () => {
             .catch((err) => {
               setModalIsOpen(false)
               toast.error(err?.response?.data?.message);
-            //   console.log(err , 'error')
             });
           } catch (error) {
             setModalIsOpen(false)
-            // console.log(error)
           }
     }
 
@@ -346,7 +346,7 @@ const CompleteRegistration = () => {
                                                                 <div className="grid grid-cols-3 gap-x-10p mt-2 mb-3">
                                                                     {addressTypesArray.map((items , index) => {
                                                                         return (
-                                                                            <button className={`single-address-item relative  py-2 px-5 rounded-full ${items.name == addressType ? 'bg-Secondary' : 'bg-LightGrayBg'}`} key={index} onClick={() => setAddressType(items.name)}>
+                                                                            <button type='button' className={`single-address-item relative  py-2 px-5 rounded-full ${items.name == addressType ? 'bg-Secondary' : 'bg-LightGrayBg'}`} key={index} onClick={() => setAddressType(items.name)}>
                                                                                 <p className={`text-sm font-medium duration-300 capitalize  ${items.name == addressType ? 'text-white' : 'text-Black'}`}>{items.name}</p>
                                                                             </button>
                                                                         )
@@ -393,29 +393,13 @@ const CompleteRegistration = () => {
                                                                     }),
                                                                   }}
                                                                   value={cityOptions1.find(option => option.value === values.city)} 
-                                                                  onChange={(option) => {setFieldValue('city', option ? option.value : '') , getPincodes(option.value)}}
+                                                                  onChange={(option) => {setFieldValue('city', option ? option.value : '')}}
                                                             />
                                                         </div>
                                                         <div className="form-inputsec relative col-span-4">
-                                                            <Select options={pincodeOptions1} 
-                                                                placeholder='Select Pincode'
-                                                                styles={{
-                                                                    control: (baseStyles, state) => ({
-                                                                      ...baseStyles,
-                                                                      borderRadius: 10,
-                                                                      paddingLeft: 10,
-                                                                      paddingTop: 6,
-                                                                      paddingBottom: 6,
-                                                                      borderColor: errors.city ? '#FF4E4E' : '#B3B3B3',
-                                                                    //   borderColor: state.isFocused ? 'grey' : 'red',
-                                                                    }),
-                                                                  }}
-                                                                  value={pincodeOptions1.find(option => option.value === values.pincode)} 
-                                                                  onChange={(option) => setFieldValue('pincode', option ? option.value : '')}
-                                                            />
-                                                            {/* <Field type="text" name="pincode" placeholder='Enter Pincode*'
-                                                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 h-full px-20p rounded-xl bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                                            />   */}
+                                                            <Field type="number" name="pincode" placeholder='Enter Pincode*'
+                                                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 h-full px-5 rounded-xl bg-white w-full text-Black  ${errors.pincode && touched.pincode ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                                            />                                
                                                         </div>
                                                         <div className="bottom-form-submitter mt-5 col-span-12  overflow-hidden relative group bg-Primary rounded-xl">
                                                             <button type='button' onClick={handleSubmit} className='w-full py-3 px-4 text-white font-semibold text-lg '>Submit & Register</button>

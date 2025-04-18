@@ -624,7 +624,13 @@ const BusinessFormAdding = () => {
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
-                                <div className="label-section mb-1">
+                              <div className="label-section mb-1">
+                                  <p className='text-BusinessFormLabel'>Pincode (optional)</p>
+                                </div>
+                                <Field type="number" name="pincode" placeholder='Enter Landmark '
+                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.pincode && touched.pincode ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                />      
+                                {/* <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Pincode (Optional)</p>
                                 </div>
                                 <Select options={pincodes} 
@@ -650,7 +656,7 @@ const BusinessFormAdding = () => {
                                     }}
                                   value={pincodes.find(option => option.value === values.pincode)} 
                                   onChange={(option) => setFieldValue('pincode', option ? option.value : '')}
-                                />                                    
+                                />                                     */}
                               </div>
                             </div>
                           </div>
