@@ -627,7 +627,7 @@ const BusinessFormAdding = () => {
                               <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Pincode (optional)</p>
                                 </div>
-                                <Field type="number" name="pincode" placeholder='Enter Landmark '
+                                <Field type="number" name="pincode" placeholder='Enter Pincode '
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.pincode && touched.pincode ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />      
                                 {/* <div className="label-section mb-1">
@@ -908,7 +908,7 @@ const BusinessFormAdding = () => {
                             </div>
 
                           </div>
-                          <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
+                          <div className="single-form-section-business business-basic-details rounded-[15px] bg-white hidden">
                             <div className="inner-pricing-section flex items-center gap-6 relative">
                               <div className="left-image-pricing">
                                 <img src={PricingImg} className='w-64' alt="" />
