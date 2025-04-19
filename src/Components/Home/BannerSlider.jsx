@@ -20,18 +20,19 @@ const BannerSlider = () => {
   const [adverts , setAdverts] = useState([])
 
 
+
+
   useEffect(() => {
     getAllAdverts()
 }, [])
 
-const getAllAdverts = async () => {
-    await axios.get(config.api + `admin/advertisements`)
-    .then((response) => {
-        // console.log(response)
-        setAdverts(response?.data?.data)
-        // console.log('response' , response)
-   })
-}
+  const getAllAdverts = async () => {
+      await axios.get(config.api + `admin/advertisements?displayPosition=top&page=1&limit=20`)
+      .then((response) => {
+          console.log(response , "advertsiement resposne")
+          setAdverts(response?.data?.data)
+    })
+  }
 
 
 
@@ -118,21 +119,43 @@ const getAllAdverts = async () => {
             className="mySwiper"
             onClick={(swiper) => swiper.slideTo(swiper.clickedIndex)} 
             >
-            {slides.map((slide, index) => (
+            {adverts && adverts?.length > 0 ? adverts.map((slide, index) => (
                 <SwiperSlide key={index}>
-                    <div className="single-banner-slides-section-1">
+                    <div className="single-banner-slides-section-1 ">
                         <div className="slideimage-section-home-sec-1 relative overflow-hidden rounded-[20px]">
-                            <img src={slide?.image} className='h-full min-h-[382px] max-h-[382px] object-cover' alt="" />
-                            <div className="innner-ad-slider-sec absolute bottom-6 left-6">
+                            <img src={slide?.bannerPhoto} className='h-full min-h-[382px] max-h-[382px] object-cover' alt="" />
+                            <div className="innner-ad-slider-sec absolute bottom-6 left-6 z-10">
                                 <div className="ad-slider-sec mb-2 w-3/4">
-                                    <h4 className='text-white font-bold text-[28px] italic'>{slide.heading}</h4>
+                                    <h4 className='text-white font-bold text-[28px] italic'>{slide.advertisementTitle}</h4>
                                 </div>
-                                <div className="ad-deal-button"><button type="button" className='text-white bg-Primary text-lg py-2 px-6 rounded-lg font-semibold'>Check Deals</button></div>
+                                <div className="ad-deal-button"><button type="button" onClick={() => window.open(slide?.advertisementLink)} className='text-white bg-Primary text-lg py-2 px-6 rounded-lg font-semibold'>Check Deals</button></div>
+                            </div>
+                            <div className="black-mask-section absolute top-0 left-0 w-full h-full bg-black bg-opacity-30">
+
                             </div>
                         </div>
                     </div>
                 </SwiperSlide>
-            ))}
+            )) : 
+            slides.map((slide , index) => {
+              <SwiperSlide key={index}>
+                  <div className="single-banner-slides-section-1 ">
+                      <div className="slideimage-section-home-sec-1 relative overflow-hidden rounded-[20px]">
+                          <img src={slide?.image} className='h-full min-h-[382px] max-h-[382px] object-cover' alt="" />
+                          <div className="innner-ad-slider-sec absolute bottom-6 left-6 z-10">
+                              <div className="ad-slider-sec mb-2 w-3/4">
+                                  <h4 className='text-white font-bold text-[28px] italic'>{slide.heading}</h4>
+                              </div>
+                              <div className="ad-deal-button"><button type="button" className='text-white bg-Primary text-lg py-2 px-6 rounded-lg font-semibold'>Check Deals</button></div>
+                          </div>
+                          <div className="black-mask-section absolute top-0 left-0 w-full h-full bg-black bg-opacity-30">
+
+                          </div>
+                      </div>
+                  </div>
+              </SwiperSlide>
+            })
+            }
         </Swiper>
     </>
   )
