@@ -169,7 +169,7 @@ const Home = () => {
   const fetchSuggestions = async (searchTerm) => {
     try {
       await axios.get(
-        `${config.api}search/suggestions?q=${searchTerm}&city=${filters?.city.toLowerCase() || mapSelectedCity.toLowerCase()}`
+        `${config.api}search/suggestions?q=${searchTerm}&city=${mapSelectedCity.toLowerCase()}`
       ).then(resposne => {
         // console.log(resposne)
         setSuggestions(resposne?.data?.data?.suggestions);
@@ -360,7 +360,7 @@ const getAllCategories = async () => {
     const handleInputChange = (e) => {
       const value = e.target.value;
       setInputValue(value);
-      setFilter("city" , value)
+      // setFilter("city" , value)
       if (value.length > 2 && autocompleteService.current) {
         autocompleteService.current.getPlacePredictions(
           {
@@ -411,7 +411,7 @@ const getAllCategories = async () => {
     
           setInputValue(formattedInput); 
           setMapSelectedCity(city); 
-          setFilter("city", city);
+          // setFilter("city", city);
           setMapSuggestions([]); 
         }
       });
@@ -541,7 +541,7 @@ const getAllCategories = async () => {
                                 <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
                               </div>
                               <div className="country-selection col-span-6 relative h-full">
-                                <input type="text" className='h-full w-full pl-10 outline-none' value={filters?.city || inputValue} onChange={handleInputChange} placeholder='Enter your locality' name="" id="" />
+                                <input type="text" className='h-full w-full pl-10 outline-none' value={inputValue} onChange={handleInputChange} placeholder='Enter your locality' name="" id="" />
                               </div>
                             </div>
                             {mapSuggestions.length > 0 && (
