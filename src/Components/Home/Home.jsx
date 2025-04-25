@@ -37,6 +37,7 @@ import Lottie from 'lottie-react';
 import SearchLoader from '../../assets/images/animated-logos/search-loader.json'
 import useSearchStore from '../../Store/useSearchStore';
 import { GoogleMap , LoadScript , Marker , useJsApiLoader , StandaloneSearchBox } from '@react-google-maps/api';
+import DetectingLoader from '../../utils/Loader/DetectingLoader';
 
 
 
@@ -59,6 +60,7 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allCategoryOpen , setAllCategoryOpen] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [detectModalOpen , setDetectModalOpen] = useState(false)
   const [searchSuggest , setSearchSuggest] = useState(false);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -103,15 +105,13 @@ const Home = () => {
 
   useEffect(() => {
 
-    getAllCategories()
-    getCities()
 
-
-    if ("geolocation" in navigator) {
+    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          fetchLocationDetails(latitude, longitude);
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          getUserLocationDetails(lat, lng);
         },
         (error) => {
           console.error("Error getting location:", error);
@@ -119,6 +119,12 @@ const Home = () => {
       );
     }
 
+
+    getAllCategories()
+    // getCities()
+
+
+    
 
 
     if (query.trim() === "") {
@@ -149,22 +155,22 @@ const Home = () => {
   }, [query]);
 
 
-  const getCities = async() => {
-    await axios.get(config.api + `locations/states/67ea880c34693d5cc5891593/cities`)
-    .then((response) => {
-      if (response?.data?.data) {
-        const formattedCities = response.data.data.map(item => ({
-          value: item._id,
-          label: item.name,
-        }));
-        setCityOptions(formattedCities);
-        const matchedCity = formattedCities.find(city => city.label.toLowerCase() === userCity?.toLowerCase());
-        if (matchedCity) {
-          setCitySelect(matchedCity);
-        }
-      }
-    });
-  }
+  // const getCities = async() => {
+  //   await axios.get(config.api + `locations/states/67ea880c34693d5cc5891593/cities`)
+  //   .then((response) => {
+  //     if (response?.data?.data) {
+  //       const formattedCities = response.data.data.map(item => ({
+  //         value: item._id,
+  //         label: item.name,
+  //       }));
+  //       setCityOptions(formattedCities);
+  //       const matchedCity = formattedCities.find(city => city.label.toLowerCase() === userCity?.toLowerCase());
+  //       if (matchedCity) {
+  //         setCitySelect(matchedCity);
+  //       }
+  //     }
+  //   });
+  // }
 
   const fetchSuggestions = async (searchTerm) => {
     try {
@@ -195,6 +201,44 @@ const Home = () => {
     setFilter("businessId", "");
     setFilter("categoryId", data);
     navigate("/search");
+  };
+
+
+  const getUserLocationDetails = (lat, lng) => {
+    const geocoder = new window.google.maps.Geocoder();
+    setDetectModalOpen(true)
+  
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        setDetectModalOpen(false)
+        let area = "";
+        let city = "";
+  
+        results[0].address_components.forEach((component) => {
+          if (component.types.includes("sublocality_level_1")) {
+            area = component.long_name;
+          }
+          if (component.types.includes("locality")) {
+            city = component.long_name;
+          }
+        });
+  
+        let formattedInput = "";
+        if (area && city) {
+          formattedInput = `${area}, ${city}`;
+        } else if (area) {
+          formattedInput = area;
+        } else if (city) {
+          formattedInput = city;
+        }
+  
+        setInputValue(formattedInput);
+        setMapSelectedCity(city);
+      }else {
+        setDetectModalOpen(false)
+      }
+    });
+    setDetectModalOpen(false)
   };
 
 
@@ -332,32 +376,7 @@ const getAllCategories = async () => {
     },
   };
 
-  const handleAreaSearchChange = () => {
-    const places = inputRef.current.getPlaces();
-    if (places.length > 0) {
-      const suggestions = places.map((place) => {
-        let sublocality = "";
-        let locality = "";
-
-        place.address_components.forEach((component) => {
-          if (component.types.includes("sublocality_level_1")) {
-            sublocality = component.long_name;
-          } else if (component.types.includes("locality")) {
-            locality = component.long_name;
-          }
-        });
-
-        return `${sublocality}, ${locality}`;
-      });
-
-      setAreaSuggestions(suggestions);
-      console.log("Area Suggestions:", suggestions);
-    }
-  };
-
-
-
-    const handleInputChange = (e) => {
+  const handleInputChange = (e) => {
       const value = e.target.value;
       setInputValue(value);
       // setFilter("city" , value)
@@ -416,51 +435,7 @@ const getAllCategories = async () => {
         }
       });
     };
-    
-    const extractAreaCity = (fullAddress) => {
-      const parts = fullAddress.split(","); 
-      if (parts.length >= 2) {
-        return { 
-          area: parts[0].trim(), 
-          city: parts[1].trim() 
-        };
-      }
-      return { area: fullAddress, city: "" }; 
-    };
-    
-
-    console.log(mapSelectedCity)
-
-
-
-  const fetchLocationDetails = async (lat, lng) => {
-    
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`
-    );
-    const data = await response.json();
-
-    // console.log(data)
-    let city = "";
-
-    if (data.status === "OK") {
-      data.results[0].address_components.forEach((component) => {
-        if (component.types.includes("locality")) {
-          city = component.long_name;
-        }
-      });
-      if (!city) {
-        data.results[0].address_components.forEach((component) => {
-          if (component.types.includes("administrative_area_level_1")) {
-            city = component.long_name;
-          }
-        });
-      }
-      setFilter("city" , city)
-    }
-  };
-
-
+  
 
 
   return (
@@ -484,6 +459,14 @@ const getAllCategories = async () => {
              <LoginModal isOpen={isModalOpen} closeModal={closeModal} />
            </div>
         }
+        <Modal
+          isOpen={detectModalOpen}
+          style={customStyles}
+          contentLabel="Example Modal"
+          
+      >
+       <DetectingLoader/>
+      </Modal>
         <div className="inner-home-section">
           <section className="home-section-1 relative">
             <div className="inner-home-section-1 bg-BlockBlack">

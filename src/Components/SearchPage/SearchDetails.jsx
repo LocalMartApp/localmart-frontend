@@ -116,49 +116,21 @@ const SearchDetails = () => {
   };
 
 
-  const foodItems = [
-    {
-      title: "Mixed Vegetable Biryani",
-      veg: true,
-      pirce: "₹200.00",
-    },
-    {
-      title: "Chicken Biryani",
-      veg: false,
-      pirce: "350.00",
-    },
-    {
-      title: "Schezwan Fried Rice",
-      veg: false,
-      pirce: "₹460.00",
-    },
-    {
-      title: "Paneer Biryani",
-      veg: true,
-      pirce: "₹200.00",
-    },
-    {
-      title: "Butter Chicken",
-      veg: false,
-      pirce: "₹450.00",
-    },
-    {
-      title: "Chicken Biryani",
-      veg: false,
-      pirce: "350.00",
-    },
-    {
-      title: "Schezwan Fried Rice",
-      veg: false,
-      pirce: "₹460.00",
-    },
-    {
-      title: "Paneer Biryani",
-      veg: true,
-      pirce: "₹200.00",
-    },
-  ];
 
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(singleBusiness?.completeAddress)
+      .then(() => {
+        toast.success("Address copied to clipboard!");
+      })
+      .catch(err => {
+        toast.error("Failed to copy");
+      });
+  };
+
+  const handleCall = () => {
+    window.location.href = `tel:${singleBusiness?.mobileNumber}`;
+  };
 
   const long = singleBusiness?.location?.coordinates[0];
   const lat = singleBusiness?.location?.coordinates[1];
@@ -630,6 +602,7 @@ const shareLink = (platform) => {
                       </div>
                       <button
                         type="button"
+                        onClick={handleCall}
                         className="number-info-section flex items-center gap-x-3 text-left"
                       >
                         <i className="ri-phone-fill text-Secondary"></i>
@@ -645,7 +618,7 @@ const shareLink = (platform) => {
                       <p className="text-Black opacity-40">
                         {singleBusiness?.completeAddress}
                       </p>
-                      <div className="directions-copy-address-btns flex items-center gap-x-5 justify-between mt-4">
+                      <div className="directions-copy-address-btns flex flex-wrap items-center gap-y-3 gap-x-5 justify-between mt-4">
                         <button
                           type="button"
                           onClick={openGoogleMaps}
@@ -659,6 +632,7 @@ const shareLink = (platform) => {
                         <button
                           type="button"
                           className="direcions-btn flex items-center gap-x-3 text-left"
+                          onClick={handleCopy}
                         >
                           <i className="ri-file-copy-line text-lg text-Secondary"></i>
                           <p className="font-medium text-Secondary">

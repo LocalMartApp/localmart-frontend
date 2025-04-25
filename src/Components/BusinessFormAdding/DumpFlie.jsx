@@ -86,7 +86,7 @@
   // ]
 
 
-//   <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white hidden">
+//  <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white hidden">
 //   <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
 //     <h4 className='text-lg font-medium text-Secondary'>Items and info</h4>
 //   </div>
