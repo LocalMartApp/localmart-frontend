@@ -14,13 +14,14 @@ const useSearchStore = create(
         city: "",
         categoryId: "",
         businessName: "",
-        page: 1
+        page: 1,
       },
+      isLocationAutoDetected: true,
       results: [],
       loading: false,
       error: "",
       totalPages: 1,
-      
+
       setFilter: (key, value) =>
         set((state) => ({
           filters: {
@@ -28,6 +29,12 @@ const useSearchStore = create(
             [key]: value,
           },
         })),
+
+      setIsLocationAutoDetected: (value) =>
+        set((state) => ({
+          isLocationAutoDetected: value,
+        })),
+
       removeFilter: (key) =>
         set((state) => {
           const updatedFilters = { ...state.filters };
@@ -53,19 +60,22 @@ const useSearchStore = create(
             url: `https://stage-api.localmart.app:8443/search/businesses?${params}`,
             headers: {
               // "Authorization": "Bearer " +  authToken ? authToken : '' ,
-              "content-type": "application/json"
-            }
+              "content-type": "application/json",
+            },
           };
 
           axios
             .request(config)
             .then((response) => {
               console.log(JSON.stringify(response.data));
-              set({ results: response.data.data, loading: false, totalPages: response?.data?.totalPages || 1 });
+              set({
+                results: response.data.data,
+                loading: false,
+                totalPages: response?.data?.totalPages || 1,
+              });
             })
             .catch((error) => {
               console.log(error);
-
             });
         } catch (err) {
           set({
