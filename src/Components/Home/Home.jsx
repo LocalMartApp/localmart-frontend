@@ -503,11 +503,7 @@ const Home = () => {
                                 }
                               </div>
                             </div> */}
-                            <div
-                              className={`location-setting-section grid overflow-hidden relative items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${
-                                headerBar ? "shadow-xl" : ""
-                              }`}
-                            >
+                            <div  className={`location-setting-section grid overflow-hidden relative items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${ headerBar ? "shadow-xl" : ""}`}>
                               <div className="icon-section absolute top-1/2 left-8 z-10">
                                 <i className="ri-map-pin-fill text-2xl text-Secondary"></i>
                               </div>

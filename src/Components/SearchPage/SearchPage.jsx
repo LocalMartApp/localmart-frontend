@@ -98,7 +98,7 @@ const SearchPage = () => {
             <div className="container">
               <div className="breadcrum-inner-section">
                 <ul className='flex items-center gap-x-2'>
-                  <li><NavLink className={`text-Black `} to={'/'}>Home</NavLink></li>
+                  <li><NavLink className={`text-Black `} to={-1}>Back</NavLink></li>
                   <li><i className="ri-arrow-right-s-line"></i></li>
                   <li><p className={`text-Black `}>Business Listings</p></li>
                   {/* <li><i className="ri-arrow-right-s-line"></i></li>
