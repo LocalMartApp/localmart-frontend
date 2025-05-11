@@ -225,8 +225,9 @@ const SearchPage = () => {
                                             </button>
                                           <button type='button' className="business-recommended-section flex items-center gap-10p opacity-60">
                                             <i className="ri-map-pin-line text-Black"></i>
-                                            <p className='text-sm text-LightText'>{items?.stateId?.name + " - " + items?.cityId?.name}</p>
+                                            <p className='text-sm text-LightText'>{items?.stateId?.name + " - " + items?.cityId?.name},  {items?.area?.trim()}</p>
                                           </button>
+                                         
                                         </div>
                                         <div className="people-rated-top-search-sec flex items-center gap-x-4">
                                           <div className="people-rated-place">

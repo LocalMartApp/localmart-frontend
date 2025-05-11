@@ -16,6 +16,10 @@ const useSearchStore = create(
         businessName: "",
         page: 1,
       },
+      selectedSuggestion: {
+        value: "",
+        type: "",
+      },
       isLocationAutoDetected: true,
       results: [],
       loading: false,
@@ -27,6 +31,13 @@ const useSearchStore = create(
           filters: {
             ...state.filters,
             [key]: value,
+          },
+        })),
+      setSelectedSuggestion: (value, type) =>
+        set(() => ({
+          selectedSuggestion: {
+            value,
+            type,
           },
         })),
 
@@ -44,10 +55,13 @@ const useSearchStore = create(
       fetchSearchResults: async () => {
         const { filters } = get();
 
+
+
         // Optional - Clean filters
         const cleanedFilters = Object.fromEntries(
           Object.entries(filters).filter(([_, value]) => value)
         );
+
 
         set({ loading: true, error: null });
 
@@ -57,7 +71,7 @@ const useSearchStore = create(
           let config = {
             method: "get",
             maxBodyLength: Infinity,
-            url: `https://stage-api.localmart.app:8443/search/businesses?${params}`,
+            url: `http://localhost:8080/search/businesses?${params}`,
             headers: {
               // "Authorization": "Bearer " +  authToken ? authToken : '' ,
               "content-type": "application/json",

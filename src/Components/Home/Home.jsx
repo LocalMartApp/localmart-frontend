@@ -59,6 +59,8 @@ const Home = () => {
     fetchSearchResults,
     setIsLocationAutoDetected,
     isLocationAutoDetected,
+    setSelectedSuggestion,
+    selectedSuggestion,
   } = useSearchStore();
 
   const [headerBar, setHeaderBar] = useState(false);
@@ -105,21 +107,68 @@ const Home = () => {
   });
 
   useEffect(() => {
-    if (navigator.geolocation) {
+    const isInputEmpty = !inputValue?.trim();
+    const isSuggestionEmpty = !selectedSuggestion?.value;
+
+    if (
+      navigator.geolocation &&
+      isInputEmpty &&
+      isSuggestionEmpty &&
+      isLocationAutoDetected
+    ) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          if (filters?.city === "" && isLocationAutoDetected) {
-            getUserLocationDetails(lat, lng);
+          const { latitude, longitude } = position.coords;
+          if (!latitude || !longitude) {
+            alert(
+              "Location could not be retrieved. Please turn on GPS and reload."
+            );
+          } else {
+            getUserLocationDetails(latitude, longitude);
           }
         },
         (error) => {
-          console.error("Error getting location:", error);
+          console.error("Geolocation error:", error);
+          if (error.code === error.PERMISSION_DENIED) {
+            alert(
+              "Location access is denied. Please allow location permission in your browser settings and reload the page."
+            );
+          } else {
+            alert("Unable to fetch your location. Please try again.");
+          }
         }
       );
     }
+  }, [inputValue, selectedSuggestion?.value, isLocationAutoDetected]);
 
+  const handleRefetchLocation = () => {
+    if (navigator.geolocation) {
+      setDetectModalOpen(true); // optional: show loader
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          if (latitude && longitude) {
+            getUserLocationDetails(latitude, longitude);
+            setSelectedSuggestion("", ""); // reset selection
+            setInputValue(""); // clear input
+            setIsLocationAutoDetected(true); // reset auto-detect flag
+          }
+          setDetectModalOpen(false);
+        },
+        (error) => {
+          setDetectModalOpen(false);
+          console.error("Geolocation error:", error);
+          alert(
+            "Unable to detect your location. Please enable location services."
+          );
+        }
+      );
+    } else {
+      alert("Geolocation is not supported in this browser.");
+    }
+  };
+
+  useEffect(() => {
     getAllCategories();
     // getCities()
 
@@ -170,12 +219,9 @@ const Home = () => {
     try {
       await axios
         .get(
-          `${
-            config.api
-          }search/suggestions?q=${searchTerm}&city=${filters?.city.toLowerCase()}`
+          `http://localhost:8080/search/suggestions?q=${searchTerm}&location_val=${selectedSuggestion?.value.toLowerCase()}&location_type=${selectedSuggestion?.type.toLowerCase()}`
         )
         .then((resposne) => {
-          // console.log(resposne)
           setSuggestions(resposne?.data?.data?.suggestions);
           setSearchSuggest(true);
         })
@@ -234,6 +280,8 @@ const Home = () => {
         if (isLocationAutoDetected) {
           setInputValue(formattedInput);
           setFilter("city", formattedInput);
+          setFilter("area", "");
+          setSelectedSuggestion(formattedInput, "city");
         }
         setMapSelectedCity(city);
       } else {
@@ -370,11 +418,12 @@ const Home = () => {
       autocompleteService.current.getPlacePredictions(
         {
           input: value,
-          types: ["geocode"],
+          // types: ["geocode"],
           componentRestrictions: { country: "IN" },
         },
         (predictions, status) => {
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            console.log("predictions", predictions);
             setMapSuggestions(predictions);
           } else {
             setMapSuggestions([]);
@@ -385,6 +434,11 @@ const Home = () => {
       setMapSuggestions([]);
     }
   };
+  useEffect(() => {
+    if (selectedSuggestion?.value) {
+      setInputValue(selectedSuggestion.value);
+    }
+  }, []);
 
   const handleSelect = (place) => {
     const placeService = new window.google.maps.places.PlacesService(
@@ -396,8 +450,25 @@ const Home = () => {
         let area = "";
         let city = "";
 
+        let isArea = false;
+        let isCity = false;
+
+        if (details.types?.includes("locality")) {
+          isCity = true;
+        } else if (
+          details.types?.includes("sublocality") ||
+          details.types?.includes("sublocality_level_1") ||
+          details.types?.includes("neighborhood")
+        ) {
+          isArea = true;
+        }
+
+        // Extract area/city names
         details.address_components.forEach((component) => {
-          if (component.types.includes("sublocality_level_1")) {
+          if (
+            component.types.includes("sublocality_level_1") ||
+            component.types.includes("neighborhood")
+          ) {
             area = component.long_name;
           }
           if (component.types.includes("locality")) {
@@ -405,18 +476,23 @@ const Home = () => {
           }
         });
 
-        let formattedInput = "";
-        if (area && city) {
-          formattedInput = `${area}, ${city}`;
-        } else if (area) {
-          formattedInput = area;
-        } else if (city) {
-          formattedInput = city;
-        }
+        // Build display input
+        let formattedInput = area && city ? `${area}` : area || city;
 
         setInputValue(formattedInput);
+        console.log("formattedInput", formattedInput);
         setMapSelectedCity(city);
         setFilter("city", city);
+        area ? setFilter("area", area) : setFilter("area", "");
+        setSelectedSuggestion(
+          formattedInput,
+          isCity ? "city" : isArea ? "area" : "other"
+        );
+
+        // 👇 Use this info if needed
+        console.log("Selected isArea:", isArea);
+        console.log("Selected isCity:", isCity);
+
         setMapSuggestions([]);
       }
     });
@@ -503,15 +579,22 @@ const Home = () => {
                                 }
                               </div>
                             </div> */}
-                            <div  className={`location-setting-section grid overflow-hidden relative items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${ headerBar ? "shadow-xl" : ""}`}>
-                              <div className="icon-section absolute top-1/2 left-8 z-10">
+                            <div
+                              className={`location-setting-section grid overflow-hidden relative items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${
+                                headerBar ? "shadow-xl" : ""
+                              }`}
+                            >
+                              <div
+                                className="icon-section absolute top-1/2 left-8 z-10"
+                                onClick={handleRefetchLocation}
+                              >
                                 <i className="ri-map-pin-fill text-2xl text-Secondary"></i>
                               </div>
                               <div className="country-selection col-span-6 relative h-full">
                                 <input
                                   type="text"
                                   className="h-full w-full pl-10 outline-none"
-                                  value={filters?.city || inputValue}
+                                  value={inputValue}
                                   onChange={handleInputChange}
                                   placeholder="Enter your locality"
                                   name=""
