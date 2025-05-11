@@ -71,7 +71,7 @@ const useSearchStore = create(
           let config = {
             method: "get",
             maxBodyLength: Infinity,
-            url: `http://localhost:8080/search/businesses?${params}`,
+            url: `https://stage-api.localmart.app:8443/search/businesses?${params}`,
             headers: {
               // "Authorization": "Bearer " +  authToken ? authToken : '' ,
               "content-type": "application/json",

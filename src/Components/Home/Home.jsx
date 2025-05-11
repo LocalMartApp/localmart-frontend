@@ -219,7 +219,7 @@ const Home = () => {
     try {
       await axios
         .get(
-          `http://localhost:8080/search/suggestions?q=${searchTerm}&location_val=${selectedSuggestion?.value.toLowerCase()}&location_type=${selectedSuggestion?.type.toLowerCase()}`
+          `https://stage-api.localmart.app:8443/search/suggestions?q=${searchTerm}&location_val=${selectedSuggestion?.value.toLowerCase()}&location_type=${selectedSuggestion?.type.toLowerCase()}`
         )
         .then((resposne) => {
           setSuggestions(resposne?.data?.data?.suggestions);
