@@ -41,7 +41,30 @@
     
 }
 
-
+    .otpinputs-outer {
+        justify-content: space-between !important;
+        margin-bottom: 20px !important;
+        gap: 0px 20px;
+        input {
+            border: 1px solid #B3B3B3;
+            width: 25% !important;
+            height: 60px !important;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0px !important;
+            outline: none !important;
+            transition-duration: 0.5s;
+            &:focus {
+                outline: 1px solid #1F90FF !important;
+            }
+        }
+    }
+    .otp-section-forgot {
+        .right-side-edit-btn {
+            transform: translate(-50% , -50%);
+        }
+    }
 
 @media only screen and (max-width: 991.90px) {
     .UserRegister {

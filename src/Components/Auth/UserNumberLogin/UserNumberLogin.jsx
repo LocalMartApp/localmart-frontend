@@ -81,7 +81,7 @@ const UserNumberLogin = () => {
                             </button>
                         </div>
                         <div className="forgot-password-button mt-3">
-                          <button type="button" className='text-sm text-Secondary text-medium'>Forgot Passowrd ?</button>
+                          <button type="button" onClick={() => navigate('/forgot-password')} className='text-sm text-Secondary text-medium'>Forgot Passowrd ?</button>
                         </div>
                       </div>
                       <div className="flex flex-col mt-5 gap-y-5">

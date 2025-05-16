@@ -29,6 +29,7 @@ import EditProfile from './Components/ProfileScreens/MyProfile/EditProfile'
 import Advertise from './Components/Advertise/Advertise'
 import ChangePassword from './Components/ProfileScreens/ChangePassword/ChangePassword'
 import UnderConstruction from './Components/UnderConstruction/UnderConstruction'
+import ForgotPassword from './Components/Auth/ForgotPassword/ForgotPassword'
 
 
 
@@ -43,6 +44,7 @@ const Layout = () => {
           <Route exact={true} Component={Home} path='/' />
           <Route exact={true} Component={BusinessPage} path='/businesses'/>
           <Route exact={true} Component={UserLogin} path='/login' />
+          <Route exact={true} Component={ForgotPassword} path='forgot-password'/>
           <Route exact={true} Component={UserRegister} path='/register' />
           <Route exact={true} Component={CompleteRegistration} path='/register-details' />
           <Route exact={true} Component={Advertise} path='/advertise' />

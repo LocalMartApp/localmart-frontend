@@ -23,7 +23,7 @@ import PricingImg from '../../assets/images/pricing-business-add.svg'
 
 const animatedComponents = makeAnimated();
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyCfHCytpE0Oq4tvXmCWaOl05iyH_OfLGuM";
+const GOOGLE_MAPS_API_KEY = "AIzaSyD5_3Xmuuyxph0PEHPNK97qYyBr30OEllQ";
 
 
 const BusinessFormAdding = () => {
