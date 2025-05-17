@@ -1,7 +1,25 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState , useEffect } from 'react';
 import Marquee from 'react-fast-marquee';
+import { config } from '../../env-services';
 
 const MarqueeSlider = () => {
+
+    const [scrollAdds , setScrolAdds] = useState([]);
+
+
+    useEffect(() => {
+      getAllScrollingAdds()
+    }, [])
+
+    const getAllScrollingAdds = async () => {
+        await axios.get(config.api + `admin/advertisements/scrolling?page=1&limit=20`)
+        .then((response) => {
+            console.log(response , "Scrolling advertsiement resposne")
+            setScrolAdds(response?.data?.data)
+        })
+    }
+
 
 
     const marqueeSlider = [
@@ -37,7 +55,19 @@ const MarqueeSlider = () => {
               gradientWidth={200}
               pauseOnHover
             >
-              {marqueeSlider.map((items , index) => {
+              {scrollAdds && scrollAdds.length > 0 ?  scrollAdds.map((scrolls , index) => {
+                return (
+                  <div className="content-marquee" key={index}>
+                    <div className='marquee-item-name-section flex items-center'>
+                        <div className="dot-section-marquee mx-6">
+                            <h4 className='text-white text-xl'>•</h4>
+                        </div>
+                        <button className='text-white font-medium' onClick={() => window.open(scrolls?.advertisementLink , '_blank')}>{scrolls?.message}</button>
+                    </div>
+                  </div>
+                )
+              }) : 
+               marqueeSlider.map((items , index) => {
                 return (
                   <div className="content-marquee" key={index}>
                     <div className='marquee-item-name-section flex items-center'>
@@ -48,7 +78,8 @@ const MarqueeSlider = () => {
                     </div>
                   </div>
                 )
-              })}
+              })
+              }
             </Marquee>
         </div>
     </div>
