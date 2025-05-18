@@ -14,6 +14,7 @@ import Loader from '../../../utils/Loader/Loader';
 import { useAuth } from '../../../utils/AuthContext';
 import OTPInput , { ResendOTP } from 'otp-input-react';
 import '../UserRegister/UserRegister.scss';
+import EmailSentIcon from '../../../assets/images/email-sent.svg';
 
 
 const ForgotPassword = () => {
@@ -55,53 +56,34 @@ const ForgotPassword = () => {
         email : ''
     }
 
-    const handleForgotEmail = async(value) => {
-        setReadMail(value.email)
-        setOtpTab(true)
-    }
-    
-
-    const renderButton = (buttonProps) => {
-        return <button {...buttonProps} className={`duration-500 ${buttonProps.disabled == true ? 'opacity-25' : 'opacity-100 text-Secondary font-semibold'}`}>Resend OTP</button>;
-    };
-
-    const handleResendOtp = () => {
-
-    }
-
-
-    
-      const otpVerifier = async() => {
-        // const obj = {
-        //     email: readEmail,
-        //     otp: otpValue
-        // }
-
-        // console.log("obj" , obj)
-
-        // setModalIsOpen(true)
-        // try {
-        //     await axios.post(`${config.api}auth/verify-account` , obj)
-        //     .then((response) => {
-        //       if(response) {
-        //         setModalIsOpen(false)
-        //         toast.success('OTP Verified Successfully');
-        //         const token = response?.data?.data?.token
-        //         navigate('/register-details' , { state: { readEmail , token } })
-        //         console.log(response)
-        //       }
-        //     })
-        //     .catch((err) => {
-        //         setModalIsOpen(false)
-        //         toast.error(err?.message);
-        //         toast.error(err?.response?.data?.message);
-        //         console.log(err , 'error')
-        //     });
-        //   } catch (error) {
-        //     setModalIsOpen(false)
-        //     console.log(error)
-        //   }
+    const handleForgotEmail = async(values) => {
+      const obj = {
+        email: values.email,
       }
+      setModalIsOpen(true)
+      try {
+        await axios.post(`${config.api}auth/forgot-password` , obj)
+        .then((response) => {
+            console.log(response , "reset-response")
+          if(response?.data?.success == true) {
+            setOtpTab(true)
+              setModalIsOpen(false)
+              toast.success('Link Sent to Email');
+          }
+        })
+        .catch((err) => {
+          setModalIsOpen(false)
+          toast.error(err?.message);
+          toast.error(err?.response?.data?.message);
+          console.log(err , 'error')
+        });
+      } catch (error) {
+        setModalIsOpen(false)
+        console.log(error)
+      }
+    }
+
+
 
 
   return (
@@ -117,14 +99,17 @@ const ForgotPassword = () => {
             <div className="container">
                 <div className="inner-user-login-grid-section-outer w-full max-w-[600px] mx-auto">
                     <div className="left-login-page-image-section bg-white rounded-2xl overflow-hidden">
+                        {otpTab ? 
+                            null  :
                         <div className="top-forgot-heading-sec px-6 py-4 border-b border-opacity-20 border-Black">
-                            <h2 className='text-2xl font-medium'>{otpTab ? 'Verify OTP' : 'Forgot Password'}</h2>
-                            <p className='text-sm opacity-50 mt-2'>OTP Will be sent to your email if your  account is registered with localmart</p>
+                            <h2 className='text-2xl font-medium'>Forgot Password</h2>
+                            <p className='text-sm opacity-50 mt-2'>Password Reset Link Will be sent to your email if your account is registered with localmart</p>
                         </div>
+                        }
                             <div className="form-section p-6">
                                 {otpTab ? 
-                                    <div className="otp-section-forgot">
-                                        <div className="top-forgot-disabled-email">
+                                    <div className="otp-section-forgot text-center">
+                                        {/* <div className="top-forgot-disabled-email">
                                             <div className="form-inputsec relative mb-6">
                                                 <input type="email" disabled={true} value={readMail} name="email" className={`outline-none border-none bg-LightGrayBg py-4 pl-6 pr-5 rounded-xl w-full text-Black `} 
                                                 />                                
@@ -142,7 +127,17 @@ const ForgotPassword = () => {
                                         </div>
                                         <div className="tp-submission-button">
                                             <button type="button" onClick={otpVerifier} className='mt-5  overflow-hidden relative group bg-Primary rounded-xl w-full py-3 px-4 text-white font-semibold text-lg'>Verify OTP</button>
+                                        </div> */}
+
+                                        <div className="top-email-sent-image">
+                                            <img src={EmailSentIcon} className='w-24 h-24 mx-auto' alt="" />
                                         </div>
+                                        <div className="bottom-emailsent-content mt-5">
+                                            <h4 className='text-center font-medium text-2xl text-black'>Reset Link Sent Successfully</h4>
+                                            <p className='opacity-60 text-center text-black mt-2'>A password reset link has been sent to your email address. <br /> Please check your inbox to reset your password.</p>
+                                        </div>
+                                        <button type="button" onClick={() => navigate('/')} className=' mt-5 text-center bg-Secondary px-6 py-2 rounded-full text-white'>Go to home</button>
+
                                     </div> 
                                     : 
                                     <div className="inner-forgot-password-form">
@@ -166,7 +161,7 @@ const ForgotPassword = () => {
                                                         />
                                                     </div>
                                                     <div className="bottom-form-submitter  overflow-hidden relative group ">
-                                                        <button type='submit' disabled={!captchaVerified} onClick={handleSubmit} className='w-full py-3 px-4 rounded-xl text-white font-semibold text-lg h-full bg-Primary disabled:bg-opacity-35 '>Send OTP</button>
+                                                        <button type='submit' disabled={!captchaVerified} onClick={handleSubmit} className='w-full py-3 px-4 rounded-xl text-white font-semibold text-lg h-full bg-Primary disabled:bg-opacity-35 '>Send Link</button>
                                                     </div>
                                                 </div>
                                             </Form>

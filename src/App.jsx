@@ -30,6 +30,7 @@ import Advertise from './Components/Advertise/Advertise'
 import ChangePassword from './Components/ProfileScreens/ChangePassword/ChangePassword'
 import UnderConstruction from './Components/UnderConstruction/UnderConstruction'
 import ForgotPassword from './Components/Auth/ForgotPassword/ForgotPassword'
+import ResetPassword from './Components/Auth/ForgotPassword/ResetPassword'
 
 
 
@@ -44,13 +45,15 @@ const Layout = () => {
           <Route exact={true} Component={Home} path='/' />
           <Route exact={true} Component={BusinessPage} path='/businesses'/>
           <Route exact={true} Component={UserLogin} path='/login' />
-          <Route exact={true} Component={ForgotPassword} path='forgot-password'/>
+          <Route exact={true} Component={ForgotPassword} path='/forgot-password'/>
+          <Route exact={true} Component={ResetPassword} path='/reset-password'/>
           <Route exact={true} Component={UserRegister} path='/register' />
           <Route exact={true} Component={CompleteRegistration} path='/register-details' />
           <Route exact={true} Component={Advertise} path='/advertise' />
           <Route exact={true} Component={SearchPage} path='/search' />
           <Route exact={true} Component={SearchDetails} path='/search/complete-details/:id'/>
           <Route exact={true} Component={UnderConstruction} path='/coming-soon'/>
+
 
 
           {/* Ploicies Pages */}

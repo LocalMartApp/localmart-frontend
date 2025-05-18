@@ -8,6 +8,7 @@
         }
     }
     .form-inputsec {
+
         .email-input-icon {
             transform: translate(-0% , -50%) !important;
         }
@@ -40,6 +41,12 @@
     
     
 }
+
+        .form-inputsec {
+            .email-input-icon {
+                            transform: translate(-0% , -50%) !important;
+            }
+        }
 
     .otpinputs-outer {
         justify-content: space-between !important;

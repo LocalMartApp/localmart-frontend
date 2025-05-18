@@ -181,7 +181,7 @@ const Header = () => {
                       </div>
                     </div>
                     )}
-                    <div className={`language-selection-header relative duration-300 ${language ? 'rounded-xl rounded-b-none ' : 'rounded-[20px]'}`}>
+                    <div className={`language-selection-header relative duration-300 hidden ${language ? 'rounded-xl rounded-b-none ' : 'rounded-[20px]'}`}>
                       <button type="button" className='flex items-center gap-1 h-10 px-3 ' onClick={handleLanguageSelect}>
                         <img src={LanSvg} className='max-w-[18px] min-w-[18px]' alt="" />
                         <p className='text-Black'>{languageSelector}</p>
