@@ -524,21 +524,23 @@ const shareLink = (platform) => {
                 <div className="col-span-8 about-para-rating-items-section">
                   <div className="inner-about-rating-section flex flex-col gap-y-10">
                     <div className="top-about-para-section-searched">
-                      <h4 className="text-20 font-medium text-Black mb-1">
+                      {singleBusiness?.about ? 
+                       <h4 className="text-20 font-medium text-Black mb-1">
                         About This Place
-                      </h4>
+                      </h4> : null 
+                      }
                       <p className={`opacity-70 ${singleBusiness?.about ? 'text-Black' : 'text-red-500'}`}>
                         {singleBusiness?.about ? singleBusiness?.about : 'About this place is not Available right now '}
                       </p>
                     </div>
                     <div className="amenities-section-searched">
-                      <h4 className="text-20 font-medium text-Black mb-3">
-                        Amenities
-                      </h4>
+                      {singleBusiness?.amenities && singleBusiness?.amenities.length > 0 && (
+                        <h4 className="text-20 font-medium text-Black mb-3">
+                          Amenities
+                        </h4>
+                      ) }
                       <div className="amenities-mapped-section flex items-center gap-x-30p flex-wrap gap-y-4">
-                        {singleBusiness?.amenities &&
-                        singleBusiness?.amenities.length
-                          ? singleBusiness?.amenities.map((items, index) => {
+                        {singleBusiness?.amenities && singleBusiness?.amenities.length > 0  ? singleBusiness?.amenities.map((items, index) => {
                               return (
                                 <div
                                   className="single-amenities-searched"
@@ -557,18 +559,68 @@ const shareLink = (platform) => {
                           : null}
                       </div>
                     </div>
+                    <div className="rating-section-searched">
+                      {singleBusiness?.socialMediaLink && singleBusiness?.socialMediaLink?.length > 0 && (
+                      <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
+                        <div className="rating-searched-heading">
+                          <h4 className="text-20 font-medium text-Black">
+                            Social Media
+                          </h4>
+                          <p className="text-sm text-Black opacity-50">
+                          </p>
+                        </div>
+                      </div>
+                      )}
+                      <div className="rating-searched-bottom-slider-section grid grid-cols-12 gap-5">
+                        {singleBusiness?.socialMediaLink && singleBusiness?.socialMediaLink?.length > 0 ?  singleBusiness?.socialMediaLink?.map((items , index) => {
+                            return (
+                            <button type="button" onClick={() => window.open(items , "_blank")} className="single-rating-profile col-span-12  text-left" key={index}>
+                                <h4 className='font-medium text-Secondary '>{items}</h4>
+                            </button>
+                            )
+                        }) : null}
+                      </div>
+                    </div>
 
                     <div className="rating-section-searched">
-                      <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
+                      {singleBusiness?.serviceItems && singleBusiness?.serviceItems?.length > 0 && (
+                        <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
+                          <div className="rating-searched-heading">
+                            <h4 className="text-20 font-medium text-Black">
+                              Service Items
+                            </h4>
+                            <p className="text-sm text-Black opacity-50">
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      <div className="rating-searched-bottom-slider-section grid grid-cols-12 gap-5">
+                        {singleBusiness?.serviceItems && singleBusiness?.serviceItems?.length > 0 ?  singleBusiness?.serviceItems?.map((items , index) => {
+                            return (
+                            <div className="single-rating-profile col-span-4 border-Black border-opacity-20 border rounded-2xl p-5" key={index}>
+                                  <div className="right-text-rating-profile mb-2">
+                                    <h4 className='font-medium text-Black capitalize'>{items?.name}</h4>
+                                  </div>
+                                <div className="bottom-pricing-sec-service flex items-center justify-between gap-x-4 ">
+                                  <p className="text-Secondary font-medium text-xl">₹ {items?.price}</p>
+                                  <p className="text-Black  opacity-60">{items?.quantity}</p>
+                                </div>
+                            </div>
+                            )
+                        }) : null}
+                      </div>
+                    </div>
+
+                    <div className="rating-section-searched">
+                      {singleBusiness?.reviews && singleBusiness?.reviews?.length > 0 && (
+                        <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
                         <div className="rating-searched-heading">
                           <h4 className="text-20 font-medium text-Black">
                             Ratings
                           </h4>
-                          <p className="text-sm text-Black opacity-50">
-                            Total 305 People Rated this place
-                          </p>
                         </div>
                       </div>
+                      )}
                       <div className="rating-searched-bottom-slider-section grid grid-cols-12 gap-5">
                         {singleBusiness?.reviews && singleBusiness?.reviews?.length > 0 ?  singleBusiness?.reviews?.map((items , index) => {
                             return (
