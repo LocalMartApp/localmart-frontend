@@ -44,7 +44,7 @@ import {
 import '../Home/Home.scss'
 import DetectingLoader from "../../utils/Loader/DetectingLoader";
 
-const GOOGLE_MAPS_API_KEY = "AlzaSyhhA43-gQ2a2hom7On99JaswTVRW4QZUju";
+const GOOGLE_MAPS_API_KEY = "AIzaSyD5_3Xmuuyxph0PEHPNK97qYyBr30OEllQ";
 
 const BusinessPage = () => {
   const navigate = useNavigate();
