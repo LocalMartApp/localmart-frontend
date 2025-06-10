@@ -841,7 +841,7 @@ const Home = () => {
                 <AppsSlider />
               </div>
             </div>
-            <div className="inner-home-section-2">
+            <div className="inner-home-section-2 hidden">
               <div className="container">
                 <PopServicesSlider />
               </div>
