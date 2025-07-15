@@ -129,7 +129,7 @@ const AddAddress = () => {
               if(response) {
                   toast.success('Address Added Successfully');
                 //   console.log(response , 'userreg-res');
-                  navigate('/login')
+                  navigate('/profile/my-addresses')
                   setModalIsOpen(false)
               }
             })
