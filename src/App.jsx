@@ -31,6 +31,7 @@ import ChangePassword from './Components/ProfileScreens/ChangePassword/ChangePas
 import UnderConstruction from './Components/UnderConstruction/UnderConstruction'
 import ForgotPassword from './Components/Auth/ForgotPassword/ForgotPassword'
 import ResetPassword from './Components/Auth/ForgotPassword/ResetPassword'
+import DeleteAccount from './Components/ProfileScreens/DeleteAccount/DeleteAccount'
 
 
 
@@ -72,6 +73,7 @@ const Layout = () => {
             <Route exact={true} Component={BusinessFormAdding} path='/business/add-business' />
             <Route exact={true} Component={BusinessUploadMedia} path='/business/add-photos' />
             <Route exact={true} Component={MyBusinessDetail} path='/busniess/complete-details/:id'/>
+            <Route exact={true} Component={DeleteAccount} path='/profile/delete-account' />
           </Route>
         </Routes>
         <Footer/>
