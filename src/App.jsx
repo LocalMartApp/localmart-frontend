@@ -62,6 +62,7 @@ const Layout = () => {
           <Route exact={true} Component={TermsandConditions} path='/terms-conditions'/>
           <Route exact={true} Component={PrivacyPolicy} path='/privacy-policy'/>
           {/* Protected Routes */}
+            <Route exact={true} Component={DeleteAccount} path='/profile/delete-account' />
           <Route Component={ProtectedRoutes}>
             <Route exact={true} Component={MyProfile} path='/profile/my-profile' />
             <Route exact={true} Component={EditProfile} path='/profile/edit-profile' />
@@ -73,7 +74,6 @@ const Layout = () => {
             <Route exact={true} Component={BusinessFormAdding} path='/business/add-business' />
             <Route exact={true} Component={BusinessUploadMedia} path='/business/add-photos' />
             <Route exact={true} Component={MyBusinessDetail} path='/busniess/complete-details/:id'/>
-            <Route exact={true} Component={DeleteAccount} path='/profile/delete-account' />
           </Route>
         </Routes>
         <Footer/>
