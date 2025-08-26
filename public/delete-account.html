@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Delete Account • LocalMart</title>
+
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Optional: define your custom colors if needed -->
+    <style>
+      .bg-primary {
+        background-color: #2563eb;
+      } /* example blue */
+      .bg-primary-dark {
+        background-color: #1e40af;
+      } /* darker blue */
+      .text-primary {
+        color: #2563eb;
+      }
+      .border-primary {
+        border-color: #2563eb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="space-y-6 text-center max-w-2xl mx-auto p-6">
+      <h1 class="text-2xl font-bold">Delete your LocalMart account</h1>
+      <p class="text-gray-700">
+        To delete your account, please sign in first. After signing in you can
+        permanently delete your account and personal data from your profile
+        page.
+      </p>
+
+      <div class="text-left bg-gray-50 rounded-xl p-6 space-y-3">
+        <h2 class="font-semibold text-xl">How to delete</h2>
+        <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+          <li>Log in to your account.</li>
+          <li>
+            Go to <span class="font-medium">Profile &gt; Delete Account</span>.
+          </li>
+          <li>Read the notice and confirm deletion.</li>
+        </ol>
+      </div>
+
+      <div class="text-left bg-gray-50 rounded-xl p-6 space-y-3">
+        <h2 class="font-semibold text-xl">What happens next</h2>
+        <ul class="list-disc pl-5 space-y-2 text-gray-700">
+          <li>Your account and profile data are permanently removed.</li>
+          <li>
+            Business listings and media you created are deleted or anonymized.
+          </li>
+          <li>
+            We may retain limited records if required by law (e.g.,
+            invoices/fraud prevention).
+          </li>
+          <li>
+            Deletion is typically completed within <strong>30 days</strong>.
+            <!-- replace 30 with your actual DELETION_DAYS -->
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a
+          href="/login"
+          class="bg-primary px-6 py-2 text-white rounded hover:bg-primary-dark"
+        >
+          Login to delete
+        </a>
+        <a
+          href="mailto:Incrosyscare@gmail.com?subject=Account%20Deletion%20Request"
+          class="px-6 py-2 rounded border border-primary text-primary hover:bg-primary/5"
+        >
+          Can’t log in? Email support
+        </a>
+      </div>
+
+      <p class="text-sm text-gray-600">
+        For more details, see our
+        <a
+          class="underline text-primary"
+          href="https://www.localmart.app/privacy-policy/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Privacy Policy </a
+        >.
+      </p>
+    </div>
+  </body>
+</html>
