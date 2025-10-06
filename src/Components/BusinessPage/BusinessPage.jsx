@@ -43,6 +43,7 @@ import {
 } from "@react-google-maps/api";
 import '../Home/Home.scss'
 import DetectingLoader from "../../utils/Loader/DetectingLoader";
+import AdSlider from "../Home/AdSlider";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyD5_3Xmuuyxph0PEHPNK97qYyBr30OEllQ";
 
@@ -725,7 +726,8 @@ const BusinessPage = () => {
         </div>
         <section className="business-section-4 py-16">
           <div className="inner-business-section-4">
-            <BusinessPopServSlider title="Popular Services" />
+            <AdSlider/>
+            {/* <BusinessPopServSlider title="Popular Services" /> */}
           </div>
         </section>
         <section className="business-page-section-3 hidden">
