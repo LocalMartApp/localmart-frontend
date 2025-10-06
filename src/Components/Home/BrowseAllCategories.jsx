@@ -16,6 +16,7 @@ import axios from 'axios';
 import { config } from '../../env-services';
 import { useNavigate } from 'react-router-dom';
 import useSearchStore from '../../Store/useSearchStore';
+import './Home.scss'
 
 
 const BrowseAllCategories = ({ isCategoryOpen , closeCategory }) => {
@@ -98,9 +99,9 @@ const BrowseAllCategories = ({ isCategoryOpen , closeCategory }) => {
                 </div>
             </div>
         </div>
-        <div className={`main-browse-all-categories-blackoverlay fixed top-0 w-full duration-500 h-full bg-black bg-opacity-25 backdrop-blur-xl z-[99999] ${isCategoryOpen ? 'left-0 visible' : ' -left-full invisible'} `}>
+        <button type='button' onClick={closeCategory} className={`main-browse-all-categories-blackoverlay fixed top-0 w-full duration-500 h-full bg-black bg-opacity-25 backdrop-blur-xl z-[99999] ${isCategoryOpen ? 'left-0 visible' : ' -left-full invisible'} `}>
 
-        </div>
+        </button>
     </div>
 
   )

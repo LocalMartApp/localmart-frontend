@@ -18,11 +18,6 @@ const ProfileSideBar = () => {
       button: false,
     },
     {
-      title: "Notifications",
-      link: "/coming-soon",
-      button: false,
-    },
-    {
       title: "Addresses",
       link: "/profile/my-addresses",
       button: false,
@@ -44,11 +39,6 @@ const ProfileSideBar = () => {
     },
     {
       title: "Change Password",
-      link: "/coming-soon",
-      button: false,
-    },
-    {
-      title: "Feedback",
       link: "/coming-soon",
       button: false,
     },

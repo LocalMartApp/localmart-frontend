@@ -728,7 +728,7 @@ const BusinessPage = () => {
             <BusinessPopServSlider title="Popular Services" />
           </div>
         </section>
-        <section className="business-page-section-3">
+        <section className="business-page-section-3 hidden">
           <div className="inner-business-page-section-3 bg-LightBlue py-16">
             <div className="container">
               <div className="business-section-3-heading-sec flex items-center justify-between gap-10">
@@ -820,12 +820,12 @@ const BusinessPage = () => {
             </div>
           </div>
         </section>
-        <section className="business-section-4 py-16">
+        <section className="business-section-4 py-16 hidden">
           <div className="inner-business-section-4">
             <BusinessPopServSlider title="Explore by Restaurants & Stays" />
           </div>
         </section>
-        <section className="business-page-section-5">
+        <section className="business-page-section-5 hidden">
           <div className="inner-business-page-section-5 bg-LightBlue py-16">
             <div className="container">
               <div className="business-section-3-heading-sec flex items-center justify-between gap-10">

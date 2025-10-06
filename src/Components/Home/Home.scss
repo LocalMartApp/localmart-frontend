@@ -256,7 +256,7 @@ button {
             }
         }
         .bottom-apps-home-section-1 {
-            padding: 0px 15px !important;
+            padding: 0px 0px !important;
         }
         .big-search-section {
             .main-search-input-section  {
@@ -364,6 +364,20 @@ button {
         .top-search-section-grid-parent {
             position: relative !important;
         }
+        .localmart-apps-section-banner {
+            .single-home-app-cards-sec-1  {
+                padding: 15px 20px;
+            }
+            .left-app-logo  {
+                width: 30px;
+                height: 30px;
+            }
+            .right-app-heading-title-sec {
+                h2 {
+                    font-size: 16px;
+                }
+            }
+        }
     }
     .top-slider-search-section {
         .heading-section-1 {
@@ -381,5 +395,14 @@ button {
              }
            }
         }
+    }
+}
+
+.main-browse-all-categories-blackoverlay {
+    transform: scale(1) !important;
+
+
+    &:active {
+        transform: scale(1) !important;
     }
 }

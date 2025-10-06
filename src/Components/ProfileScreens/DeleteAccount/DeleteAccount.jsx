@@ -79,7 +79,7 @@ const DeleteAccount = () => {
 
   const LoggedOutView = () => (
     <div className="space-y-6 text-center max-w-2xl">
-      <h1 className="text-2xl font-bold">Delete your LocalMart account</h1>
+      <h1 className="text-2xl font-semibold">Delete your LocalMart account</h1>
       <p className="text-gray-700">
         To delete your account, please sign in first. After signing in you can
         permanently delete your account and personal data from your profile
@@ -147,15 +147,15 @@ const DeleteAccount = () => {
   );
 
   const LoggedInView = () => (
-    <div className="space-y-6 text-center max-w-xl">
-      <h1 className="text-2xl font-bold">Delete Account</h1>
+    <div className="space-y-6 text-center max-w-xl bg-gray-100 rounded-xl py-6 px-5">
+      <h1 className="text-2xl font-semibold">Delete Account</h1>
       <p className="text-gray-700">
         This will permanently delete your account and all personal data. This
         action cannot be undone.
       </p>
       <button
         onClick={handleDeleteAccount}
-        className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 disabled:opacity-60"
+        className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 disabled:opacity-60"
         disabled={!rawToken || isSubmitting}
       >
         {isSubmitting ? "Deleting…" : "Confirm Delete Account"}

@@ -537,48 +537,6 @@ const Home = () => {
                       <div className="search-grid-container-main">
                         <div className="grid grid-cols-10 justify-center gap-x-6 top-search-section-grid-parent">
                           <div className="col-span-3 relative">
-                            {/* <div className={`location-setting-section grid items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${headerBar ? 'shadow-xl' : ''}`}>
-                              <div className="">
-                                <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
-                              </div>
-                              <div className="country-selection col-span-5 relative z-[99999]">
-                                <Select options={cityOptions} 
-                                  placeholder='Choose Location'
-                                  styles={{
-                                      control: (baseStyles, state) => ({
-                                        ...baseStyles,
-                                        borderRadius: 10,
-                                        paddingLeft: 0,
-                                        paddingTop: 4,
-                                        paddingBottom: 4,
-                                        borderWidth: 0,
-                                        outlineWidth: 0,
-                                        borderColor: '#fff',
-                                        outlineColor: '#fff',
-                                        fontSize: 18,
-                                        minWidth: '100%',
-                                        // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused ? 'none' : 'none',
-                                        
-                                      }),
-                                    }}
-                                  value={citySelect}
-                                  onChange={(option) => setCitySelect(option)}
-                                />
-                              </div>
-                            </div> */}
-                            {/* <div className={`location-setting-section relative w-full bg-white overflow-hidden rounded-full h-70p ${headerBar ? 'shadow-xl' : ''}`}>
-                              <div className="icon-section home-local-search-icon-sec absolute left-8 top-1/2">
-                                <i className='ri-map-pin-fill text-2xl text-Secondary'></i>
-                              </div>
-                              <div className="input-area-search-section h-full w-full">
-                                {isLoaded? 
-                                  <StandaloneSearchBox className="" onLoad={(ref) => (inputRef.current = ref)} onPlacesChanged={handleAreaSearchChange}>
-                                    <input type="text" placeholder="Search for an area..." className="input-box w-full h-70p pr-6 pl-12 py-2" />
-                                  </StandaloneSearchBox> : null  
-                                }
-                              </div>
-                            </div> */}
                             <div
                               className={`location-setting-section grid overflow-hidden relative items-center grid-cols-6 gap-x-4 w-full bg-white rounded-full px-5 h-70p ${
                                 headerBar ? "shadow-xl" : ""
@@ -753,6 +711,9 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
+                <div className="bottom-apps-home-section-1 mt-16">
+                <AppsSlider />
+              </div>
                 <section className="home-section-5-mobile-view ">
                   <div className="inner-home-section-5">
                     <div className="">
@@ -837,9 +798,7 @@ const Home = () => {
                   </div>
                 </section>
               </div>
-              <div className="bottom-apps-home-section-1 mt-16">
-                <AppsSlider />
-              </div>
+              
             </div>
             <div className="inner-home-section-2 hidden">
               <div className="container">
@@ -852,18 +811,14 @@ const Home = () => {
               <RechargesBlocks />
             </div>
           </section>
-          <section className="home-section-3">
+          <section className="home-section-3 hidden">
             <div className="inner-home-section-3">
               <div className="container">
                 <ExploreCities />
               </div>
             </div>
           </section>
-          <section className="home-section-4">
-            <div className="inner-home-section-4">
-              <AdSlider />
-            </div>
-          </section>
+          
           <section className="home-section-5">
             <div className="inner-home-section-5">
               <div className="container">
@@ -943,6 +898,11 @@ const Home = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </section>
+          <section className="home-section-4 border-b border-gray-200">
+            <div className="inner-home-section-4">
+              <AdSlider />
             </div>
           </section>
         </div>
