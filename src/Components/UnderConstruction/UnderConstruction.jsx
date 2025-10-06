@@ -24,7 +24,7 @@ const UnderConstruction = () => {
               <p className='text-center w-[60%] mx-auto opacity-60'>but there's much more to see! We encourage you to explore our other pages to learn more about our services, solutions, and team. Stay tuned — this page will be live soon.</p>
             </div>
             <div className="go-back-section-construction text-center ">
-              <button type="button" onClick={() => navigate ('/')} className='flex items-center justify-center mx-auto bg-Secondary px-8 py-2 rounded-full text-white'>
+              <button type="button" onClick={() => navigate (-1)} className='flex items-center justify-center mx-auto bg-Secondary px-8 py-2 rounded-full text-white'>
               <i class="bi bi-arrow-left mr-3"></i>
               Back to Home
               </button>
