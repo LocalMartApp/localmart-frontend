@@ -135,6 +135,11 @@ export const resetPasswordSchema = yup.object().shape({
 })
 
 
+    // email : '',
+    //   currentPassword: '',
+    //   newPassword: '',
+    //   confirmPassword: '',
+
 
 export const addAdvertValidation = yup.object().shape({
     email: yup.string().email('Please Enter Valid Email').required('Email Address Required'),

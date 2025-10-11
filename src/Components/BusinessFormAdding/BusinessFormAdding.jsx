@@ -412,8 +412,9 @@ const BusinessFormAdding = () => {
        if(response?.data?.status == 'success') {
         toast.success('Business Created Successfully');
         setModalIsOpen(false)
-        const busId = response?.data?.data?._id
-        navigate('/business/add-photos', { state: { busId } })
+        const busId = response?.data?.data?._id;
+        handleRazorpayPayment(busId, data);
+        // navigate('/business/add-photos', { state: { busId } })
        }else {
         toast.error('Error in Creating business');
         setModalIsOpen(false)
@@ -429,6 +430,109 @@ const BusinessFormAdding = () => {
     }
 
   }
+
+  const handleRazorpayPayment = async (businessId) => {
+    try {
+      const orderPayload = {
+        amount: 2499 * 100,
+        currency: "INR",
+        businessId,
+        userId: "64f8a1b2c3d4e5f6a7b8c9d1",
+        businessCreationFee: 2499,
+        receipt: `business_${Date.now()}`,
+      };
+
+      const orderResponse = await axios.post(`${config.api}razorpay/create-order`, orderPayload, {
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
+
+      console.log("razorpay resonse" , orderResponse)
+      const orderData = orderResponse?.data?.order;
+      const razorpayOrderId = orderData?.id;
+
+      console.log("razorpay resonse" , razorpayOrderId)
+
+
+      const loadRazorpay = () =>
+        new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = () => resolve(true);
+          script.onerror = () => resolve(false);
+          document.body.appendChild(script);
+        });
+
+      const isLoaded = await loadRazorpay();
+      if (!isLoaded) {
+        toast.error("Failed to load Razorpay SDK");
+        return;
+      }
+
+      // STEP 3: Configure Razorpay options
+      const options = {
+        key: "rzp_test_RR13mnGZ0jucuu",
+        amount: orderPayload.amount,
+        currency: "INR",
+        name: "LocalMart",
+        description: "Business Creation Fee",
+        order_id: razorpayOrderId,
+        prefill: {
+          name: "INCROSYS",
+          email: "support@localmart.app",
+          contact: "+91 9566454545",
+        },
+        theme: { color: "#1F90FF" },
+
+        handler: async function (response) {
+          try {
+            // STEP 4: Save Payment Details
+            const paymentData = {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              payment_method: "card",
+              payment_status: "paid",
+            };
+
+            const saveResponse = await axios.post(
+              `${config.api}razorpay/save-payment`,
+              paymentData,
+              {
+                headers: { Authorization: `Bearer ${userToken}` },
+              }
+            );
+
+            if (saveResponse?.data?.status === "success") {
+              toast.success("Payment successful and verified!");
+            } else {
+              toast.error("Payment verification failed");
+            }
+          } catch (err) {
+            console.error("Error saving payment:", err);
+            toast.error("Error saving payment");
+          }
+        },
+
+        modal: {
+          ondismiss: function () {
+            toast.info("Payment cancelled");
+          },
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
+      rzp.on("payment.failed", function (response) {
+        console.error("Payment failed:", response.error);
+        toast.error(response.error?.description || "Payment failed");
+      });
+    } catch (error) {
+      console.error("Razorpay error:", error);
+      toast.error("Something went wrong during payment");
+    }
+  };
+
 
   return (
     <div className="BusinessFormAdding bg-LightBlue bg-opacity-80">
@@ -908,7 +1012,7 @@ const BusinessFormAdding = () => {
                             </div>
 
                           </div>
-                          <div className="single-form-section-business business-basic-details rounded-[15px] bg-white hidden">
+                          <div className="single-form-section-business business-basic-details rounded-[15px] bg-white ">
                             <div className="inner-pricing-section flex items-center gap-6 relative">
                               <div className="left-image-pricing">
                                 <img src={PricingImg} className='w-64' alt="" />
@@ -916,7 +1020,7 @@ const BusinessFormAdding = () => {
                               <div className="right-content-pricing py-6">
                                 <h2 className='text-2xl font-medium text-Black'>50% OFF – Business Listing Subscription!</h2>
                                 <p className='font-light opacity-80 pb-3 pt-1'>Boost your brand’s online presence and attract more customers with our premium business listing. <br /> Get discovered easily, enhance credibility, and drive more leads—all at an unbeatable price.</p>
-                                <h3 className='text-Secondary font-semibold text-4xl'><span className='line-through text-Black font-medium opacity-40 mr-4'>₹5000</span>₹2499</h3>
+                                <h3 className='text-Secondary font-semibold text-4xl'><span className='line-through text-Black font-medium opacity-40 mr-4'>₹4999</span>₹2499</h3>
                               </div>
                               <div className="abs-check absolute top-4 right-4">
                                 <i class="bi bi-check-circle-fill text-3xl text-[#0DB9AA]"></i>

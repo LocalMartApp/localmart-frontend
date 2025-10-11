@@ -39,7 +39,7 @@ const ProfileSideBar = () => {
     },
     {
       title: "Change Password",
-      link: "/coming-soon",
+      link: "/reset-password",
       button: false,
     },
     {
