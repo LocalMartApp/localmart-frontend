@@ -25,6 +25,9 @@ const useSearchStore = create(
       loading: false,
       error: "",
       totalPages: 1,
+      totalResults: 0,
+      currentPage: 1,
+      resultsPerPage: 10,
 
       setFilter: (key, value) =>
         set((state) => ({
@@ -55,13 +58,10 @@ const useSearchStore = create(
       fetchSearchResults: async () => {
         const { filters } = get();
 
-
-
         // Optional - Clean filters
         const cleanedFilters = Object.fromEntries(
           Object.entries(filters).filter(([_, value]) => value)
         );
-
 
         set({ loading: true, error: null });
 
@@ -81,11 +81,46 @@ const useSearchStore = create(
           axios
             .request(config)
             .then((response) => {
-              console.log(JSON.stringify(response.data));
+              console.log(
+                "🔍 Full API Response:",
+                JSON.stringify(response.data, null, 2)
+              );
+              const responseData = response.data;
+
+              // Debug: Log the structure to understand the API response
+              console.log("🔍 Response structure:", {
+                data: responseData.data,
+                totalPages: responseData?.totalPages,
+                totalResults: responseData?.totalResults,
+                total: responseData?.total,
+                count: responseData?.count,
+                totalCount: responseData?.totalCount,
+                currentPage: responseData?.currentPage,
+                page: responseData?.page,
+                perPage: responseData?.perPage,
+                resultsPerPage: responseData?.resultsPerPage,
+              });
+
               set({
-                results: response.data.data,
+                results: responseData.data || [],
                 loading: false,
-                totalPages: response?.data?.totalPages || 1,
+                totalPages: responseData?.totalPages || 1,
+                totalResults:
+                  responseData?.totalResults ||
+                  responseData?.total ||
+                  responseData?.count ||
+                  responseData?.totalCount ||
+                  (responseData.data ? responseData.data.length : 0),
+                currentPage:
+                  responseData?.currentPage ||
+                  responseData?.page ||
+                  filters.page ||
+                  1,
+                resultsPerPage:
+                  responseData?.resultsPerPage ||
+                  responseData?.perPage ||
+                  responseData?.limit ||
+                  10,
               });
             })
             .catch((error) => {
@@ -100,6 +135,28 @@ const useSearchStore = create(
       },
       resetFilters: () =>
         set({ filters: { searchKey: "", city: "", category: "" } }),
+
+      // Helper function to get pagination display info
+      getPaginationInfo: () => {
+        const { totalResults, currentPage, resultsPerPage, totalPages } = get();
+        const startResult =
+          totalResults > 0 ? (currentPage - 1) * resultsPerPage + 1 : 0;
+        const endResult = Math.min(currentPage * resultsPerPage, totalResults);
+
+        return {
+          startResult,
+          endResult,
+          totalResults,
+          currentPage,
+          totalPages,
+          resultsPerPage,
+          hasResults: totalResults > 0,
+          showingText:
+            totalResults > 0
+              ? `Showing ${startResult}-${endResult} of ${totalResults} results`
+              : "No results found",
+        };
+      },
     }),
     {
       name: "search-store",
