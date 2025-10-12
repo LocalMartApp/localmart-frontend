@@ -17,6 +17,7 @@ import EmptyLoader from "../../assets/images/animated-logos/emptyastro.json";
 import ReactPaginate from "react-paginate";
 import ViewSwitch from "./ViewSwitch";
 import BusinessGridCard from "./BusinessGridCard";
+import BusinessListCard from "./BusinessListCard";
 
 const SearchPage = () => {
   const navigate = useNavigate();
@@ -44,6 +45,12 @@ const SearchPage = () => {
 
   const [favorite, setFavorite] = useState(false);
 
+  // Status modal state
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [currentStatusIndex, setCurrentStatusIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [selectedBusiness, setSelectedBusiness] = useState(null);
+
   useEffect(() => {
     fetchSearchResults();
   }, [filters]);
@@ -52,10 +59,104 @@ const SearchPage = () => {
     navigate(`/search/complete-details/${item._id}`);
   };
 
-  const handlePageClick = (data) => {
-    // alert(data)
-    setFilter("page", data?.selected || 1);
+  // Auto-slide functionality
+  useEffect(() => {
+    if (
+      isStatusModalOpen &&
+      isAutoPlaying &&
+      selectedBusiness?.businessStatuses?.length > 1
+    ) {
+      const interval = setInterval(() => {
+        setCurrentStatusIndex((prevIndex) =>
+          prevIndex === selectedBusiness.businessStatuses.length - 1
+            ? 0
+            : prevIndex + 1
+        );
+      }, 3000); // 3 seconds per status like Instagram
+
+      return () => clearInterval(interval);
+    }
+  }, [
+    isStatusModalOpen,
+    isAutoPlaying,
+    selectedBusiness?.businessStatuses?.length,
+  ]);
+
+  // Keyboard support for modal
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (isStatusModalOpen) {
+        if (event.key === "Escape") {
+          handleCloseStatusModal();
+        } else if (event.key === "ArrowLeft") {
+          handleStatusNavigation("prev");
+        } else if (event.key === "ArrowRight") {
+          handleStatusNavigation("next");
+        } else if (event.key === " ") {
+          event.preventDefault();
+          toggleAutoPlay();
+        }
+      }
+    };
+
+    if (isStatusModalOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden"; // Prevent background scrolling
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [isStatusModalOpen]);
+
+  // Handle status modal open
+  const handleStatusClick = (business) => {
+    setSelectedBusiness(business);
+    setIsStatusModalOpen(true);
+    setCurrentStatusIndex(0);
+    setIsAutoPlaying(true);
   };
+
+  // Handle status modal close
+  const handleCloseStatusModal = () => {
+    setIsStatusModalOpen(false);
+    setCurrentStatusIndex(0);
+    setIsAutoPlaying(true);
+    setSelectedBusiness(null);
+  };
+
+  // Handle manual navigation
+  const handleStatusNavigation = (direction) => {
+    if (direction === "next") {
+      setCurrentStatusIndex((prev) =>
+        prev === selectedBusiness.businessStatuses.length - 1 ? 0 : prev + 1
+      );
+    } else {
+      setCurrentStatusIndex((prev) =>
+        prev === 0 ? selectedBusiness.businessStatuses.length - 1 : prev - 1
+      );
+    }
+  };
+
+  // Toggle auto-play
+  const toggleAutoPlay = () => {
+    setIsAutoPlaying(!isAutoPlaying);
+  };
+
+  const handlePageClick = (data) => {
+    const selectedPage = data.selected + 1; // ReactPaginate is 0-based, API is 1-based
+    console.log("Page clicked:", selectedPage, "Total pages:", totalPages);
+    setFilter("page", selectedPage);
+  };
+
+  // Debug pagination info
+  console.log("Pagination Debug:", {
+    totalPages,
+    totalResults,
+    currentPage: getPaginationInfo().currentPage,
+    resultsLength: results?.length,
+  });
   const searchedContent = [
     {
       id: 1,
@@ -405,178 +506,13 @@ const SearchPage = () => {
                           }
 
                           return (
-                            <div
-                              className="single-searched-cards transform transition-all duration-300 hover:scale-[1.02]"
-                              key={index}
-                            >
-                              <div className="single-business-sec-3-card w-full bg-white rounded-2xl text-left shadow-lg hover:shadow-2xl overflow-hidden group transition-all duration-500 relative">
-                                {/* Save Button */}
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggleFavorite(items._id);
-                                  }}
-                                  className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300 hover:bg-white z-10"
-                                  title={
-                                    isFavorite(items._id)
-                                      ? "Remove from saved"
-                                      : "Save business"
-                                  }
-                                >
-                                  {isFavorite(items._id) ? (
-                                    <i className="ri-bookmark-fill text-Primary text-xl"></i>
-                                  ) : (
-                                    <i className="ri-bookmark-line text-gray-600 text-xl group-hover:text-Primary transition-colors duration-300"></i>
-                                  )}
-                                </button>
-
-                                {/* Clickable card area */}
-                                <button
-                                  onClick={() => handleNavigate(items)}
-                                  className="w-full h-full text-left"
-                                >
-                                  <div className="inner-verified-sellers-card-sec grid grid-cols-12">
-                                    <div className="left-image-section-bus-sec-3 col-span-3 overflow-hidden">
-                                      <img
-                                        src={
-                                          items?.mediaFiles[0]?.fileUrl
-                                            ? items?.mediaFiles[0]?.fileUrl
-                                            : Emptymedia
-                                        }
-                                        className="h-full w-full group-hover:scale-110 duration-700 object-cover max-h-[280px] transition-transform ease-out"
-                                        alt=""
-                                      />
-                                    </div>
-                                    <div className="right-side-business-card-details relative px-7 py-6 col-span-9  ">
-                                      <div className="inner-seller-business-card-details flex flex-col gap-y-4 h-full">
-                                        <div className="business-card-title">
-                                          <h4 className="text-2xl font-medium text-Black">
-                                            {items?.name}
-                                          </h4>
-                                        </div>
-                                        <div className="business-card-recommend-address-section flex flex-col gap-y-2">
-                                          <div className="business-recommended-section flex items-center gap-10p opacity-60">
-                                            <i className="ri-thumb-up-fill text-LightText"></i>
-                                            <p className="text-sm text-LightText">
-                                              Highly Recommended
-                                            </p>
-                                          </div>
-                                          <div className="opens-at-location-combined flex items-center gap-x-4">
-                                            <button
-                                              type="button"
-                                              className="business-recommended-section flex items-center gap-10p  justify-center w-fit"
-                                            >
-                                              <i className="ri-time-line text-Black opacity-40"></i>
-                                              <p className="text-sm text-Green ">
-                                                {items?.workingHours}
-                                              </p>
-                                            </button>
-                                            <button
-                                              type="button"
-                                              className="business-recommended-section flex items-center gap-10p opacity-60"
-                                            >
-                                              <i className="ri-map-pin-line text-Black"></i>
-                                              <p className="text-sm text-LightText">
-                                                {items?.stateId?.name +
-                                                  " - " +
-                                                  items?.cityId?.name}
-                                                , {items?.area?.trim()}
-                                              </p>
-                                            </button>
-                                          </div>
-                                          <div className="people-rated-top-search-sec flex items-center gap-x-4">
-                                            <div className="people-rated-place">
-                                              <p className="text-Black font-medium">
-                                                {items.ratedPeople}
-                                              </p>
-                                            </div>
-                                            {items.topSearch ? (
-                                              <div
-                                                type="button"
-                                                className="business-recommended-section flex items-center gap-2"
-                                              >
-                                                <i className="ri-search-line text-Secondary"></i>
-                                                <p className="text-sm text-Secondary">
-                                                  Top Searched
-                                                </p>
-                                              </div>
-                                            ) : null}
-                                          </div>
-                                        </div>
-                                        <div className="bottom-business-card-number-det flex items-center gap-x-6 w-full mt-5">
-                                          <div className="send-enquiry-btn">
-                                            <button
-                                              type="button"
-                                              onClick={(e) =>
-                                                e.stopPropagation()
-                                              }
-                                              className="font-medium text-white bg-Primary rounded-full py-2 px-7 z-10 relative"
-                                            >
-                                              Send Enquiry
-                                            </button>
-                                          </div>
-                                          <div className="number-business-btn">
-                                            <button
-                                              type="button"
-                                              onClick={(e) =>
-                                                e.stopPropagation()
-                                              }
-                                              className="font-medium text-white bg-Green rounded-full py-2 px-7 z-10 relative"
-                                            >
-                                              Show Number
-                                            </button>
-                                          </div>
-                                          <div className="directions-button-search">
-                                            <button
-                                              onClick={(e) =>
-                                                e.stopPropagation()
-                                              }
-                                              className="h-9 w-9 rounded-full bg-Secondary flex items-center justify-center z-10 relative"
-                                            >
-                                              <i className="ri-direction-fill text-white text-lg duration-300 "></i>
-                                            </button>
-                                          </div>
-                                          <div className="directions-button-search">
-                                            <button
-                                              onClick={(e) =>
-                                                e.stopPropagation()
-                                              }
-                                              className="h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center z-10 relative"
-                                            >
-                                              <i className="ri-share-fill text-Secondary text-lg duration-300 "></i>
-                                            </button>
-                                          </div>
-                                          <div className="directions-button-search">
-                                            <button
-                                              onClick={(e) =>
-                                                e.stopPropagation()
-                                              }
-                                              className="h-9 w-9 rounded-full bg-LightBlue flex items-center justify-center z-10 relative"
-                                            >
-                                              <img
-                                                src={GmailIcon}
-                                                className="w-5 h-20"
-                                                alt=""
-                                              />
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="absoulte-rating-favorite-sec absolute top-4 right-20 z-10">
-                                        <div className="inner-rating-favorite-sec flex items-center gap-x-20p">
-                                          <div className="rating-section-right-side-business bg-LightGrayBg rounded-[5px] px-10p py-1 flex items-center gap-2">
-                                            <i className="ri-star-fill text-StarGold"></i>
-                                            <p className="text-Black font-medium">
-                                              {items.averageRating}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </button>
-                              </div>
-                            </div>
+                            <BusinessListCard
+                              key={items._id || index}
+                              business={items}
+                              showSaveButton={true}
+                              onNavigate={handleNavigate}
+                              onStatusClick={handleStatusClick}
+                            />
                           );
                         })
                       ) : (
@@ -624,11 +560,12 @@ const SearchPage = () => {
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={5}
                             onPageChange={handlePageClick}
+                            forcePage={getPaginationInfo().currentPage - 1} // Convert to 0-based for ReactPaginate
                             containerClassName={
                               "pagination bottom-paginate-section w-fit ml-auto bg-white px-4 py-2 rounded-lg flex gap-2 justify-center my-6 shadow-sm"
                             }
                             pageClassName={
-                              "paginated-clickers border rounded-md cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+                              "paginated-clickers border rounded-md cursor-pointer hover:bg-gray-50 transition-colors duration-200 px-3 py-1"
                             }
                             activeClassName={
                               "bg-Secondary text-white active-paginate"
@@ -641,6 +578,8 @@ const SearchPage = () => {
                             }
                             breakClassName={"px-3 py-1"}
                             activeLinkClassName="active-paginate"
+                            disabledClassName="opacity-50 cursor-not-allowed"
+                            disabledLinkClassName="cursor-not-allowed"
                           />
                         </div>
                       )}
@@ -656,6 +595,134 @@ const SearchPage = () => {
           </div>
         </section>
       </div>
+
+      {/* Status Modal */}
+      {isStatusModalOpen && selectedBusiness?.businessStatuses?.length > 0 && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex items-center justify-center p-4"
+          onClick={handleCloseStatusModal}
+        >
+          <div
+            className="relative w-full max-w-md h-[80vh] bg-black rounded-2xl overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={handleCloseStatusModal}
+              className="absolute top-4 right-4 z-20 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+            >
+              <i className="ri-close-line text-lg"></i>
+            </button>
+
+            {/* Status Content */}
+            <div className="relative w-full h-full">
+              {selectedBusiness.businessStatuses.map((status, index) => (
+                <div
+                  key={status._id}
+                  className={`absolute inset-0 transition-opacity duration-500 ${
+                    index === currentStatusIndex ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  {/* Status Image */}
+                  <div className="w-full h-full flex items-center justify-center bg-gray-900">
+                    {status.image ? (
+                      <img
+                        src={status.image}
+                        alt={status.text}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+                        <i className="ri-image-line text-white text-6xl"></i>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Status Text Overlay */}
+                  {status.text && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                      <p className="text-white text-lg font-medium leading-relaxed">
+                        {status.text}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* User Info */}
+                  <div className="absolute top-4 left-4 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+                      <span className="text-white font-semibold text-sm">
+                        {status.user?.firstName?.charAt(0) || "U"}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-white font-semibold">
+                        {status.user?.firstName} {status.user?.lastName}
+                      </p>
+                      <p className="text-white/70 text-sm">
+                        {new Date(status.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation Controls */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4">
+              {/* Previous Button */}
+              <button
+                onClick={() => handleStatusNavigation("prev")}
+                className="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+              >
+                <i className="ri-arrow-left-line text-lg"></i>
+              </button>
+
+              {/* Play/Pause Button */}
+              <button
+                onClick={toggleAutoPlay}
+                className="w-12 h-12 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+              >
+                <i
+                  className={`text-xl ${
+                    isAutoPlaying ? "ri-pause-line" : "ri-play-line"
+                  }`}
+                ></i>
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={() => handleStatusNavigation("next")}
+                className="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+              >
+                <i className="ri-arrow-right-line text-lg"></i>
+              </button>
+            </div>
+
+            {/* Progress Indicators */}
+            <div className="absolute top-4 left-4 right-4 flex gap-1">
+              {selectedBusiness.businessStatuses.map((_, index) => (
+                <div
+                  key={index}
+                  className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden"
+                >
+                  <div
+                    className={`h-full bg-white transition-all duration-3000 ${
+                      index === currentStatusIndex && isAutoPlaying
+                        ? "animate-pulse"
+                        : index < currentStatusIndex
+                        ? "w-full"
+                        : "w-0"
+                    }`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

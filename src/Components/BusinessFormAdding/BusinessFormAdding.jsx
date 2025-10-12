@@ -1,78 +1,88 @@
-import React, { useState , useEffect , useRef } from 'react';
-import PropTypes from 'prop-types';
-import './BusinessFormAdding.scss';
-import { Formik , Form , Field } from 'formik';
-import { businessFormAddValidation } from '../../utils/Validation';
-import Select from 'react-select';
-import FileUploadIcon from '../../assets/images/file-upload-icon.svg';
-import makeAnimated from 'react-select/animated';
-import VegIcon from '../../assets/images/veg-icon.svg';
-import NonVegIcon from '../../assets/images/non-veg-icon.svg';
-import MapIcon from '../../assets/images/maps-icon-input.svg';
-import axios from 'axios';
-import Modal from 'react-modal';
+import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+import "./BusinessFormAdding.scss";
+import { Formik, Form, Field } from "formik";
+import { businessFormAddValidation } from "../../utils/Validation";
+import Select from "react-select";
+import FileUploadIcon from "../../assets/images/file-upload-icon.svg";
+import makeAnimated from "react-select/animated";
+import VegIcon from "../../assets/images/veg-icon.svg";
+import NonVegIcon from "../../assets/images/non-veg-icon.svg";
+import MapIcon from "../../assets/images/maps-icon-input.svg";
+import axios from "axios";
+import Modal from "react-modal";
 
-
-import { GoogleMap , LoadScript , Marker , useJsApiLoader , StandaloneSearchBox } from '@react-google-maps/api';
-import { config } from '../../env-services';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Loader from '../../utils/Loader/Loader';
-import toast from 'react-hot-toast';
-import PricingImg from '../../assets/images/pricing-business-add.svg'
-
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  useJsApiLoader,
+  StandaloneSearchBox,
+} from "@react-google-maps/api";
+import { config } from "../../env-services";
+import { useLocation, useNavigate } from "react-router-dom";
+import Loader from "../../utils/Loader/Loader";
+import toast from "react-hot-toast";
+import PricingImg from "../../assets/images/pricing-business-add.svg";
 
 const animatedComponents = makeAnimated();
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyD5_3Xmuuyxph0PEHPNK97qYyBr30OEllQ";
 
-
 const BusinessFormAdding = () => {
-
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
 
-  const receivedMail = location.state?.readEmail || '';
-  const receivedToken = location.state?.token || '';
+  const receivedMail = location.state?.readEmail || "";
+  const receivedToken = location.state?.token || "";
 
-
-
-  
-  
-
-  const [businessDoc , setBusinessDoc] = useState();
-  const [multiAmentites , setMultiAmenities] = useState([]);
-  const [businessPhotos , setBusinessPhotos] = useState([]);
-  const [foodItemsArray , setFoodItemsArray] = useState([]);
-  const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.8040 });
+  const [businessDoc, setBusinessDoc] = useState();
+  const [multiAmentites, setMultiAmenities] = useState([]);
+  const [businessPhotos, setBusinessPhotos] = useState([]);
+  const [foodItemsArray, setFoodItemsArray] = useState([]);
+  const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.804 });
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [modalIsOpen ,  setModalIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-
-
-  const [busCates , setBusCates] = useState([]);
-  const [busAmenities , setBusAmenities] = useState([]);
-  const [states , setStates] = useState([]);
-  const [cities , setCities] = useState([]);
-  const [pincodes , setPincodes] = useState([]);
+  const [busCates, setBusCates] = useState([]);
+  const [busAmenities, setBusAmenities] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [pincodes, setPincodes] = useState([]);
   const [socialMediaInput, setSocialMediaInput] = useState("");
   const [socialMediaLinks, setSocialMediaLinks] = useState([]);
   const [error, setError] = useState("");
-  const [localityArea , setLocalityArea] = useState('');
-  const [localityCase2 , setLocalityCase2] = useState('')
+  const [localityArea, setLocalityArea] = useState("");
+  const [localityCase2, setLocalityCase2] = useState("");
 
- const [userToken , setUserToken] = useState('');
- const [customTagInput , setCustomTagInput] = useState('');
- const [customTags , setCustomTags] = useState([]);
-
-
+  const [userToken, setUserToken] = useState("");
+  const [customTagInput, setCustomTagInput] = useState("");
+  const [customTags, setCustomTags] = useState([]);
+  const [isFilledWithSampleData, setIsFilledWithSampleData] = useState(false);
 
   useEffect(() => {
-    getAllCategories()
-    getAllAmenities()
-    getStates()
-    getUserDetails()
-  } , [])
+    getAllCategories();
+    getAllAmenities();
+    getStates();
+    getUserDetails();
 
+    // Add global error handler
+    const handleGlobalError = (event) => {
+      console.error("Global error caught:", event.error);
+      toast.error("An unexpected error occurred. Please try again.");
+    };
+
+    window.addEventListener("error", handleGlobalError);
+    window.addEventListener("unhandledrejection", (event) => {
+      console.error("Unhandled promise rejection:", event.reason);
+      toast.error("An unexpected error occurred. Please try again.");
+    });
+
+    return () => {
+      window.removeEventListener("error", handleGlobalError);
+      window.removeEventListener("unhandledrejection", handleGlobalError);
+    };
+  }, []);
 
   const getUserDetails = async () => {
     const response = localStorage.getItem("authToken");
@@ -84,122 +94,115 @@ const BusinessFormAdding = () => {
 
   const customStyles = {
     content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      width: '600px',
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      width: "600px",
       borderRadius: 18,
-      paddingLeft: 40
+      paddingLeft: 40,
     },
 };
 
   // console.log(userToken , "token")
-
-
-
-
 
   // Get the options 
 
   const getAllCategories = async () => {
     try {
       const response = await axios.get(config.api + `business-category`);
-      const categories = response?.data?.data.map(item => ({
+      const categories = response?.data?.data.map((item) => ({
         value: item._id,
-        label: item.name
+        label: item.name,
       }));
       
       setBusCates(categories);
       // console.log('Formatted Categories:', categories);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     }
   };
-  
 
   const getAllAmenities = async () => {
     try {
       const response = await axios.get(config.api + `business-amenity`);
-      const amenities = response?.data?.data.map(item => ({
+      const amenities = response?.data?.data.map((item) => ({
         value: item._id,
-        label: item.name
+        label: item.name,
       }));
       
       setBusAmenities(amenities);
       // console.log('Formatted amenities:', amenities);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     }
   };
 
-
-  const getStates = async() => {
-    await axios.get(config.api + 'locations/countries/678da88c9c4467c6aa4eeb86/states')
+  const getStates = async () => {
+    await axios
+      .get(config.api + "locations/countries/678da88c9c4467c6aa4eeb86/states")
     .then((response) => {
      if (response?.data?.data) {
-         const formattedStates = response?.data?.data.map(item => ({
+          const formattedStates = response?.data?.data.map((item) => ({
              value: item._id, 
-             label: item.name ,
+            label: item.name,
          }));
          
          setStates(formattedStates);
      }
-    })
- }
+      });
+  };
 
-
- const getCities = async(id) => {
-    await axios.get(config.api + `locations/states/${id}/cities`)
+  const getCities = async (id) => {
+    return await axios
+      .get(config.api + `locations/states/${id}/cities`)
     .then((response) => {
      if (response?.data?.data) {
-         const formattedCities = response?.data?.data.map(item => ({
+          const formattedCities = response?.data?.data.map((item) => ({
              value: item._id, 
-             label: item.name ,
+            label: item.name,
          }));
          setCities(formattedCities);
-     }
-    })
- }
+          return formattedCities;
+        }
+        return [];
+      });
+  };
 
- const getPincodes = async(id) => {
-     console.log(id)
-     await axios.get(config.api + `locations/cities/${id}/pincodes`)
+  const getPincodes = async (id) => {
+    console.log(id);
+    await axios
+      .get(config.api + `locations/cities/${id}/pincodes`)
       .then((response) => {
      if (response?.data?.data) {
-         const formattedCities = response.data.data.map(item => ({
+          const formattedCities = response.data.data.map((item) => ({
              value: item._id, 
-             label: item.code ,
+            label: item.code,
          }));
          setPincodes(formattedCities);
      }
-    })
- }
+      });
+  };
 
-
-  const inputRef = useRef(null)
-
+  const inputRef = useRef(null);
 
   const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
+    id: "google-map-script",
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-    libraries: ['places']
-  })
+    libraries: ["places"],
+  });
 
   function numbersOnly(e) {
       var key = e.key;
       var regex = /[0-9]|\./;
       if (!regex.test(key)) {
         e.preventDefault();
-      }
-      else {
+    } else {
         // console.log("You pressed a key: " + key);
       }
   }
-
-
 
   const handlePlacesChange = () => {
     const places = inputRef.current.getPlaces();
@@ -210,34 +213,28 @@ const BusinessFormAdding = () => {
       const lat = location.lat();
       const lng = location.lng();
 
-
-
       // Extract area/locality
     let sublocality = "";
     let locality = "";
 
     places[0].address_components.forEach((component) => {
       if (component.types.includes("sublocality_level_1")) {
-        sublocality = component.long_name
+          sublocality = component.long_name;
       } else if (component.types.includes("locality")) {
-        locality = component.long_name
+          locality = component.long_name;
       }
     });
 
-    setLocalityArea(`${sublocality} , ${locality}`)
+      setLocalityArea(`${sublocality} , ${locality}`);
 
-    console.log("sublocality- locality", sublocality,  locality )
+      console.log("sublocality- locality", sublocality, locality);
       setMapCenter({ lat, lng });
       setSelectedLocation({ lat, lng });
       // console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
     }
-  }
-
+  };
 
   // console.log(selectedLocation , "selectedLocation")
-
-
-
 
     const isValidURL = (url) => {
         const urlPattern = /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/[\w\d-./?%&=]*)?$/;
@@ -264,63 +261,151 @@ const BusinessFormAdding = () => {
         setSocialMediaLinks(socialMediaLinks.filter((_, i) => i !== index));
     };
 
-
     const addCustomTags = () => {
       setCustomTags([...customTags, customTagInput]);
       setCustomTagInput(""); 
-    }
+  };
 
     const removeBusinessTags = (index) => {
       setCustomTags(customTags.filter((_, i) => i !== index));
     };
 
+  const fillWithSampleData = (setFieldValue) => {
+    // Basic Details
+    setFieldValue("userName", "John Doe");
+    setFieldValue("businessName", "Tech Solutions Pvt Ltd");
+    setFieldValue("businessTitle", "Leading Technology Solutions Provider");
+    setFieldValue(
+      "aboutBusiness",
+      "We provide comprehensive technology solutions including web development, mobile apps, and digital marketing services. With over 5 years of experience, we help businesses grow digitally."
+    );
+
+    // Contact Information
+    setFieldValue("mobileNumber", "9876543210");
+    setFieldValue("email", "contact@techsolutions.com");
+
+    // Add sample social media links
+    setSocialMediaLinks([
+      "https://www.facebook.com/techsolutions",
+      "https://www.instagram.com/techsolutions",
+      "https://www.linkedin.com/company/techsolutions",
+    ]);
+
+    // Business Information
+    setFieldValue("yearlyTurnOver", "5000000");
+    setFieldValue("noOfEmployees", "25");
+    setFieldValue("yearOfEstablishment", "2019");
+    setFieldValue("websiteAddress", "https://www.techsolutions.com");
+    setFieldValue("GSTNumber", "29ABCDE1234F1Z5");
+
+    // Add sample amenities
+    const sampleAmenities = busAmenities.slice(0, 3);
+    setMultiAmenities(sampleAmenities);
+
+    // Add sample custom tags
+    setCustomTags([
+      "Technology",
+      "Web Development",
+      "Digital Marketing",
+      "Mobile Apps",
+    ]);
+
+    // Set working hours
+    setFieldValue("workingHours", "10:00 AM - 6:00 PM 8Hrs");
+
+    // Set services offered
+    setFieldValue("servicesOffer", "Both");
+
+    // Set business category (if available)
+    if (busCates.length > 0) {
+      setFieldValue("businessCategory", busCates[0].value);
+    }
+
+    // Set state and city (if available)
+    if (states.length > 0) {
+      setFieldValue("businessState", states[0].value);
+      getCities(states[0].value).then((loadedCities) => {
+        // Set city after cities are loaded
+        if (loadedCities && loadedCities.length > 0) {
+          setFieldValue("businessCity", loadedCities[0].value);
+          getPincodes(loadedCities[0].value);
+        }
+      });
+    }
+
+    // Address Information
+    setFieldValue(
+      "completeAddress",
+      "123 Tech Park, Sector 5, Electronic City"
+    );
+    setFieldValue("landmark", "Near Metro Station");
+    setFieldValue("pincode", "560100");
+
+    // Set map location to Bangalore
+    setMapCenter({ lat: 12.9716, lng: 77.5946 });
+    setSelectedLocation({ lat: 12.9716, lng: 77.5946 });
+    setLocalityArea("Electronic City, Bangalore");
+
+    setIsFilledWithSampleData(true);
+    toast.success("Form filled with sample data!");
+  };
+
+  const clearFormData = (setFieldValue, resetForm) => {
+    resetForm();
+    setSocialMediaLinks([]);
+    setCustomTags([]);
+    setMultiAmenities([]);
+    setBusinessDoc(null);
+    setSelectedLocation(null);
+    setLocalityArea("");
+    setLocalityCase2("");
+    setMapCenter({ lat: 17.0005, lng: 81.804 });
+    setIsFilledWithSampleData(false);
+    toast.success("Form cleared!");
+  };
+
   const businessAddValues = {
-      userName: '',
-      businessName: '',
-      businessState: '',
-      aboutBusiness: '',
-      businessCity: '',
-      businessTitle: '',
-      businessCategory: '',
-      mobileNumber: '',
-      workingHours: '',
-      servicesOffer: '',
-      email: '',
-      socialMedia: '',
-      completeAddress: '',
-      landmark: '',
-      pincode: '',
-      yearlyTurnOver: '',
-      noOfEmployees: '',
-      yearOfEstablishment: '',
-      websiteAddress: '',
-      GSTNumber: '',
-      itemName: '',
-      itemType: '',
-      itemPrice: ''
-  }
-
-
+    userName: "",
+    businessName: "",
+    businessState: "",
+    aboutBusiness: "",
+    businessCity: "",
+    businessTitle: "",
+    businessCategory: "",
+    mobileNumber: "",
+    workingHours: "",
+    servicesOffer: "",
+    email: "",
+    socialMedia: "",
+    completeAddress: "",
+    landmark: "",
+    pincode: "",
+    yearlyTurnOver: "",
+    noOfEmployees: "",
+    yearOfEstablishment: "",
+    websiteAddress: "",
+    GSTNumber: "",
+    itemName: "",
+    itemType: "",
+    itemPrice: "",
+  };
 
   const workingHours = [
-    { value: '10:00 AM - 6:00 PM 8Hrs', label: '10:00 AM - 6:00 PM 8Hrs' },
-    { value: '09:00 AM - 6:00 PM 9Hrs', label: '09:00 AM - 6:00 PM 9Hrs' },
-    { value: '10:00 AM - 10:00 PM 12Hrs', label: '10:00 AM - 10:00 PM 12Hrs' },
-  ]
-
+    { value: "10:00 AM - 6:00 PM 8Hrs", label: "10:00 AM - 6:00 PM 8Hrs" },
+    { value: "09:00 AM - 6:00 PM 9Hrs", label: "09:00 AM - 6:00 PM 9Hrs" },
+    { value: "10:00 AM - 10:00 PM 12Hrs", label: "10:00 AM - 10:00 PM 12Hrs" },
+  ];
 
   const servicesOffered = [
-    { value: 'B2B', label: 'B2B (Business-to-Business)' },
-    { value: 'B2C', label: 'B2C (Business-to-Consumer)' },
-    { value: 'Both', label: 'Both' },
-  ]
-
+    { value: "B2B", label: "B2B (Business-to-Business)" },
+    { value: "B2C", label: "B2C (Business-to-Consumer)" },
+    { value: "Both", label: "Both" },
+  ];
 
   const foodItemTypes = [
-    { value: 'Veg', label: 'Veg' },
-    { value: 'Non-Veg', label: 'Non-Veg' },
-  ]
-
+    { value: "Veg", label: "Veg" },
+    { value: "Non-Veg", label: "Non-Veg" },
+  ];
 
   const handleBusinessDocFile = async (event) => {
       const file = event.target.files[0]; 
@@ -333,11 +418,7 @@ const BusinessFormAdding = () => {
     
         setBusinessDoc(file);
       }    
-  }
-
-
-
-
+  };
 
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -351,7 +432,10 @@ const BusinessFormAdding = () => {
   const addFoodItem = (values) => {
     const { itemName, itemType, itemPrice } = values;
     const newFoodItem = { itemName, itemType, itemPrice };
-    setFoodItemsArray((prevFoodItemsArray) => [...prevFoodItemsArray, newFoodItem]);
+    setFoodItemsArray((prevFoodItemsArray) => [
+      ...prevFoodItemsArray,
+      newFoodItem,
+    ]);
   };
 
   const removeFoodItem = (index) => {
@@ -360,78 +444,86 @@ const BusinessFormAdding = () => {
     );
   };
 
-
-
-
   const handleAddingBusiness = async (data) => {
+    console.log("Starting business creation process...");
+    console.log("User token:", userToken ? "Present" : "Missing");
 
-    const formData = new FormData()
-    formData.append("userName" , data.userName);
-    formData.append("name" , data.businessName);
-    formData.append("title" , data.businessTitle);
-    formData.append("about" , data.aboutBusiness);
-    formData.append("area" , localityArea ? localityArea : localityCase2);
-    formData.append("mobileNumber" , data.mobileNumber);
-    formData.append('email' , data.email);
+    const formData = new FormData();
+    formData.append("userName", data.userName);
+    formData.append("name", data.businessName);
+    formData.append("title", data.businessTitle);
+    formData.append("about", data.aboutBusiness);
+    formData.append("area", localityArea ? localityArea : localityCase2);
+    formData.append("mobileNumber", data.mobileNumber);
+    formData.append("email", data.email);
     customTags.forEach((items) => {
-      formData.append('tags' , items);
-    })
+      formData.append("tags", items);
+    });
     socialMediaLinks.forEach((items) => {
-      formData.append('socialMediaLink' , items);
-    })
-    formData.append("categoryId" , data.businessCategory);
-    formData.append("yearlyTurnOver" , data.yearlyTurnOver);
-    formData.append("noOfEmployees" , data.noOfEmployees);
-    formData.append("yearOfEstablishment" , data.yearOfEstablishment);
-    formData.append("websiteAddress" , data.websiteAddress);
-    formData.append("GSTNumber" , data.GSTNumber);
+      formData.append("socialMediaLink", items);
+    });
+    formData.append("categoryId", data.businessCategory);
+    formData.append("yearlyTurnOver", data.yearlyTurnOver);
+    formData.append("noOfEmployees", data.noOfEmployees);
+    formData.append("yearOfEstablishment", data.yearOfEstablishment);
+    formData.append("websiteAddress", data.websiteAddress);
+    formData.append("GSTNumber", data.GSTNumber);
     multiAmentites.forEach((amenities) => {
       // console.log(amenities)
       formData.append("amenities", amenities.value);
     });
-    formData.append("servicesOffer" , data.servicesOffer);
-    formData.append("stateId" , data.businessState);
-    formData.append("cityId" , data.businessCity);
-    formData.append("pincodeId" , data.pincode);
-    formData.append("completeAddress" , data.completeAddress);
-    formData.append("landmark" , data.landmark);
-    formData.append("workingHours" , data.workingHours);
-    formData.append("file" ,  businessDoc);
-    formData.append("latitude" , selectedLocation?.lat);
+    formData.append("servicesOffer", data.servicesOffer);
+    formData.append("stateId", data.businessState);
+    formData.append("cityId", data.businessCity);
+    formData.append("pincodeId", data.pincode);
+    formData.append("completeAddress", data.completeAddress);
+    formData.append("landmark", data.landmark);
+    formData.append("workingHours", data.workingHours);
+    formData.append("file", businessDoc);
+    formData.append("latitude", selectedLocation?.lat);
     formData.append("longitude", selectedLocation?.lng);
 
     // console.log("formData" , formData)
-    setModalIsOpen(true)
+    setModalIsOpen(true);
     try {
-      await axios.post(`${config.api}business`, formData, {
+      await axios
+        .post(`${config.api}business`, formData, {
         headers: {
           Authorization: `Bearer ${userToken}`, 
         },
-      }).then((response) => {
-        console.log(response)
-       if(response?.data?.status == 'success') {
-        toast.success('Business Created Successfully');
-        setModalIsOpen(false)
+        })
+        .then((response) => {
+          console.log(response);
+          if (response?.data?.status == "success") {
+            toast.success("Business Created Successfully");
+            setModalIsOpen(false);
         const busId = response?.data?.data?._id;
         handleRazorpayPayment(busId, data);
         // navigate('/business/add-photos', { state: { busId } })
-       }else {
-        toast.error('Error in Creating business');
-        setModalIsOpen(false)
-       }
-
-      }).catch((err) => {
-        console.log(err)
-        setModalIsOpen(false)
-      })
+          } else {
+            toast.error("Error in Creating business");
+            setModalIsOpen(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setModalIsOpen(false);
+        });
       console.log("Response:", response.data);
     } catch (error) {
-      setModalIsOpen(false)
+      setModalIsOpen(false);
+    }
+  };
+
+  const handleRazorpayPayment = async (businessId, retryCount = 0) => {
+    const maxRetries = 3;
+
+    // Validate user token
+    if (!userToken) {
+      toast.error("Please login to proceed with payment");
+      return;
     }
 
-  }
-
-  const handleRazorpayPayment = async (businessId) => {
     try {
       const orderPayload = {
         amount: 2499 * 100,
@@ -442,23 +534,68 @@ const BusinessFormAdding = () => {
         receipt: `business_${Date.now()}`,
       };
 
-      const orderResponse = await axios.post(`${config.api}razorpay/create-order`, orderPayload, {
+      let orderResponse;
+      try {
+        orderResponse = await axios.post(
+          `${config.api}razorpay/create-order`,
+          orderPayload,
+          {
         headers: { Authorization: `Bearer ${userToken}` },
-      });
+          }
+        );
+      } catch (orderError) {
+        console.error("Order creation failed:", orderError);
 
-      console.log("razorpay resonse" , orderResponse)
+        // Retry logic
+        if (retryCount < maxRetries) {
+          console.log(
+            `Retrying order creation (${retryCount + 1}/${maxRetries})`
+          );
+          setTimeout(() => {
+            handleRazorpayPayment(businessId, retryCount + 1);
+          }, 2000 * (retryCount + 1)); // Exponential backoff
+          return;
+        }
+
+        toast.error(
+          "Failed to create payment order after multiple attempts. Please try again later."
+        );
+        return;
+      }
+
+      console.log("razorpay response", orderResponse);
+
+      // Validate the response
+      if (!orderResponse?.data?.order?.id) {
+        console.error("Invalid order response:", orderResponse?.data);
+        toast.error("Failed to create payment order. Please try again.");
+        return;
+      }
+
       const orderData = orderResponse?.data?.order;
       const razorpayOrderId = orderData?.id;
 
-      console.log("razorpay resonse" , razorpayOrderId)
-
+      console.log("razorpay order id", razorpayOrderId);
 
       const loadRazorpay = () =>
         new Promise((resolve) => {
+          // Check if Razorpay is already loaded
+          if (window.Razorpay) {
+            console.log("Razorpay already loaded");
+            resolve(true);
+            return;
+          }
+
           const script = document.createElement("script");
           script.src = "https://checkout.razorpay.com/v1/checkout.js";
-          script.onload = () => resolve(true);
-          script.onerror = () => resolve(false);
+          script.onload = () => {
+            console.log("Razorpay script loaded successfully");
+            resolve(true);
+          };
+          script.onerror = (error) => {
+            console.error("Failed to load Razorpay script:", error);
+            resolve(false);
+          };
           document.body.appendChild(script);
         });
 
@@ -469,19 +606,27 @@ const BusinessFormAdding = () => {
       }
 
       // STEP 3: Configure Razorpay options
+      console.log("Configuring Razorpay with key:", config.razorpay.keyId);
+      console.log("Order ID:", razorpayOrderId);
+      console.log("Amount:", orderPayload.amount);
+
       const options = {
-        key: "rzp_test_RR13mnGZ0jucuu",
+        key: config.razorpay.keyId,
         amount: orderPayload.amount,
         currency: "INR",
-        name: "LocalMart",
+        name: config.razorpay.appName,
         description: "Business Creation Fee",
         order_id: razorpayOrderId,
         prefill: {
-          name: "INCROSYS",
-          email: "support@localmart.app",
-          contact: "+91 9566454545",
+          name: config.razorpay.appName,
+          email: config.razorpay.appEmail,
+          contact: config.razorpay.appPhone,
         },
         theme: { color: "#1F90FF" },
+        notes: {
+          business_id: businessId,
+          payment_for: "business_creation",
+        },
 
         handler: async function (response) {
           try {
@@ -520,19 +665,30 @@ const BusinessFormAdding = () => {
         },
       };
 
+      try {
       const rzp = new window.Razorpay(options);
+        console.log("Razorpay instance created successfully");
+
       rzp.open();
 
       rzp.on("payment.failed", function (response) {
         console.error("Payment failed:", response.error);
         toast.error(response.error?.description || "Payment failed");
       });
+
+        rzp.on("payment.success", function (response) {
+          console.log("Payment successful:", response);
+        });
+      } catch (rzpError) {
+        console.error("Error creating Razorpay instance:", rzpError);
+        toast.error("Failed to initialize payment gateway. Please try again.");
+        return;
+      }
     } catch (error) {
       console.error("Razorpay error:", error);
       toast.error("Something went wrong during payment");
     }
   };
-
 
   return (
     <div className="BusinessFormAdding bg-LightBlue bg-opacity-80">
@@ -541,12 +697,12 @@ const BusinessFormAdding = () => {
             style={customStyles}
             contentLabel="Example Modal"
         >
-            <Loader/>
+        <Loader />
         </Modal>
         <div className="inner-main-business-form-section py-50p">
           <div className="container">
             <div className="top-business-form-heading mb-10">
-              <h2 className='font-medium text-Black text-2xl'>Add Business</h2>
+            <h2 className="font-medium text-Black text-2xl">Add Business</h2>
             </div>
             <div className="bottom-form-section-business-add">
               <div className="inner-business-form-section">
@@ -556,109 +712,229 @@ const BusinessFormAdding = () => {
                       initialValues={businessAddValues}
                       onSubmit={(values) => handleAddingBusiness(values)}
                   >
-                      {({  errors, touched , handleSubmit , setFieldValue , values}) => (
+                  {({
+                    errors,
+                    touched,
+                    handleSubmit,
+                    setFieldValue,
+                    values,
+                    resetForm,
+                  }) => (
                       <Form>
+                      <div className="sample-data-button-section mb-6 flex justify-end gap-4">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            clearFormData(setFieldValue, resetForm)
+                          }
+                          className="px-6 py-3 bg-gray-500 text-white rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 flex items-center gap-2"
+                        >
+                          <i className="ri-delete-bin-line text-lg"></i>
+                          Clear Form
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => fillWithSampleData(setFieldValue)}
+                          className="px-6 py-3 bg-Secondary text-white rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 flex items-center gap-2"
+                        >
+                          <i className="ri-magic-line text-lg"></i>
+                          {isFilledWithSampleData
+                            ? "Refill Sample Data"
+                            : "Fill with Sample Data"}
+                        </button>
+                      </div>
                         <div className="main-business-former-sec flex flex-col gap-10">
                           <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                              <h4 className='text-lg font-medium text-Secondary'>Basic Details</h4>
+                            <h4 className="text-lg font-medium text-Secondary">
+                              Basic Details
+                            </h4>
                             </div>
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-4">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>User Name (optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  User Name (optional)
+                                </p>
                                 </div>
-                                <Field type="text" name="userName" placeholder='Enter User Name'
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.userName && touched.userName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="text"
+                                name="userName"
+                                placeholder="Enter User Name"
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.userName && touched.userName
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-8">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Name*</p>
+                                <p className="text-BusinessFormLabel">
+                                  Business Name*
+                                </p>
                                 </div>
-                                <Field type="text" name="businessName" placeholder='Enter Business Name*'
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.businessName && touched.businessName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="text"
+                                name="businessName"
+                                placeholder="Enter Business Name*"
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.businessName && touched.businessName
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Title (optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Business Title (optional)
+                                </p>
                                 </div>
-                                <Field type="text" name="businessTitle" placeholder='Enter Business Title (optional)'
+                              <Field
+                                type="text"
+                                name="businessTitle"
+                                placeholder="Enter Business Title (optional)"
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>About your business (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  About your business (Optional)
+                                </p>
                                 </div>
-                                <Field as="textarea" name="aboutBusiness" placeholder='Enter about your business'
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${errors.aboutBusiness && touched.aboutBusiness ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                as="textarea"
+                                name="aboutBusiness"
+                                placeholder="Enter about your business"
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${
+                                  errors.aboutBusiness && touched.aboutBusiness
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                             </div>
                           </div>
                           <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                              <h4 className='text-lg font-medium text-Secondary'>Contact Information</h4>
+                            <h4 className="text-lg font-medium text-Secondary">
+                              Contact Information
+                            </h4>
                             </div>
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Mobile Number (optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Mobile Number (optional)
+                                </p>
                                 </div>
-                                <Field type="tel" name="mobileNumber" placeholder='Enter Mobile Number' maxLength={10} onKeyPress={(e) => numbersOnly(e)}
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.mobileNumber && touched.mobileNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="tel"
+                                name="mobileNumber"
+                                placeholder="Enter Mobile Number"
+                                maxLength={10}
+                                onKeyPress={(e) => numbersOnly(e)}
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.mobileNumber && touched.mobileNumber
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Email Address (optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Email Address (optional)
+                                </p>
                                 </div>
-                                <Field type="email" name="email" placeholder='Enter Email Address'
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="email"
+                                name="email"
+                                placeholder="Enter Email Address"
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.email && touched.email
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Social Media Links (optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Social Media Links (optional)
+                                </p>
                                 </div>
                                 <div className="social-media-adding-section relative">
-                                  <Field type="text" name="socialMedia" placeholder='Enter Social Media Link' onKeyUp={(e) => setSocialMediaInput(e.target.value)} 
-                                      className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${errors.socialMedia  ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                  />
-                                  <button type="button" onClick={addSocialMediaLink}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary border border-Black border-opacity-40'>Add Link</button>
+                                <Field
+                                  type="text"
+                                  name="socialMedia"
+                                  placeholder="Enter Social Media Link"
+                                  onKeyUp={(e) =>
+                                    setSocialMediaInput(e.target.value)
+                                  }
+                                  className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${
+                                    errors.socialMedia
+                                      ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                      : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                  }`}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={addSocialMediaLink}
+                                  className="absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary border border-Black border-opacity-40"
+                                >
+                                  Add Link
+                                </button>
                                 </div>                                      
                               </div>
-                              {socialMediaLinks.map((items , index) => {
+                            {socialMediaLinks.map((items, index) => {
                                 return (
                                   <div className="social-meida-links-displayer col-span-12">
                                     <div className="left-side-link-icon flex items-center justify-between bg-LightGrayBg rounded-[5px] py-2 px-4">
                                         <div className="text-link-icon-outer flex items-center gap-4">
                                           <i className="ri-link text-lg text-Secondary"></i>
                                           <div className="right-text">
-                                              <p className='text-Secondary font-medium'>{items}</p>
+                                        <p className="text-Secondary font-medium">
+                                          {items}
+                                        </p>
                                           </div>
                                         </div>
-                                        <div className="remove-link-btn"><button type="button" onClick={() => removeSocialMediaLink(index)} className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
+                                    <div className="remove-link-btn">
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          removeSocialMediaLink(index)
+                                        }
+                                        className="w-6 h-6 rounded-full flex items-center justify-center bg-red-100"
+                                      >
+                                        <i className="ri-close-large-line text-red-600"></i>
+                                      </button>
                                     </div>
                                   </div>
-                                )
+                                </div>
+                              );
                               })}
                             </div>
                           </div>
                           <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                              <h4 className='text-lg font-medium text-Secondary'>Address Information</h4>
+                            <h4 className="text-lg font-medium text-Secondary">
+                              Address Information
+                            </h4>
                             </div>
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Select Sate (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Select Sate (Optional)
+                                </p>
                                 </div>
-                                <Select options={states} 
-                                  placeholder='Choose State'
-                                  name='businessState'
+                              <Select
+                                options={states}
+                                placeholder="Choose State"
+                                name="businessState"
                                   styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -670,25 +946,37 @@ const BusinessFormAdding = () => {
                                         outlineWidth: 0,
                                         // borderColor: errors.businessState ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
-                                        minWidth: '100%',
+                                    minWidth: "100%",
                                         height: 50,
                                         // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused ? 'none' : 'none',
-                                        
+                                    boxShadow: state.isFocused
+                                      ? "none"
+                                      : "none",
                                       }),
                                     }}
-                                  value={states.find(option => option.value === values.businessState)} 
-                                  onChange={(option) => {setFieldValue('businessState', option ? option.value : '') , getCities(option.value)}}
-                                  
+                                value={states.find(
+                                  (option) =>
+                                    option.value === values.businessState
+                                )}
+                                onChange={(option) => {
+                                  setFieldValue(
+                                    "businessState",
+                                    option ? option.value : ""
+                                  ),
+                                    getCities(option.value);
+                                }}
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Select City (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Select City (Optional)
+                                </p>
                                 </div>
-                                <Select options={cities} 
-                                  placeholder='Choose City'
-                                  name='businessCity'
+                              <Select
+                                options={cities}
+                                placeholder="Choose City"
+                                name="businessCity"
                                   styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -700,39 +988,78 @@ const BusinessFormAdding = () => {
                                         outlineWidth: 0,
                                         // borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
-                                        minWidth: '100%',
+                                    minWidth: "100%",
                                         height: 50,
                                         // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused ? 'none' : 'none',
-                                        
+                                    boxShadow: state.isFocused
+                                      ? "none"
+                                      : "none",
                                       }),
                                     }}
-                                  value={cities.find(option => option.value === values.businessCity)} 
-                                  onChange={(option) => { console.log(option) , setFieldValue('businessCity', option ? option.value : '') , getPincodes(option.value)}}
+                                value={cities.find(
+                                  (option) =>
+                                    option.value === values.businessCity
+                                )}
+                                onChange={(option) => {
+                                  console.log(option),
+                                    setFieldValue(
+                                      "businessCity",
+                                      option ? option.value : ""
+                                    ),
+                                    getPincodes(option.value);
+                                }}
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Complete Address (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Complete Address (Optional)
+                                </p>
                                 </div>
-                                <Field as="textarea" name="completeAddress" placeholder='Enter Complete Address'
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${errors.completeAddress && touched.completeAddress ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                as="textarea"
+                                name="completeAddress"
+                                placeholder="Enter Complete Address"
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${
+                                  errors.completeAddress &&
+                                  touched.completeAddress
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Landmark (optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Landmark (optional)
+                                </p>
                                 </div>
-                                <Field type="text" name="landmark" placeholder='Enter Landmark '
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.landmark && touched.landmark ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="text"
+                                name="landmark"
+                                placeholder="Enter Landmark "
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.landmark && touched.landmark
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                               <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Pincode (optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Pincode (optional)
+                                </p>
                                 </div>
-                                <Field type="number" name="pincode" placeholder='Enter Pincode '
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.pincode && touched.pincode ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="number"
+                                name="pincode"
+                                placeholder="Enter Pincode "
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.pincode && touched.pincode
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />      
                                 {/* <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Pincode (Optional)</p>
@@ -766,110 +1093,213 @@ const BusinessFormAdding = () => {
                           </div>
                           <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                              <h4 className='text-lg font-medium text-Secondary'>Detailed Business Address</h4>
+                            <h4 className="text-lg font-medium text-Secondary">
+                              Detailed Business Address
+                            </h4>
                             </div>
                             <div className="inner-fields-grid-outer-main p-6 ">
-                              {isLoaded && 
+                            {isLoaded && (
                                 <>
                                   <StandaloneSearchBox
-                                    onLoad={(ref) => inputRef.current = ref}
+                                  onLoad={(ref) => (inputRef.current = ref)}
                                     onPlacesChanged={handlePlacesChange}
                                   >
                                     <div className="google-search-map-input-sec relative">
                                       <div className="left-map-icon absolute left-6 top-1/2">
-                                        <img src={MapIcon} className='w-6 h-6 object-contain' alt="" />
+                                      <img
+                                        src={MapIcon}
+                                        className="w-6 h-6 object-contain"
+                                        alt=""
+                                      />
                                       </div>
-                                      <input type="text" placeholder="Search for a place..." className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 pl-12 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />
+                                    <input
+                                      type="text"
+                                      placeholder="Search for a place..."
+                                      className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 pl-12 pr-5 py-3 rounded-lg bg-white w-full text-Black `}
+                                    />
                                     </div>
                                   </StandaloneSearchBox>
                                   <div className="google-map-section-business-form rounded-xl overflow-hidden mt-5">
                                     <GoogleMap
-                                        mapContainerStyle={{ width: '100%', height: '300px' }}
+                                    mapContainerStyle={{
+                                      width: "100%",
+                                      height: "300px",
+                                    }}
                                         center={mapCenter}
                                         zoom={14}
                                       >
-                                        {selectedLocation && <Marker position={selectedLocation} />}
+                                    {selectedLocation && (
+                                      <Marker position={selectedLocation} />
+                                    )}
                                     </GoogleMap>
                                   </div>
                                   <div className="area-field-section-inner mt-5">
                                     <div className="top-label-section-area mb-1">
                                       <p>Area or Locality</p>
                                     </div>
-                                    <input type="text" value={localityArea ? localityArea : localityCase2} disabled placeholder="Search for a place..." className={`outline-none border border-Black border-opacity-30 focus:border-Secondary focus:bg-LightBlue duration-300 pl-6 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />
+                                  <input
+                                    type="text"
+                                    value={
+                                      localityArea
+                                        ? localityArea
+                                        : localityCase2
+                                    }
+                                    disabled
+                                    placeholder="Search for a place..."
+                                    className={`outline-none border border-Black border-opacity-30 focus:border-Secondary focus:bg-LightBlue duration-300 pl-6 pr-5 py-3 rounded-lg bg-white w-full text-Black `}
+                                  />
                                   </div>
                                 </>
-                              }
+                            )}
                             </div>
                           </div>
                           <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
                             <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                              <h4 className='text-lg font-medium text-Secondary'>Business Information</h4>
+                            <h4 className="text-lg font-medium text-Secondary">
+                              Business Information
+                            </h4>
                             </div>
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Yearly Turnover (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Yearly Turnover (Optional)
+                                </p>
                                 </div>
-                                <Field type="text" name="yearlyTurnOver" placeholder='Enter Yearly Turnover'
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.yearlyTurnOver && touched.yearlyTurnOver ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="text"
+                                name="yearlyTurnOver"
+                                placeholder="Enter Yearly Turnover"
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.yearlyTurnOver &&
+                                  touched.yearlyTurnOver
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Number of Employees (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Number of Employees (Optional)
+                                </p>
                                 </div>
-                                <Field type="number" name="noOfEmployees" placeholder='Enter Number of Employees'
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.noOfEmployees && touched.noOfEmployees ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="number"
+                                name="noOfEmployees"
+                                placeholder="Enter Number of Employees"
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.noOfEmployees && touched.noOfEmployees
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Year of Establishment (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Year of Establishment (Optional)
+                                </p>
                                 </div>
-                                <Field type="text" name="yearOfEstablishment" placeholder='Enter Year of Establishment '
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.yearOfEstablishment && touched.yearOfEstablishment ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="text"
+                                name="yearOfEstablishment"
+                                placeholder="Enter Year of Establishment "
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.yearOfEstablishment &&
+                                  touched.yearOfEstablishment
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Website Address(optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Website Address(optional)
+                                </p>
                                 </div>
-                                <Field type="text" name="websiteAddress" placeholder='Enter Website URL '
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.websiteAddress && touched.websiteAddress ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="text"
+                                name="websiteAddress"
+                                placeholder="Enter Website URL "
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.websiteAddress &&
+                                  touched.websiteAddress
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>GST Number(optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  GST Number(optional)
+                                </p>
                                 </div>
-                                <Field type="text" name="GSTNumber" placeholder='Enter GST Number '
-                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.GSTNumber && touched.GSTNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                              <Field
+                                type="text"
+                                name="GSTNumber"
+                                placeholder="Enter GST Number "
+                                className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${
+                                  errors.GSTNumber && touched.GSTNumber
+                                    ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                    : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                }`}
                                 />                                
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Registration Documents (optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Business Registration Documents (optional)
+                                </p>
                                 </div>
                                 <div className="file-upload-outer-section-custom bg-ProfileScreensBg rounded-10p overflow-hidden relative h-50p">
-                                    <input type="file" name="" id="" onChange={(e) => handleBusinessDocFile(e)} className={`h-full w-full opacity-0 relative z-10 cursor-pointer ${businessDoc ? 'hidden' : 'block'}`}/>
-                                    {businessDoc ? 
+                                <input
+                                  type="file"
+                                  name=""
+                                  id=""
+                                  onChange={(e) => handleBusinessDocFile(e)}
+                                  className={`h-full w-full opacity-0 relative z-10 cursor-pointer ${
+                                    businessDoc ? "hidden" : "block"
+                                  }`}
+                                />
+                                {businessDoc ? (
                                       <div className="inner-file-upload-butifier absolute top-1/2 left-1/2 w-full flex items-center px-5 gap-x-5 justify-between">
-                                        <p className='text-Black'>{businessDoc?.name}</p>
-                                        <button type="button" onClick={() => setBusinessDoc('')} className='w-7 h-7 bg-white rounded-full flex items-center justify-center'><i className="ri-close-large-fill text-red-500"></i></button>
-                                      </div> : 
+                                    <p className="text-Black">
+                                      {businessDoc?.name}
+                                    </p>
+                                    <button
+                                      type="button"
+                                      onClick={() => setBusinessDoc("")}
+                                      className="w-7 h-7 bg-white rounded-full flex items-center justify-center"
+                                    >
+                                      <i className="ri-close-large-fill text-red-500"></i>
+                                    </button>
+                                  </div>
+                                ) : (
                                       <div className="inner-file-upload-butifier absolute top-1/2 left-1/2 w-full flex items-center px-5 gap-x-5">
-                                        <img src={FileUploadIcon} className='w-7 h-7' alt="" />
-                                        <p className='text-Black'>Click to Upload Registration document</p>
+                                    <img
+                                      src={FileUploadIcon}
+                                      className="w-7 h-7"
+                                      alt=""
+                                    />
+                                    <p className="text-Black">
+                                      Click to Upload Registration document
+                                    </p>
                                       </div>
-                                    }
+                                )}
                                 </div>                             
                               </div>
                               <div className="form-inputsec relative col-span-12 z-[99999999]">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Amenities (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Amenities (Optional)
+                                </p>
                                 </div>
-                                <Select options={busAmenities} 
-                                  placeholder='Select Amenities'
+                              <Select
+                                options={busAmenities}
+                                placeholder="Select Amenities"
                                   isMulti
                                   components={animatedComponents}
                                   closeMenuOnSelect={false}
@@ -882,12 +1312,14 @@ const BusinessFormAdding = () => {
                                         paddingBottom: 4,
                                         borderWidth: 1,
                                         outlineWidth: 0,
-                                        borderColor: '#B3B3B3',
+                                    borderColor: "#B3B3B3",
                                         fontSize: 16,
-                                        minWidth: '100%',
+                                    minWidth: "100%",
                                         minHeight: 50,
                                         // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused ? 'none' : 'none',
+                                    boxShadow: state.isFocused
+                                      ? "none"
+                                      : "none",
                                       }),
                                     }}
                                   value={multiAmentites ? multiAmentites : null}
@@ -896,11 +1328,14 @@ const BusinessFormAdding = () => {
                               </div>
                               <div className="form-inputsec relative col-span-6 z-[9999999]">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Working Hours (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Working Hours (Optional)
+                                </p>
                                 </div>
-                                <Select options={workingHours} 
-                                  placeholder='Select Working Hours'
-                                  name='workingHours'
+                              <Select
+                                options={workingHours}
+                                placeholder="Select Working Hours"
+                                name="workingHours"
                                   styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -912,22 +1347,35 @@ const BusinessFormAdding = () => {
                                         outlineWidth: 0,
                                         // borderColor: errors.workingHours ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
-                                        minWidth: '100%',
+                                    minWidth: "100%",
                                         minHeight: 50,
                                         // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused ? 'none' : 'none',
+                                    boxShadow: state.isFocused
+                                      ? "none"
+                                      : "none",
                                       }),
                                     }}
-                                  value={workingHours.find(option => option.value === values.workingHours)} 
-                                  onChange={(option) => setFieldValue('workingHours', option ? option.value : '')}
+                                value={workingHours.find(
+                                  (option) =>
+                                    option.value === values.workingHours
+                                )}
+                                onChange={(option) =>
+                                  setFieldValue(
+                                    "workingHours",
+                                    option ? option.value : ""
+                                  )
+                                }
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Services Offered (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Services Offered (Optional)
+                                </p>
                                 </div>
-                                <Select options={servicesOffered} 
-                                  placeholder='Select Services Offered'
+                              <Select
+                                options={servicesOffered}
+                                placeholder="Select Services Offered"
                                   styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -939,24 +1387,37 @@ const BusinessFormAdding = () => {
                                         outlineWidth: 0,
                                         // borderColor: errors.servicesOffer ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
-                                        minWidth: '100%',
+                                    minWidth: "100%",
                                         minHeight: 50,
                                         // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused ? 'none' : 'none',
+                                    boxShadow: state.isFocused
+                                      ? "none"
+                                      : "none",
                                       }),
                                     }}
-                                  value={servicesOffered.find(option => option.value === values.servicesOffer)} 
-                                  onChange={(option) => setFieldValue('servicesOffer', option ? option.value : '')}
+                                value={servicesOffered.find(
+                                  (option) =>
+                                    option.value === values.servicesOffer
+                                )}
+                                onChange={(option) =>
+                                  setFieldValue(
+                                    "servicesOffer",
+                                    option ? option.value : ""
+                                  )
+                                }
                                 />                               
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Category (Optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Business Category (Optional)
+                                </p>
                                 </div>
                                 <div className="poitions-relative relative ">
-                                <Select options={busCates} 
-                                  placeholder='Select Business Category'
-                                  name='businessCategory'
+                                <Select
+                                  options={busCates}
+                                  placeholder="Select Business Category"
+                                  name="businessCategory"
                                   styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -968,59 +1429,110 @@ const BusinessFormAdding = () => {
                                         outlineWidth: 0,
                                         // borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
                                         fontSize: 16,
-                                        minWidth: '100%',
+                                      minWidth: "100%",
                                         height: 50,
                                         // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused ? 'none' : 'none',
-                                        
+                                      boxShadow: state.isFocused
+                                        ? "none"
+                                        : "none",
                                       }),
                                     }}
-                                  value={busCates.find(option => option.value === values.businessCategory)} 
-                                  onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
+                                  value={busCates.find(
+                                    (option) =>
+                                      option.value === values.businessCategory
+                                  )}
+                                  onChange={(option) => {
+                                    setFieldValue(
+                                      "businessCategory",
+                                      option ? option.value : ""
+                                    );
+                                  }}
                                 />    
                                 </div>                             
                               </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Tags (optional)</p>
+                                <p className="text-BusinessFormLabel">
+                                  Business Tags (optional)
+                                </p>
                                 </div>
                                 <div className="social-media-adding-section relative">
-                                  <Field type="text" name="businessTags" placeholder='Enter relevant business tags' onKeyUp={(e) => setCustomTagInput(e.target.value)} 
-                                      className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${errors.socialMedia  ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                  />
-                                  <button type="button" onClick={addCustomTags}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary border border-Black border-opacity-40'>Add</button>
+                                <Field
+                                  type="text"
+                                  name="businessTags"
+                                  placeholder="Enter relevant business tags"
+                                  onKeyUp={(e) =>
+                                    setCustomTagInput(e.target.value)
+                                  }
+                                  className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${
+                                    errors.socialMedia
+                                      ? "border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500"
+                                      : "text-Black border-LoginFormBorder placeholder:text-Black"
+                                  }`}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={addCustomTags}
+                                  className="absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary border border-Black border-opacity-40"
+                                >
+                                  Add
+                                </button>
                                 </div>                                      
                               </div>
-                              {customTags.length > 0 ? 
+                            {customTags.length > 0 ? (
                               <div className="col-span-12">
                                 <div className="business-tags-section-grid-sec grid grid-cols-12 gap-4">
-                                  {customTags.map((items , index) => {
+                                  {customTags.map((items, index) => {
                                     return (
                                       <div className="social-meida-links-displayer col-span-3">
                                         <div className="left-side-link-icon flex items-center justify-between bg-LightGrayBg bg-opacity-70 rounded-[8px] py-2 px-4">
                                             <div className="right-text">
-                                                <p className='text-Secondary font-medium'>{items}</p>
+                                            <p className="text-Secondary font-medium">
+                                              {items}
+                                            </p>
                                             </div>
-                                            <div className="remove-link-btn"><button type="button" onClick={() => removeBusinessTags(index)} className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
+                                          <div className="remove-link-btn">
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                removeBusinessTags(index)
+                                              }
+                                              className="w-6 h-6 rounded-full flex items-center justify-center bg-red-100"
+                                            >
+                                              <i className="ri-close-large-line text-red-600"></i>
+                                            </button>
                                         </div>
                                       </div>
-                                    )
+                                      </div>
+                                    );
                                   })}
                                 </div>
-                              </div> : null
-                              }
                             </div>
-
+                            ) : null}
+                          </div>
                           </div>
                           <div className="single-form-section-business business-basic-details rounded-[15px] bg-white ">
                             <div className="inner-pricing-section flex items-center gap-6 relative">
                               <div className="left-image-pricing">
-                                <img src={PricingImg} className='w-64' alt="" />
+                              <img src={PricingImg} className="w-64" alt="" />
                               </div>
                               <div className="right-content-pricing py-6">
-                                <h2 className='text-2xl font-medium text-Black'>50% OFF – Business Listing Subscription!</h2>
-                                <p className='font-light opacity-80 pb-3 pt-1'>Boost your brand’s online presence and attract more customers with our premium business listing. <br /> Get discovered easily, enhance credibility, and drive more leads—all at an unbeatable price.</p>
-                                <h3 className='text-Secondary font-semibold text-4xl'><span className='line-through text-Black font-medium opacity-40 mr-4'>₹4999</span>₹2499</h3>
+                              <h2 className="text-2xl font-medium text-Black">
+                                50% OFF – Business Listing Subscription!
+                              </h2>
+                              <p className="font-light opacity-80 pb-3 pt-1">
+                                Boost your brand’s online presence and attract
+                                more customers with our premium business
+                                listing. <br /> Get discovered easily, enhance
+                                credibility, and drive more leads—all at an
+                                unbeatable price.
+                              </p>
+                              <h3 className="text-Secondary font-semibold text-4xl">
+                                <span className="line-through text-Black font-medium opacity-40 mr-4">
+                                  ₹4999
+                                </span>
+                                ₹2499
+                              </h3>
                               </div>
                               <div className="abs-check absolute top-4 right-4">
                                 <i class="bi bi-check-circle-fill text-3xl text-[#0DB9AA]"></i>
@@ -1028,7 +1540,13 @@ const BusinessFormAdding = () => {
                             </div>
                           </div>
                           <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
-                              <button type='button' onClick={handleSubmit}  className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Submit Business Listing</button>
+                          <button
+                            type="button"
+                            onClick={handleSubmit}
+                            className="w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 "
+                          >
+                            Submit Business Listing
+                          </button>
                           </div>
                         </div>
                       </Form>
@@ -1041,10 +1559,11 @@ const BusinessFormAdding = () => {
         </div>
     </div>
   );
-}
+};
 
 BusinessFormAdding.propTypes = {};
 
 BusinessFormAdding.defaultProps = {};
 
 export default BusinessFormAdding;
+
