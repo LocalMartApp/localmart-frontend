@@ -219,12 +219,7 @@ const SearchPage = () => {
                   <li>
                     <p className={`text-Black `}>Business Listings</p>
                   </li>
-                  {/* <li><i className="ri-arrow-right-s-line"></i></li>
-                  <li><p className={`text-Black `}>150+ Listings</p></li> */}
                 </ul>
-                {/* <div className="bread-heading-section mt-4">
-                  <h2 className='text-xl font-medium text-Black'>Best Restaurants In Rajahmundry from Localmart</h2>
-                </div> */}
               </div>
             </div>
           </div>

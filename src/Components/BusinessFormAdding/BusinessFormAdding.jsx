@@ -11,6 +11,9 @@ import NonVegIcon from "../../assets/images/non-veg-icon.svg";
 import MapIcon from "../../assets/images/maps-icon-input.svg";
 import axios from "axios";
 import Modal from "react-modal";
+import Lottie from 'lottie-react';
+import CheckAnimation from '../../assets/images/animated-logos/check.json';
+import RazorLogo from '../../assets/images/favicon.png'
 
 import {
   GoogleMap,
@@ -43,6 +46,7 @@ const BusinessFormAdding = () => {
   const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.804 });
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [successLoader , setSuccessLoader] = useState(false)
 
   const [busCates, setBusCates] = useState([]);
   const [busAmenities, setBusAmenities] = useState([]);
@@ -623,6 +627,7 @@ const BusinessFormAdding = () => {
           contact: config.razorpay.appPhone,
         },
         theme: { color: "#1F90FF" },
+        image: RazorLogo,
         notes: {
           business_id: businessId,
           payment_for: "business_creation",
@@ -647,8 +652,14 @@ const BusinessFormAdding = () => {
               }
             );
 
-            if (saveResponse?.data?.status === "success") {
+            console.log( "saveResponse====>", saveResponse?.data)
+            if (saveResponse?.data?.success == true) {
               toast.success("Payment successful and verified!");
+              setSuccessLoader(true)
+              setTimeout(() => {
+                setSuccessLoader(false)
+                navigate('/business/add-photos', { state: { businessId } })
+              }, 4000)
             } else {
               toast.error("Payment verification failed");
             }
@@ -699,6 +710,20 @@ const BusinessFormAdding = () => {
         >
         <Loader />
         </Modal>
+        <Modal
+            isOpen={successLoader}
+            style={customStyles}
+            contentLabel="Success Modal"
+        >
+          <div className="loader-empty-section w-full col-span-2">
+              <div className="nodata-found-section flex justify-center flex-col items-center pt-10 pb-5 w-full">
+                <Lottie animationData={CheckAnimation} style={{ width: 300}}/>
+                <div className="no-data-found-text-btn mt-5 text-center">
+                  <p className='text-center'>Payment Successful</p>
+                </div>
+              </div>
+            </div>
+        </Modal>
         <div className="inner-main-business-form-section py-50p">
           <div className="container">
             <div className="top-business-form-heading mb-10">
@@ -721,7 +746,7 @@ const BusinessFormAdding = () => {
                     resetForm,
                   }) => (
                       <Form>
-                      <div className="sample-data-button-section mb-6 flex justify-end gap-4">
+                      <div className="sample-data-button-section mb-6 hidden justify-end gap-4 ">
                         <button
                           type="button"
                           onClick={() =>
