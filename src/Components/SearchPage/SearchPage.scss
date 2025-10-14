@@ -20,7 +20,7 @@
     } 
     .bottom-paginate-section {
         margin-left:  auto !important;
-        padding: 8px 15px !important;
+        // padding: 8px 15px !important;
         margin-top: 20px !important;
     }
 }
@@ -91,6 +91,32 @@
     display: none !important;
 }
 
+
+.business-list-card-main-grid {
+    .left-business-list-card-section {
+        img {
+            border-radius: 24px 4px 0px 0px !important;
+        }
+    }
+}
+
+@media only screen and (max-width: 767.90px) {
+    .business-list-card-main-grid {
+        .left-business-list-card-section {
+            img {
+                border-radius: 24px 24px 0px 0px !important;
+            }
+        }
+        .left-business-list-card-section , .right-business-list-card-section {
+            grid-column: span 12 / span 12 !important;
+        }
+    }
+
+    .view-swicth-section-buttons {
+        display: none;
+    }
+}
+
 @media only screen and (max-width: 674.90px) {
     .SearchPage {
         .inner-left-searched-cards-sec-before-991 {
@@ -121,5 +147,22 @@
                 }
             }
         }
+    }
+    .bottom-paginate-section {
+        margin-left:  auto !important;
+        // padding: 8px 15px !important;
+        margin-top: 20px !important;
+        flex-wrap: wrap;
+    }
+
+}
+
+
+@media only screen and (max-width: 400px) {
+    .share-links-sec {
+        gap: 0px 20px !important;
+    }
+    .search-grid-cards-section-list-gridviews {
+        gap: 30px 0px !important;
     }
 }

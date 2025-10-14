@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import useSaveBusinessStore from "../../Store/useSaveBusinessStore";
 import Emptymedia from "../../assets/images/emptymedia-business.png";
 import GmailIcon from "../../assets/images/gmail-icon.svg";
+import toast from "react-hot-toast";
+import { useAuth } from "../../utils/AuthContext";
+import './SearchPage.scss'
 
 const BusinessListCard = ({
   business,
@@ -13,6 +16,7 @@ const BusinessListCard = ({
 }) => {
   const navigate = useNavigate();
   const { isFavorite, toggleFavorite } = useSaveBusinessStore();
+  const { authToken } = useAuth()
 
   // Status modal state - moved to parent component
   // const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -47,11 +51,44 @@ const BusinessListCard = ({
     }
   };
 
+
+  
+  const long = business?.location?.coordinates[0];
+  const lat = business?.location?.coordinates[1];
+
+  const openGoogleMaps = () => {
+    const url = `https://www.google.com/maps?q=${lat},${long}`;
+    window.open(url, "_blank");
+  };
+
+  const openMailBox = () => {
+    const email = business?.email?.trim();
+
+    if (email) {
+      window.open(`mailto:${email}`, '_blank');
+    } else {
+      toast.error("Email not provided by the business");
+    }
+  }
+
+  const showNumber = () => {
+    toast.error("Login to view this number")
+  }
+
+  const callNumber = () => {
+    const mobileNumber = business?.mobileNumber?.trim();
+
+    if (mobileNumber) {
+      window.open(`tel:${mobileNumber}`, '_blank');
+    } else {
+      toast.error("Number not provided by the business");
+    }
+  }
   return (
     <div
-      className={`group transform transition-all duration-700 ease-out hover:scale-[1.02] hover:-translate-y-2 ${className}`}
+      className={`group transform transition-all  ${className}`}
     >
-      <div className="w-full bg-white rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden border border-gray-100 transition-all duration-700 ease-out relative">
+      <div className="w-full bg-white rounded-3xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 transition-all duration-700 ease-out relative">
 
         {showSaveButton && (
           <button
@@ -71,7 +108,7 @@ const BusinessListCard = ({
 
 
         <div className="absolute top-5 right-20 z-10">
-          <div className="bg-white/95 backdrop-blur-md rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg border border-gray-100 transition-all duration-300 ease-out group-hover:scale-105">
+          <div className="bg-gray-100 rounded-full px-3 py-1 flex items-center gap-2 border border-gray-200">
             <i className="ri-star-fill text-yellow-400 text-sm"></i>
             <span className="text-sm font-semibold text-gray-800">
               {business.averageRating || "0.0"}
@@ -79,9 +116,9 @@ const BusinessListCard = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-12 min-h-[200px]">
+        <div className="grid grid-cols-12 business-list-card-main-grid min-h-[200px]">
 
-          <div className="col-span-4 overflow-hidden relative rounded-l-3xl">
+          <div className="col-span-4 left-business-list-card-section overflow-hidden relative ">
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 rounded-l-3xl"></div>
             <img
               src={
@@ -89,7 +126,7 @@ const BusinessListCard = ({
                   ? business?.mediaFiles[0]?.fileUrl
                   : Emptymedia
               }
-              className="h-full w-full group-hover:scale-105 duration-1000 object-cover max-h-[235px] transition-transform ease-out rounded-l-3xl"
+              className="h-full w-full group-hover:scale-105 duration-1000 object-cover transition-transform ease-out"
               alt={business?.name || "Business image"}
             />
 
@@ -146,7 +183,7 @@ const BusinessListCard = ({
           </div>
 
 
-          <div className="col-span-8 p-6 flex flex-col justify-between rounded-r-3xl">
+          <div className="col-span-8 right-business-list-card-section p-6 flex flex-col justify-between rounded-r-3xl">
             <div className="space-y-4">
 
               <div className="space-y-2">
@@ -161,7 +198,7 @@ const BusinessListCard = ({
 
 
               <div className="space-y-3">
-                <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-4 text-sm flex-wrap">
                   <div className="flex items-center gap-2 text-green-600">
                     <i className="ri-time-line"></i>
                     <span className="font-medium">
@@ -194,42 +231,35 @@ const BusinessListCard = ({
             </div>
 
 
-            <div className="flex items-center gap-4    pt-4 border-t border-gray-100">
+            <div className="flex items-center gap-4 pt-4 border-t border-gray-100 flex-wrap justify-between">
               <button
                 type="button"
-                onClick={(e) => handleActionClick(e, "Send Enquiry")}
-                className="bg-Primary rounded-full text-white font-medium py-2.5 px-6 hover:bg-blue-600 transition-all duration-300 ease-out hover:scale-105 text-sm z-10 relative"
-              >
-                Send Enquiry
-              </button>
-              <button
-                type="button"
-                onClick={(e) => handleActionClick(e, "Show Number")}
+                onClick={authToken ? callNumber : showNumber}
                 className="bg-Green rounded-full text-white font-medium py-2.5 px-6 hover:bg-green-600 transition-all duration-300 ease-out hover:scale-105 text-sm z-10 relative"
               >
                 Show Contact
               </button>
-              <div className="flex gap-1.5 ml-auto">
+              <div className="share-links-sec flex gap-4">
                 <button
-                  onClick={(e) => handleActionClick(e, "Directions")}
-                  className="w-9 h-9 bg-Secondary rounded-lg flex items-center justify-center duration-300 ease-out shadow-md hover:shadow-lg z-10 relative"
+                  onClick={openGoogleMaps}
+                  className="w-8 h-8 bg-Green rounded-full flex items-center justify-center relative z-10"
                   title="Directions"
                 >
-                  <i className="ri-direction-fill text-white text-sm"></i>
+                  <i className="ri-direction-fill text-white text-xl"></i>
                 </button>
                 <button
                   onClick={(e) => handleActionClick(e, "Share")}
-                  className="w-9 h-9 bg-LightBlue rounded-lg flex items-center justify-center duration-300 ease-out shadow-md hover:shadow-lg z-10 relative"
+                  className="w-8 h-8 bg-Secondary rounded-full flex items-center justify-center relative z-10"
                   title="Share"
                 >
-                  <i className="ri-share-fill text-white text-sm"></i>
+                  <i className="ri-share-fill text-white text-xl"></i>
                 </button>
                 <button
-                  onClick={(e) => handleActionClick(e, "Gmail")}
-                  className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center duration-300 ease-out shadow-md hover:shadow-lg z-10 relative"
+                  onClick={openMailBox}
+                  className="relative z-10"
                   title="Email"
                 >
-                  <img src={GmailIcon} className="w-4 h-4" alt="Gmail" />
+                  <img src={GmailIcon} className="w-7 h-7" alt="Gmail" />
                 </button>
               </div>
             </div>

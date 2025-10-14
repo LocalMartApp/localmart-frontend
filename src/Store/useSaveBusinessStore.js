@@ -2,6 +2,7 @@ import axios from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { config } from "../env-services";
+import toast from "react-hot-toast";
 
 // Helper function to get auth token from localStorage
 const getAuthToken = () => {
@@ -52,6 +53,7 @@ const useSaveBusinessStore = create(
         try {
           const authToken = await getAuthToken();
           if (!authToken) {
+            toast.error('Login to save the business')
             throw new Error(
               "Authentication token not found. Please login again."
             );
@@ -126,6 +128,7 @@ const useSaveBusinessStore = create(
         try {
           const authToken = await getAuthToken();
           if (!authToken) {
+            toast.error('Login to remove the business')
             throw new Error(
               "Authentication token not found. Please login again."
             );

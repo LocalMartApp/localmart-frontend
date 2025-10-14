@@ -437,13 +437,13 @@ const SearchPage = () => {
           <div className="inner-search-page-section-3 pb-10">
             <div className="container">
               <div className="search-page-grid-section-main">
-                <div className="grid grid-cols-12 gap-30p">
+                <div className="grid grid-cols-12 gap-30p search-grid-cards-section-list-gridviews">
                   <div className="col-span-12 left-searched-cards">
                     {/* View Switch Controls */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         <div className="flex items-center gap-4">
-                          <h3 className="text-2xl font-bold text-gray-900">
+                          <h3 className="text-2xl font-medium text-gray-900">
                             {totalResults > 0
                               ? totalResults
                               : results?.length || 0}{" "}
@@ -462,10 +462,12 @@ const SearchPage = () => {
                           </div>
                         )}
                       </div>
-                      <ViewSwitch
-                        viewType={viewType}
-                        onViewChange={setViewType}
-                      />
+                      <div className="view-swicth-section-buttons">
+                        <ViewSwitch
+                          viewType={viewType}
+                          onViewChange={setViewType}
+                        />
+                      </div>
                     </div>
 
                     <div
@@ -553,14 +555,14 @@ const SearchPage = () => {
                             breakLabel={"..."}
                             pageCount={totalPages}
                             marginPagesDisplayed={2}
-                            pageRangeDisplayed={5}
+                            pageRangeDisplayed={3}
                             onPageChange={handlePageClick}
                             forcePage={getPaginationInfo().currentPage - 1} // Convert to 0-based for ReactPaginate
                             containerClassName={
-                              "pagination bottom-paginate-section w-fit ml-auto bg-white px-4 py-2 rounded-lg flex gap-2 justify-center my-6 shadow-sm"
+                              "pagination bottom-paginate-section w-fit bg-white rounded-lg flex gap-2 justify-center my-6"
                             }
                             pageClassName={
-                              "paginated-clickers border rounded-md cursor-pointer hover:bg-gray-50 transition-colors duration-200 px-3 py-1"
+                              "paginated-clickers border rounded-md cursor-pointer hover:bg-gray-50 transition-colors duration-200"
                             }
                             activeClassName={
                               "bg-Secondary text-white active-paginate"
