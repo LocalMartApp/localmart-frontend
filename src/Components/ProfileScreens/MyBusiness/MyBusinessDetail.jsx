@@ -347,18 +347,23 @@ const MyBusinessDetail = () => {
             <div className="inner-search-info-section-2">
               <div className="container">
                   <div className="top-searched-detail-rating-favorite-sec flex flex-wrap gap-y-6 items-center justify-between gap-x-5">
-                    <div className="left-title-rating-search ">
-                      <h4 className='text-2xl font-medium text-Black'>{singleBusiness?.name}</h4>
-                      <div className="location-rating-seperate-search flex items-center gap-x-5 mt-3 flex-wrap gap-y-3">
-                        <button type='button' className="business-recommended-section flex items-center gap-10p opacity-60">
-                          <i className="ri-map-pin-line text-Black"></i>
-                          <p className='text-sm text-LightText'>{singleBusiness?.state?.name} - {singleBusiness?.city?.name}</p>
-                        </button>
-                        <div className="seperator-div h-5 w-[1px] bg-Black"></div>
-                        <div className="rating-review-search-text flex items-center gap-x-2">
-                          <i className='ri-star-fill text-StarGold'></i>
-                          <p>1407+ Ratings</p>
-                        </div>
+                    <div className="top-flexible-add-status-heading-sec flex items-center justify-between flex-wrap w-full gap-y-5">
+                      <div className="left-title-rating-search ">
+                          <h4 className='text-2xl font-medium text-Black'>{singleBusiness?.name}</h4>
+                          <div className="location-rating-seperate-search flex items-center gap-x-5 mt-3 flex-wrap gap-y-3">
+                            <button type='button' className="business-recommended-section flex items-center gap-10p opacity-60">
+                              <i className="ri-map-pin-line text-Black"></i>
+                              <p className='text-sm text-LightText'>{singleBusiness?.state?.name} - {singleBusiness?.city?.name}</p>
+                            </button>
+                            <div className="seperator-div h-5 w-[1px] bg-Black"></div>
+                            <div className="rating-review-search-text flex items-center gap-x-2">
+                              <i className='ri-star-fill text-StarGold'></i>
+                              <p>1407+ Ratings</p>
+                            </div>
+                          </div>
+                      </div>
+                      <div className="right-add-status-button">
+                        <button type="button" className="text-white hover:bg-Secondary bg-Green font-medium px-8 py-2 rounded-full">Add Status</button>
                       </div>
                     </div>
                     <div className="right-title-rating-favorite-section hidden">
@@ -546,7 +551,7 @@ const MyBusinessDetail = () => {
                                           })}
                                       </Swiper>
                                   </div>
-                                  <div className="food-items-bottom-slider-section  grid grid-cols-3 gap-4">
+                                  {/* <div className="food-items-bottom-slider-section  grid grid-cols-3 gap-4">
                                       {foodItems.map((items , index) => {
                                           return (
                                               <div className="single-food-item-searched bg-AddressCard rounded-lg p-3" key={index}>
@@ -560,10 +565,10 @@ const MyBusinessDetail = () => {
                                               </div>
                                           )
                                       })}
-                                  </div>                                    
+                                  </div> */}
                                 </div>
                             </div>
-                            <div className="rating-section-searched">
+                            <div className="rating-section-searched hidden">
                               <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
                                   <div className="rating-searched-heading">
                                     <h4 className='text-20 font-medium text-Black'>All Reviews & Ratings <span className="font-light opacity-60">(43)</span></h4>
@@ -606,7 +611,7 @@ const MyBusinessDetail = () => {
                               <div className="address-info-section py-5 border-b border-BorderColor border-opacity-50">
                                 <h4 className='text-lg font-medium text-Black mb-2'>Address</h4>
                                 <p className='text-Black opacity-40'>{singleBusiness?.completeAddress}</p>
-                                <div className="directions-copy-address-btns flex items-center gap-x-5 justify-between mt-4">
+                                <div className="directions-copy-address-btns flex flex-wrap items-center gap-x-5 justify-between mt-4">
                                   <button  type='button' onClick={openGoogleMaps} className="direcions-btn flex items-center gap-x-3 text-left">
                                     <i className='ri-corner-up-right-line text-lg text-Secondary'></i>
                                     <p className='font-medium text-Secondary'>Get Directions</p>
