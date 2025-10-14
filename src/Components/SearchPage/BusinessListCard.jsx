@@ -126,7 +126,7 @@ const BusinessListCard = ({
                   ? business?.mediaFiles[0]?.fileUrl
                   : Emptymedia
               }
-              className="h-full w-full group-hover:scale-105 duration-1000 object-cover transition-transform ease-out"
+              className="h-full w-full group-hover:scale-105 duration-1000 object-cover max-h-[235px] transition-transform ease-out"
               alt={business?.name || "Business image"}
             />
 
